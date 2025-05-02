@@ -1,0 +1,56 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@drawable/container"
+    android:padding="16dp"
+    android:layout_marginBottom="5dp">
+
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pixelify_sans"
+        android:text="Total Sales"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.173" />
+
+    <TextView
+        android:id="@+id/itemDescription"
+        android:layout_width="126dp"
+        android:layout_height="25dp"
+        android:fontFamily="@font/pixelify_sans"
+        android:text="Month of April"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemTitle"
+        app:layout_constraintVertical_bias="0.526" />
+
+    <TextView
+        android:id="@+id/itemNumFigures"
+        android:layout_width="126dp"
+        android:layout_height="26dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="PHP 55, 456.90"
+        android:textColor="#2E8B31"
+        android:textSize="16sp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/itemDescription"
+        app:layout_constraintTop_toBottomOf="@+id/itemTitle"
+        app:layout_constraintVertical_bias="0.4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

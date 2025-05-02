@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF1D7"
+    android:orientation="vertical"
+    tools:context=".activities.Inventory">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:background="#D39B72"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/burgerbttn"
+                android:layout_width="93dp"
+                android:layout_height="60dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="burgerbutton"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/burger_icon" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="228dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Inventory"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="30sp" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="93dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="bellbutton"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/bell_icon" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="323dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bar"
+                android:iconifiedByDefault="false"
+                android:queryHint="Search here" />
+
+            <ImageButton
+                android:id="@+id/filterBtn"
+                android:layout_width="49dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="filterbutton"
+                app:srcCompat="@drawable/filter_icon" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="697dp"
+            android:contentDescription="view list of products"
+            android:paddingTop="20dp"
+            android:paddingHorizontal="10dp"/>
+
+
+
+
+
+</LinearLayout>
