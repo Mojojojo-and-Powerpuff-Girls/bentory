@@ -1,7 +1,6 @@
 package com.example.bentory_app.model;
 
 import com.google.firebase.database.PropertyName;
-
 import java.util.Date;
 
 public class ProductModel {
@@ -16,7 +15,7 @@ public class ProductModel {
     private String size;
     private String weight;
 
-    private Date date_added;
+    private String date_added;
 
     private String barcode;
 
@@ -27,7 +26,7 @@ public class ProductModel {
     // open constructor for firebase
     public ProductModel(){}
 
-    public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description) {
+    public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added) {
         this.name = name;
         this.category = category;
         this.quantity = quantity;
@@ -35,6 +34,7 @@ public class ProductModel {
         this.sale_price = sale_price;
         this.size = size;
         this.weight = weight;
+        this.date_added = date_added;
     }
 
 
@@ -57,6 +57,8 @@ public class ProductModel {
     public String getDescription() {
         return description;
     }
+    @PropertyName("date_added")
+    public String getDate_Added() { return date_added; }
 
 
 
@@ -78,7 +80,7 @@ public class ProductModel {
     @PropertyName("description")
     public void setDescription(String description) { this.description = description; }
     @PropertyName("date_added")
-    public void setDate_added(Date date_added) { this.date_added = date_added; }
+    public void setDate_Added(String date_added) { this.date_added = date_added; }
     @PropertyName("barcode")
     public void setBarcode(String barcode) { this.barcode = barcode; }
 

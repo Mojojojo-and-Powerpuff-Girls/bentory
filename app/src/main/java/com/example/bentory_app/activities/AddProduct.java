@@ -16,6 +16,8 @@ import com.example.bentory_app.R;
 import com.example.bentory_app.model.ProductModel;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 
+import java.util.Date;
+
 public class AddProduct extends AppCompatActivity {
 
     private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight, itemDescription;

@@ -10,8 +10,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class ProductRepository {
 
     private DatabaseReference database;
@@ -63,7 +68,15 @@ public class ProductRepository {
                 long count = snapshot.getChildrenCount();
                 String itemKey = "item" + (count + 1); // Generate key like "item1"
 
-                // Step 3: Save the product data under the generated unique key.
+                // Step 3: Format the current date into a readable format and set the correct timezone
+                // WHY: This step ensures the date is displayed in the desired format ("May 8, 2025 | 5:44 PM")
+                // and in the correct timezone, regardless of the device's locale or timezone settings.
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy | h:mm a", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                String formattedDate = sdf.format(new Date()); // get the current date and time
+                product.setDate_Added(formattedDate); // set formatted date
+
+                // Step 4: Save the product data under the generated unique key.
                 // WHY: This stores the product's information in the Firebase database under the new key.
                 database.child(itemKey).setValue(product);
             }
@@ -73,6 +86,7 @@ public class ProductRepository {
                 // Handle error
             }
         });
+
     }
 
 }
