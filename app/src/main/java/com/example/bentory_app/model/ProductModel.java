@@ -26,7 +26,7 @@ public class ProductModel {
     // open constructor for firebase
     public ProductModel(){}
 
-    public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added) {
+    public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added, String barcode) {
         this.name = name;
         this.category = category;
         this.quantity = quantity;
@@ -34,7 +34,9 @@ public class ProductModel {
         this.sale_price = sale_price;
         this.size = size;
         this.weight = weight;
+        this.description = description;
         this.date_added = date_added;
+        this.barcode = barcode;
     }
 
 
@@ -59,7 +61,8 @@ public class ProductModel {
     }
     @PropertyName("date_added")
     public String getDate_Added() { return date_added; }
-
+    @PropertyName("barcode")
+    public String getBarcode() { return barcode; }
 
 
     // Setters
@@ -83,5 +86,4 @@ public class ProductModel {
     public void setDate_Added(String date_added) { this.date_added = date_added; }
     @PropertyName("barcode")
     public void setBarcode(String barcode) { this.barcode = barcode; }
-
 }

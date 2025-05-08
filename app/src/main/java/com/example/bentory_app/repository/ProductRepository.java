@@ -54,7 +54,7 @@ public class ProductRepository {
     }
 
 
-    // Method to add a new product to Firebase Realtime Database
+    // 1. Method to add a new product to Firebase Realtime Database
     // WHY: This method handles saving the product data to Firebase under a unique key.
     public void addProduct (ProductModel product) {
 

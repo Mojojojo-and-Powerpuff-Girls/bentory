@@ -79,7 +79,7 @@
                     android:id="@+id/backgroundImage"
                     android:layout_centerInParent="true"
                     android:layout_width="400dp"
-                    android:layout_height="1150dp"
+                    android:layout_height="1020dp"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="10dp"
@@ -103,26 +103,14 @@
                     android:textSize="32sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/uploadPicBtn"
-                    android:layout_width="101dp"
-                    android:layout_height="102dp"
-                    android:layout_below="@+id/title"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Upload Picture"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/upload_picture_btn" />
-
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="129dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/uploadPicBtn"
+                    android:layout_below="@+id/title"
                     android:layout_centerInParent="false"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="20dp"
                     android:fontFamily="@font/pixelify_sans"
                     android:text="Name"
                     android:textAlignment="center"
@@ -246,10 +234,11 @@
                     android:id="@+id/newItemName"
                     android:layout_width="303dp"
                     android:layout_height="48dp"
-                    android:layout_below="@+id/uploadPicBtn"
+                    android:layout_below="@+id/title"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="42dp"
+                    android:layout_marginTop="50dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:padding="10dp"
                     android:background="@drawable/add_item_edit_box"
                     android:hint="-" />
@@ -263,6 +252,7 @@
                     android:layout_centerInParent="true"
                     android:textSize="20dp"
                     android:padding="10dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:hint="-" />
 
@@ -275,6 +265,7 @@
                     android:layout_marginTop="50dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:inputType="number"
                     android:hint="-"/>
@@ -288,6 +279,7 @@
                     android:layout_marginTop="50dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:inputType="numberDecimal"
                     android:hint="-"/>
@@ -301,6 +293,7 @@
                     android:layout_marginTop="50dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:inputType="numberDecimal"
                     android:hint="-"/>
@@ -315,6 +308,7 @@
                     android:layout_marginLeft="56dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:hint="-"/>
 
@@ -328,6 +322,7 @@
                     android:layout_marginLeft="215dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     tools:ignore="SpeakableTextPresent"
                     android:hint="-"/>
@@ -341,6 +336,7 @@
                     android:layout_marginTop="50dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:hint="-"/>
 
@@ -354,6 +350,7 @@
                     android:layout_marginLeft="56dp"
                     android:padding="10dp"
                     android:textSize="20dp"
+                    android:textColor="#000000"
                     android:background="@drawable/add_item_edit_box"
                     android:hint="-" />
 
