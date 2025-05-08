@@ -42,7 +42,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
 
         holder.name.setText(product.getName());
         holder.quantity.setText("Quantity: " + product.getQuantity());
-        holder.sale_price.setText(String.format("PHP %.2f", product.getSalePrice()));
+        holder.sale_price.setText(String.format("PHP %.2f", product.getSale_Price()));
 
 
         holder.itemView.setOnClickListener(v -> listener.onProductClick(product));

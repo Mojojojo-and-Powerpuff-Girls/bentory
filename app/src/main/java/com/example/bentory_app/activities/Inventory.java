@@ -81,8 +81,8 @@ public class Inventory extends AppCompatActivity {
 
         String combinedDetails = product.getCategory() + "\n" +
                 product.getQuantity() + "\n" +
-                product.getCostPrice() + "\n" +
-                product.getSalePrice() + "\n" +
+                product.getCost_Price() + "\n" +
+                product.getSale_Price() + "\n" +
                 product.getSize() + "\n" +
                 product.getWeight() + "\n" +
                 product.getDescription();

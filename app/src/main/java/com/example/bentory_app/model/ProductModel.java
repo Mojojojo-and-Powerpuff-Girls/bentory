@@ -1,5 +1,7 @@
 package com.example.bentory_app.model;
 
+import com.google.firebase.database.PropertyName;
+
 import java.util.Date;
 
 public class ProductModel {
@@ -23,9 +25,7 @@ public class ProductModel {
 
 
     // open constructor for firebase
-    public ProductModel(){
-
-    }
+    public ProductModel(){}
 
     public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description) {
         this.name = name;
@@ -38,28 +38,48 @@ public class ProductModel {
     }
 
 
-
+    // Getters
+    @PropertyName("name") // Maps the java field to the Firebase key. WHY: Ensures Firebase uses the correct field name, avoiding automatic conversion to camelCase.
     public String getName() { return name; }
+    @PropertyName("category")
     public String getCategory() { return category; }
+    @PropertyName("quantity")
     public int getQuantity() { return quantity; }
-    public double getCostPrice() { return cost_price; }
-    public double getSalePrice() { return sale_price; }
+    @PropertyName("cost_price")
+    public double getCost_Price() { return cost_price; }
+    @PropertyName("sale_price")
+    public double getSale_Price() { return sale_price; }
+    @PropertyName("size")
     public String getSize() { return size; }
+    @PropertyName("weight")
     public String getWeight() { return weight; }
-
+    @PropertyName("description")
     public String getDescription() {
         return description;
     }
 
+
+
+    // Setters
+    @PropertyName("name")
     public void setName(String name) { this.name = name; }
+    @PropertyName("category")
     public void setCategory(String category) { this.category = category; }
+    @PropertyName("quantity")
     public void setQuantity(int quantity) { this.quantity = quantity; }
-    public void setCost_price(double cost_price) { this.cost_price = cost_price; }
-    public void setSale_price(double sale_price) { this.sale_price = sale_price; }
+    @PropertyName("cost_price")
+    public void setCost_Price(double cost_price) { this.cost_price = cost_price; }
+    @PropertyName("sale_price")
+    public void setSale_Price(double sale_price) { this.sale_price = sale_price; }
+    @PropertyName("size")
     public void setSize(String size) { this.size = size; }
+    @PropertyName("weight")
     public void setWeight(String weight) { this.weight = weight; }
+    @PropertyName("description")
     public void setDescription(String description) { this.description = description; }
+    @PropertyName("date_added")
     public void setDate_added(Date date_added) { this.date_added = date_added; }
+    @PropertyName("barcode")
     public void setBarcode(String barcode) { this.barcode = barcode; }
 
 }

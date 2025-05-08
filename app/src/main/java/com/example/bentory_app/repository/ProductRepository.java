@@ -48,4 +48,31 @@ public class ProductRepository {
         return mutableData;
     }
 
+
+    // Method to add a new product to Firebase Realtime Database
+    // WHY: This method handles saving the product data to Firebase under a unique key.
+    public void addProduct (ProductModel product) {
+
+        // Step 1: Fetch the existing data from the Firebase database.
+        // WHY: We need to know how many items are already stored to generate a new, unique key for the new item.
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Step 2: Get the current count of existing items in the database.
+                // WHY: The count allows us to generate a unique key like "item1", "item2", etc.
+                long count = snapshot.getChildrenCount();
+                String itemKey = "item" + (count + 1); // Generate key like "item1"
+
+                // Step 3: Save the product data under the generated unique key.
+                // WHY: This stores the product's information in the Firebase database under the new key.
+                database.child(itemKey).setValue(product);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+
 }

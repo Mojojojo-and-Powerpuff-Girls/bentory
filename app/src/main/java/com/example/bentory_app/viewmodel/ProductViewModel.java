@@ -20,4 +20,13 @@ public class ProductViewModel extends ViewModel {
         return items;
     }
 
+
+    // Method to add a new product through the repository, this method acts as a middle layer between the UI and
+    // the repo, delegating the actual database operation to the repository to maintain a clean separation of concerns.
+    public void addProduct (ProductModel product) {
+        // Step 1: Pass the product object to the repository for saving to the database.
+        // WHY: The repository is responsible for managing data operations, including adding products to Firebase.
+        repository.addProduct(product);
+    }
+
 }
