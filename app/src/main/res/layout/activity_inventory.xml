@@ -88,7 +88,30 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="filterbutton"
                 app:srcCompat="@drawable/filter_icon" />
+
+
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/deleteBtnContainer"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="visible"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="300dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/deleteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="deletebutton"
+                app:srcCompat="@drawable/scanner" />
+        </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

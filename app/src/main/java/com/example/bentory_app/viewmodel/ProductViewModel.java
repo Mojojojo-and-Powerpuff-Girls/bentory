@@ -7,6 +7,8 @@ import com.example.bentory_app.model.ProductModel;
 import com.example.bentory_app.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Set;
+
 public class ProductViewModel extends ViewModel {
     private ProductRepository repository;
     public LiveData<List<ProductModel>> items;
@@ -27,6 +29,12 @@ public class ProductViewModel extends ViewModel {
         // Step 1: Pass the product object to the repository for saving to the database.
         // WHY: The repository is responsible for managing data operations, including adding products to Firebase.
         repository.addProduct(product);
+    }
+
+    // 2. Delete selected products by their IDs
+    // WHY: This method delegates the deletion process to the repository.
+    public void deleteSelectedProducts(Set<String> idsToDelete) {
+        repository.deleteProductsByIds(idsToDelete);
     }
 
 }

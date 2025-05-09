@@ -7,6 +7,7 @@ public class ProductModel {
     //stats list in inventory
 
     //product details list
+    private String id; // Needed for the multiple delete button
     private String name;
     private String category;
     private int quantity;
@@ -26,7 +27,8 @@ public class ProductModel {
     // open constructor for firebase
     public ProductModel(){}
 
-    public ProductModel(String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added, String barcode) {
+    public ProductModel(String id, String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added, String barcode) {
+        this.id = id;
         this.name = name;
         this.category = category;
         this.quantity = quantity;
@@ -41,6 +43,8 @@ public class ProductModel {
 
 
     // Getters
+    @PropertyName("id")
+    public String getId() { return id; }
     @PropertyName("name") // Maps the java field to the Firebase key. WHY: Ensures Firebase uses the correct field name, avoiding automatic conversion to camelCase.
     public String getName() { return name; }
     @PropertyName("category")
@@ -66,6 +70,8 @@ public class ProductModel {
 
 
     // Setters
+    @PropertyName("id")
+    public void setId(String id) { this.id = id; }
     @PropertyName("name")
     public void setName(String name) { this.name = name; }
     @PropertyName("category")
