@@ -61,11 +61,11 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="vertical" >
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:fillViewport="true"-->
+<!--        android:scrollbars="vertical" >-->
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
             
         </RelativeLayout>
 
-    </ScrollView>
+<!--    </ScrollView>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSelling"
