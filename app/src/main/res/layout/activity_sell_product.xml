@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".activities.SellProduct">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -82,8 +83,31 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSelling"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="view list of available products"/>
+        android:layout_height="452dp"
+        android:contentDescription="view list of available products" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="439dp"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/cart_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/cart_box"
+            android:contentDescription="Cart image" />
+
+        <ImageButton
+            android:id="@+id/pullout_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:src="@drawable/pullout_icon"
+            android:contentDescription="Pullout button for cart" />
+    </FrameLayout>
 
 
 

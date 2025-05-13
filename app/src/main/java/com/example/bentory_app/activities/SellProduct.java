@@ -1,6 +1,9 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -13,11 +16,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bentory_app.R;
+import com.example.bentory_app.model.CartModel;
 import com.example.bentory_app.model.ProductModel;
+import com.example.bentory_app.model.StatsModel;
+import com.example.bentory_app.subcomponents.CartAdapter;
 import com.example.bentory_app.subcomponents.InventoryAdapter;
+import com.example.bentory_app.subcomponents.MenuAdapter;
 import com.example.bentory_app.subcomponents.SellingProductAdapter;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.example.bentory_app.viewmodel.SellingViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +51,7 @@ public class SellProduct extends AppCompatActivity {
         recyclerViewSelling = findViewById(R.id.recyclerViewSelling);
         // Set a vertical list layout for the RecyclerView
         recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+        ImageButton cartButton = findViewById(R.id.pullout_btn);
 
         // Create an instance of the adapter that will handle displaying the product items
         sellingAdapter = new SellingProductAdapter();
@@ -57,5 +66,34 @@ public class SellProduct extends AppCompatActivity {
             // Pass the product list to the adapter so it can display the items in the RecyclerView
             sellingAdapter.setProductList(productModels);
         });
+
+
+
+        cartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
+                View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null);
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
+                List<CartModel> itemList1 = new ArrayList<>();
+                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
+                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
+                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
+                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
+
+                CartAdapter adapter1 = new CartAdapter(itemList1);
+                recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
+                recyclerViewTop.setAdapter(adapter1);
+
+                bottomSheetDialog.show();
+            }
+        });
+
+
+
+
+
     }
 }
