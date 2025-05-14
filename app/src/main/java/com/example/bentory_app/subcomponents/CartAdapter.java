@@ -3,6 +3,7 @@ package com.example.bentory_app.subcomponents;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -22,7 +23,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, size, quantity, price;
+        public TextView name, size, price;
+        public EditText quantity;
         public ImageButton addBtn, subtractBtn, removeBtn;
 
         public ViewHolder(View view) {
@@ -51,6 +53,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.name.setText(item.getName());
         holder.size.setText(item.getSize());
         holder.quantity.setText(String.valueOf(item.getQuantity()));
+        holder.quantity.setSelection(holder.quantity.getText().length()); // Place cursor at end
         holder.price.setText(item.getPrice());
 
         // Add button functionality
@@ -73,6 +76,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, cartItems.size());
         });
+
+        // Manual typing of quantity
+        holder.quantity.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String input = holder.quantity.getText().toString();
+                try {
+                    int newQuantity = Integer.parseInt(input);
+                    if (newQuantity > 0) {
+                        item.setQuantity(newQuantity);
+                    } else {
+                        holder.quantity.setText(String.valueOf(item.getQuantity())); // Revert if zero or negative
+                    }
+                } catch (NumberFormatException e) {
+                    holder.quantity.setText(String.valueOf(item.getQuantity())); // Revert if invalid input
+                }
+            }
+        });
+
     }
 
     @Override
