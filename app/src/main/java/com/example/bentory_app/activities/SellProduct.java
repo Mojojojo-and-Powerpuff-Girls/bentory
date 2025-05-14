@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +62,17 @@ public class SellProduct extends AppCompatActivity {
 
         // Setup adapter and handle Add to Cart logic
         sellingAdapter = new SellingProductAdapter(product -> {
+
+            // Reduce product quantity by 1 when buttons are clicked
+            int currentStock = product.getQuantity();
+
+            // Checks if stock is zero.
+            if (currentStock <= 0) {
+                Toast.makeText(SellProduct.this, "Out of stock!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Proceeds to add to cart
             CartModel cartItem = new CartModel(
                     product.getId(),
                     product.getName(),
@@ -69,6 +81,12 @@ public class SellProduct extends AppCompatActivity {
                     product.getSale_Price()
             );
             cartViewModel.addToCart(cartItem);
+
+            // Reduce product stock
+            product.setQuantity(currentStock - 1);
+
+            // Optional: Notify UI of changes if needed
+                sellingAdapter.notifyDataSetChanged();
         });
 
         recyclerViewSelling.setAdapter(sellingAdapter);
