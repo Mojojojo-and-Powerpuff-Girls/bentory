@@ -18,6 +18,11 @@ import java.util.List;
 public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAdapter.ProductViewHolder> {
 
     private List<ProductModel> productList = new ArrayList<>();
+    private OnAddToCartClickListener onAddToCartClickListener;
+
+    public SellingProductAdapter(OnAddToCartClickListener onAddToCartClickListener) {
+        this.onAddToCartClickListener = onAddToCartClickListener;
+    }
 
     public void setProductList(List<ProductModel> productList) {
         this.productList = productList;
@@ -27,7 +32,7 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         TextView sellingName, sellingSize, sellingPrice, sellingStock;
-        ImageButton sellingAddBtn;
+        ImageButton sellingAddBtn, addToCartBtn;
 
         // ViewHolder class that holds the views for each product item in the list
         public ProductViewHolder(@NonNull View itemView) {
@@ -39,6 +44,7 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
             sellingPrice = itemView.findViewById(R.id.sellingProductPrice);
             sellingStock = itemView.findViewById(R.id.sellingProductStock);
             sellingAddBtn = itemView.findViewById(R.id.sellingProductAdd);
+            addToCartBtn = itemView.findViewById(R.id.sellingProductAdd);
         }
 
         // This method sets the data from the product model to the views
@@ -48,6 +54,11 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
             sellingPrice.setText(String.format("₱ %.2f", product.getSale_Price()));
             sellingStock.setText(String.valueOf(product.getQuantity()));
         }
+    }
+
+    // An interface for handling add-to-cart actions
+    public interface OnAddToCartClickListener {
+        void onAddToCart(ProductModel product);
     }
 
 
@@ -67,6 +78,15 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         // Get the product at the current position and bind its data to the views
         holder.bind(productList.get(position));
+
+        // When the "Add to Cart" button is clicked:
+        holder.addToCartBtn.setOnClickListener(v -> {
+            // Check if a listener has been set (to handle the Add to Cart action)
+            if (onAddToCartClickListener != null) {
+                // Trigger the callback and pass the selected product to whoever is listening
+                onAddToCartClickListener.onAddToCart(productList.get(position));
+            }
+        });
     }
 
     // Tells the RecyclerView how many items are in the list

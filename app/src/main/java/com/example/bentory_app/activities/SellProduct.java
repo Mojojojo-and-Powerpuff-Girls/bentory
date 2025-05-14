@@ -23,6 +23,7 @@ import com.example.bentory_app.subcomponents.CartAdapter;
 import com.example.bentory_app.subcomponents.InventoryAdapter;
 import com.example.bentory_app.subcomponents.MenuAdapter;
 import com.example.bentory_app.subcomponents.SellingProductAdapter;
+import com.example.bentory_app.viewmodel.CartViewModel;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.example.bentory_app.viewmodel.SellingViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -34,6 +35,7 @@ public class SellProduct extends AppCompatActivity {
 
     private RecyclerView recyclerViewSelling;
     private SellingViewModel sellingViewModel;
+    private CartViewModel cartViewModel;
     private SellingProductAdapter sellingAdapter;
 
     @Override
@@ -41,59 +43,57 @@ public class SellProduct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sell_product);
+
+        // Set padding for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Find the RecyclerView from the layout using its ID
-        recyclerViewSelling = findViewById(R.id.recyclerViewSelling);
-        // Set a vertical list layout for the RecyclerView
-        recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
-        ImageButton cartButton = findViewById(R.id.pullout_btn);
+        // Initialize ViewModels
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
 
-        // Create an instance of the adapter that will handle displaying the product items
-        sellingAdapter = new SellingProductAdapter();
-        // Set the adapter to the RecyclerView
+        // Setup RecyclerView for selling products
+        recyclerViewSelling = findViewById(R.id.recyclerViewSelling);
+        recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+
+        // Setup adapter and handle Add to Cart logic
+        sellingAdapter = new SellingProductAdapter(product -> {
+            CartModel cartItem = new CartModel(
+                    product.getId(),
+                    product.getName(),
+                    product.getSize(),
+                    1,
+                    product.getSale_Price()
+            );
+            cartViewModel.addToCart(cartItem);
+        });
+
         recyclerViewSelling.setAdapter(sellingAdapter);
 
-        // Initialize the ViewModel which will provide the product data
-        sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
-        // Observe the product list from the ViewModel
-        // Whenever the data changes, this will be called
+        // Observe product data from SellingViewModel
         sellingViewModel.getItems().observe(this, productModels -> {
-            // Pass the product list to the adapter so it can display the items in the RecyclerView
             sellingAdapter.setProductList(productModels);
         });
 
+        // Set up cart button click listener to show BottomSheet with cart items
+        ImageButton cartButton = findViewById(R.id.pullout_btn);
+        cartButton.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
+            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null);
+            bottomSheetDialog.setContentView(bottomSheetView);
 
+            RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
+            recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
 
-        cartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
-                View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null);
-                bottomSheetDialog.setContentView(bottomSheetView);
-
-                RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
-                List<CartModel> itemList1 = new ArrayList<>();
-                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
-                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
-                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
-                itemList1.add(new CartModel("Coca Cola", "Mismo", 4, "1000"));
-
-                CartAdapter adapter1 = new CartAdapter(itemList1);
-                recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
+            cartViewModel.getCartItems().observe(SellProduct.this, cartItems -> {
+                CartAdapter adapter1 = new CartAdapter(cartItems);
                 recyclerViewTop.setAdapter(adapter1);
+            });
 
-                bottomSheetDialog.show();
-            }
+            bottomSheetDialog.show();
         });
-
-
-
-
-
     }
 }

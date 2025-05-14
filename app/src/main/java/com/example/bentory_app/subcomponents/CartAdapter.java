@@ -54,7 +54,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.size.setText(item.getSize());
         holder.quantity.setText(String.valueOf(item.getQuantity()));
         holder.quantity.setSelection(holder.quantity.getText().length()); // Place cursor at end
-        holder.price.setText(item.getPrice());
+        holder.price.setText(String.format("₱ %.2f", item.getPrice()));
 
         // Add button functionality
         holder.addBtn.setOnClickListener(v -> {

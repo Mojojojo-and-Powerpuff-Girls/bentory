@@ -47,7 +47,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
 
         holder.name.setText(product.getName());
         holder.quantity.setText("Quantity: " + product.getQuantity());
-        holder.sale_price.setText(String.format("PHP %.2f", product.getSale_Price()));
+        holder.sale_price.setText(String.format("₱ %.2f", product.getSale_Price()));
 
         // Step 1: Show or hide checkbox based on delete mode
         // WHY: In delete mode, checkboxes allow users to select items for deletion.
