@@ -78,7 +78,8 @@ public class SellProduct extends AppCompatActivity {
                     product.getName(),
                     product.getSize(),
                     1,
-                    product.getSale_Price()
+                    product.getSale_Price(),
+                    product // pass the reference
             );
             cartViewModel.addToCart(cartItem);
 
@@ -107,7 +108,7 @@ public class SellProduct extends AppCompatActivity {
             recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
 
             cartViewModel.getCartItems().observe(SellProduct.this, cartItems -> {
-                CartAdapter adapter1 = new CartAdapter(cartItems);
+                CartAdapter adapter1 = new CartAdapter(cartItems, () -> sellingAdapter.notifyDataSetChanged());
                 recyclerViewTop.setAdapter(adapter1);
             });
 

@@ -8,13 +8,15 @@ public class CartModel {
     private String size;
     private int quantity;
     private double price;
+    private ProductModel linkedProduct;
 
-    public CartModel(String id, String name, String size, int quantity, double price) {
+    public CartModel(String id, String name, String size, int quantity, double price, ProductModel linkedProduct) {
         this.id = id;
         this.name = name;
         this.size = size;
         this.quantity = quantity;
         this.price = price;
+        this.linkedProduct = linkedProduct;
     }
 
     // Getters
@@ -38,6 +40,8 @@ public class CartModel {
     public double getPrice() {
         return price;
     }
+    @PropertyName("linkedProducts")
+    public ProductModel getLinkedProduct() { return linkedProduct; }
 
 
     // Setters
@@ -46,5 +50,9 @@ public class CartModel {
     @PropertyName("quantity")
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+    @PropertyName("linkedProducts")
+    public void setLinkedProduct(ProductModel linkedProduct) {
+        this.linkedProduct = linkedProduct;
     }
 }
