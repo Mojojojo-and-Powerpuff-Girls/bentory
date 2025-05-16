@@ -27,15 +27,4 @@ public class SellingViewModel extends ViewModel {
         return items;
     }
 
-    // Undo comment if this will be needed, function nito ma-update yung manual typing based sa current quantity.
-//    public void updateQuantity(String productId, int newQuantity) {
-//        List<CartModel> currentItems = cartItems.getValue();
-//        for (CartModel item : currentItems) {
-//            if (item.getId().equals(productId)) {
-//                item.setQuantity(newQuantity);
-//                break;
-//            }
-//        }
-//        cartItems.setValue(currentItems);
-//    }
 }

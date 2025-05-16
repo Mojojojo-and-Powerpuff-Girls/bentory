@@ -152,4 +152,35 @@ public class ProductRepository {
         });
     }
 
+    // 3. Method that Fetch a product from Firebase based on its barcode
+    public void getProductByBarcode(String barcode, ProductCallback callback) {
+        database.orderByChild("barcode").equalTo(barcode)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot child : snapshot.getChildren()) {
+                                ProductModel product = child.getValue(ProductModel.class);
+                                if (product != null) {
+                                    callback.onProductFound(product); // Product found
+                                    return;
+                                }
+                            }
+                        }
+                        callback.onProductNotFound(); // No matching product found
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onError(error.getMessage()); // Handle Firebase query error
+                    }
+                });
+    }
+
+    // Callback interface for barcode product lookup
+    public interface ProductCallback {
+        void onProductFound(ProductModel product);
+        void onProductNotFound();
+        void onError(String error);
+    }
 }

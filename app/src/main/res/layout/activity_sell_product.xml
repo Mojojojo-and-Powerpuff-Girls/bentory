@@ -62,23 +62,49 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:fillViewport="true"-->
-<!--        android:scrollbars="vertical" >-->
+    <!--    <ScrollView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:fillViewport="true"-->
+    <!--        android:scrollbars="vertical" >-->
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFF1D7"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <ImageButton
+            android:id="@+id/scannerBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFF1D7"
-            android:padding="5dp" >
+            android:contentDescription="Scan Barcode"
+            android:src="@drawable/barcode_btn" />
 
-            
-        </RelativeLayout>
+        <EditText
+            android:id="@+id/sellingCode"
+            android:layout_width="225dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="false"
+            android:layout_marginLeft="96dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/add_item_edit_box"
+            android:hint="-"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
-<!--    </ScrollView>-->
+        <com.journeyapps.barcodescanner.DecoratedBarcodeView
+            android:id="@+id/barcodeScanner"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <!--    </ScrollView>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSelling"
@@ -96,8 +122,8 @@
             android:id="@+id/cart_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/cart_box"
-            android:contentDescription="Cart image" />
+            android:contentDescription="Cart image"
+            android:src="@drawable/cart_box" />
 
         <ImageButton
             android:id="@+id/pullout_btn"
@@ -105,10 +131,9 @@
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:background="@android:color/transparent"
-            android:src="@drawable/pullout_icon"
-            android:contentDescription="Pullout button for cart" />
+            android:contentDescription="Pullout button for cart"
+            android:src="@drawable/pullout_icon" />
     </FrameLayout>
-
 
 
 </LinearLayout>
