@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,6 +24,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 
 import java.util.Date;
 
@@ -42,7 +45,23 @@ public class AddProduct extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        
+         // setup toolbar
+         Toolbar myToolbar = findViewById(R.id.my_toolbar);
+         setSupportActionBar(myToolbar);
+         // Set the title using the custom TextView in the toolbar
+         TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
+         if (toolbarTitle != null) {
+             toolbarTitle.setText("Add Product");
+         }
+ 
+         ActionBar actionBar = getSupportActionBar();
+         if (actionBar != null) {
+ 
+             actionBar.setDisplayHomeAsUpEnabled(false);
+ 
+             actionBar.setDisplayShowTitleEnabled(false);
+         }
         // 1. Initialize Model
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 

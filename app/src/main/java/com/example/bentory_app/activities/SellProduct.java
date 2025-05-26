@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.CartModel;
@@ -68,6 +71,23 @@ public class SellProduct extends AppCompatActivity {
             return insets;
         });
 
+        // setup toolbar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        // Set the title using the custom TextView in the toolbar
+        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Sell Product");
+        }
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+
+            actionBar.setDisplayHomeAsUpEnabled(false);
+
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+
         // Initialize ViewModels
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
@@ -105,14 +125,12 @@ public class SellProduct extends AppCompatActivity {
             sellingAdapter.notifyDataSetChanged();
         });
 
-
         recyclerViewSelling.setAdapter(sellingAdapter);
 
         // Observe product data from SellingViewModel
         sellingViewModel.getItems().observe(this, productModels -> {
             sellingAdapter.setProductList(productModels);
         });
-
 
         // Set up cart button click listener to show BottomSheet with cart items
         ImageButton cartButton = findViewById(R.id.pullout_btn);
@@ -125,7 +143,8 @@ public class SellProduct extends AppCompatActivity {
             bottomSheetDialog.setOnShowListener(dialog -> barcodeView.pause());
             // Resume scanner only if it was active before when bottom sheet is dismissed
             bottomSheetDialog.setOnDismissListener(dialog -> {
-                if (isScannerActive) barcodeView.resume();
+                if (isScannerActive)
+                    barcodeView.resume();
             });
 
             RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
@@ -138,7 +157,6 @@ public class SellProduct extends AppCompatActivity {
 
             bottomSheetDialog.show();
         });
-
 
         // Start continuous barcode scanning with the provided callback
         barcodeView.decodeContinuous(callback);
@@ -155,11 +173,9 @@ public class SellProduct extends AppCompatActivity {
             isScannerActive = !isScannerActive; // Update scanner state flag
         });
 
-
         // Initialize sounds and vibration
         toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
 
         // Manual input of code
         manualCode.setOnEditorActionListener((v, actionId, event) -> {
@@ -167,7 +183,8 @@ public class SellProduct extends AppCompatActivity {
 
             if (!enteredCode.isEmpty()) {
                 List<ProductModel> products = sellingViewModel.getItems().getValue();
-                if (products == null) return true;
+                if (products == null)
+                    return true;
 
                 // Search for product by code
                 ProductModel matched = null;
@@ -191,8 +208,7 @@ public class SellProduct extends AppCompatActivity {
                             matched.getSize(),
                             1,
                             matched.getSale_Price(),
-                            matched
-                    );
+                            matched);
 
                     cartViewModel.addToCart(cartItem);
                     matched.setQuantity(matched.getQuantity() - 1);
@@ -206,7 +222,6 @@ public class SellProduct extends AppCompatActivity {
             return true;
         });
     }
-
 
     // Handle scanned barcode
     private void handleScannedBarcode(String scannedBarcode) {
@@ -227,8 +242,7 @@ public class SellProduct extends AppCompatActivity {
                         product.getSize(),
                         1,
                         product.getSale_Price(),
-                        product
-                );
+                        product);
                 cartViewModel.addToCart(cartItem);
 
                 product.setQuantity(currentStock - 1);
@@ -259,7 +273,6 @@ public class SellProduct extends AppCompatActivity {
             }
         });
     }
-
 
     // Handle Barcode scans in real time.
     private final BarcodeCallback callback = new BarcodeCallback() {
@@ -303,8 +316,7 @@ public class SellProduct extends AppCompatActivity {
                 // Add to cart
                 CartModel cartItem = new CartModel(
                         matched.getId(), matched.getName(), matched.getSize(), 1,
-                        matched.getSale_Price(), matched
-                );
+                        matched.getSale_Price(), matched);
                 cartViewModel.addToCart(cartItem);
                 matched.setQuantity(matched.getQuantity() - 1);
 
@@ -343,7 +355,8 @@ public class SellProduct extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isScannerActive) barcodeView.resume();
+        if (isScannerActive)
+            barcodeView.resume();
     }
 
     @Override

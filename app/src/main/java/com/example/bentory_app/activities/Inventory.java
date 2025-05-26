@@ -16,6 +16,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.ProductModel;
@@ -43,6 +45,23 @@ public class Inventory extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // setup toolbar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        // Set the title using the custom TextView in the toolbar
+        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Inventory");
+        }
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+
+            actionBar.setDisplayHomeAsUpEnabled(false);
+
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
 
         // Initialize Views
         dltButton = findViewById(R.id.deleteBtn);

@@ -1,6 +1,7 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.StatsModel;
@@ -31,7 +34,23 @@ public class Statistics extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        
+         // setup toolbar
+         Toolbar myToolbar = findViewById(R.id.my_toolbar);
+         setSupportActionBar(myToolbar);
+         // Set the title using the custom TextView in the toolbar
+         TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
+         if (toolbarTitle != null) {
+             toolbarTitle.setText("Statistics");
+         }
+ 
+         ActionBar actionBar = getSupportActionBar();
+         if (actionBar != null) {
+ 
+             actionBar.setDisplayHomeAsUpEnabled(false);
+ 
+             actionBar.setDisplayShowTitleEnabled(false);
+         }
         // SETUP RecyclerView
         RecyclerView recyclerViewTop = findViewById(R.id.recyclerViewTopStatistics);
         List<StatsModel> itemList1 = new ArrayList<>();

@@ -9,58 +9,7 @@
     android:orientation="vertical"
     tools:context=".activities.Inventory">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:background="#D39B72"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:contentInsetStart="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <ImageButton
-                android:id="@+id/burgerbttn"
-                android:layout_width="93dp"
-                android:layout_height="60dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="burgerbutton"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/burger_icon" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="228dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:fontFamily="@font/pixelify_sans"
-                android:text="Inventory"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp" />
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="93dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:contentDescription="bellbutton"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/bell_icon" />
-
-        </LinearLayout>
-
-    </androidx.appcompat.widget.Toolbar>
+    <include layout="@layout/reusable_toolbar" />  
 
 
 

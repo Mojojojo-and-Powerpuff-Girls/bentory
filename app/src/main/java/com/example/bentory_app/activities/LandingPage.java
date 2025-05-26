@@ -3,6 +3,7 @@ package com.example.bentory_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
@@ -33,10 +34,18 @@ public class LandingPage extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        // Set the title using the custom TextView in the toolbar
+        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Landing Page");
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("My Landing Page");
+
             actionBar.setDisplayHomeAsUpEnabled(false);
+
+            actionBar.setDisplayShowTitleEnabled(false);
         }
 
         // window insets
@@ -71,17 +80,16 @@ public class LandingPage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
     }
-        // animation method
-        private void setButtonClickListener(ImageButton button, Class<?> targetActivity){
-            button.setOnClickListener(v ->{
-                v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
-                        .withEndAction(() -> {
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(100);
-                    startActivity(new Intent(LandingPage.this, targetActivity));
-                    });
-                });
-        }
 
+    // animation method
+    private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {
+        button.setOnClickListener(v -> {
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
+                    .withEndAction(() -> {
+                        v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                        startActivity(new Intent(LandingPage.this, targetActivity));
+                    });
+        });
+    }
 
 }
-
