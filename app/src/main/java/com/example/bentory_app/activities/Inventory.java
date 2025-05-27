@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -68,7 +69,7 @@ public class Inventory extends AppCompatActivity {
             if (isDeleteModeActive) {
                 // Step 2: Entering delete mode
                 adapter.setDeleteMode(true); // enable delete mode in the InventoryAdapter
-                dltButton.setImageResource(R.drawable.add_item_save_button); // change the icon !!!PAPALITAN PA 'TO NG ICON!
+                dltButton.setImageResource(R.drawable.trash);
             }
             else {
                 // Step 3: Already in delete mode and user clicked to confirm or exit
@@ -87,19 +88,19 @@ public class Inventory extends AppCompatActivity {
 
                                 // Step 7: After deletion, exit delete mode and reset button icon
                                 adapter.setDeleteMode(false);
-                                dltButton.setImageResource(R.drawable.scanner); // !!!PAPALITAN PA 'TO NG ICON!
+                                dltButton.setImageResource(R.drawable.select_items);
                             })
                             .setNegativeButton("Cancel", (dialog, which) -> {
                                 // Step 8: If user cancels, exit delete mode without deleting
                                 adapter.setDeleteMode(false);
-                                dltButton.setImageResource(R.drawable.scanner); // !!!PAPALITAN PA 'TO NG ICON!
+                                dltButton.setImageResource(R.drawable.select_items);
                             })
                             .show();
                 }
                 else {
                     // Step 9: If no items selected, just exit delete mode
                     adapter.setDeleteMode(false);
-                    dltButton.setImageResource(R.drawable.scanner); // !!PAPALITAN PA 'TO NG ICON! [PATI XML]
+                    dltButton.setImageResource(R.drawable.select_items);
                 }
             }
         });
@@ -142,7 +143,4 @@ public class Inventory extends AppCompatActivity {
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
-
-
-
 }

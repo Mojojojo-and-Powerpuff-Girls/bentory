@@ -1,387 +1,414 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.AddProduct">
+    tools:context=".activities.LandingPage"
+    android:background="#FFF1D7">
+
+    <!-- Background image just for the toolbar/header area -->
+    <ImageView
+        android:id="@+id/header_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/upper_nav"
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:background="#D39B72"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white">
+        app:titleTextColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
+            android:layout_height="wrap_content"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
 
             <ImageButton
                 android:id="@+id/burgerbttn"
-                android:layout_width="93dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:contentDescription="burgerbutton"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/burger_icon" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="228dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:fontFamily="@font/pixelify_sans"
-                android:text="Add Product"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp" />
+                app:srcCompat="@drawable/burger_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageButton
                 android:id="@+id/imageButton"
-                android:layout_width="93dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:contentDescription="bellbutton"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/bell_icon" />
+                app:srcCompat="@drawable/bell_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-        </LinearLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbars="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFF1D7"
-                android:padding="5dp" >
+                android:text="Add Product"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="@font/pixelify_sans"
+                app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                app:layout_constraintEnd_toStartOf="@id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <ImageView
-                    android:id="@+id/backgroundImage"
-                    android:layout_centerInParent="true"
-                    android:layout_width="400dp"
-                    android:layout_height="1020dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/add_item_container" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <!-- Your main content goes below the Toolbar -->
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="262dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_alignTop="@+id/backgroundImage"
-                    android:layout_marginStart="81dp"
-                    android:layout_marginTop="46dp"
-                    android:layout_marginEnd="73dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Add New Item"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
+    <!-- Scrollable Add Item Form -->
+    <ScrollView
+        android:id="@+id/formScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/title"
-                    android:layout_centerInParent="false"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Name"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemName"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Category"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/add_item_container" />
 
-                <TextView
-                    android:id="@+id/quantity"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemCategory"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Quantity"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:layout_alignTop="@+id/backgroundImage"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Add New Item"
+                android:textAlignment="center"
+                android:textColor="#3A291B"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/cost_price"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemQuantity"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Cost Price"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="105dp"
+                android:layout_marginLeft="60dp"
+                android:text="Name"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/sale_price"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemCostPrice"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Sale Price"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="205dp"
+                android:layout_marginLeft="60dp"
+                android:text="Category"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/size"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemSalePrice"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Size"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="305dp"
+                android:layout_marginLeft="60dp"
+                android:text="Quantity"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/weight"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemSalePrice"
-                    android:layout_marginLeft="185dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Weight"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/cost_price"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="405dp"
+                android:layout_marginLeft="60dp"
+                android:text="Cost Price"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemSize"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Description"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/sale_price"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="505dp"
+                android:layout_marginLeft="60dp"
+                android:text="Sale Price"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/usc_code"
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/newItemDescription"
-                    android:layout_marginLeft="35dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="USC Code"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="605dp"
+                android:layout_marginLeft="60dp"
+                android:text="Size"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/newItemName"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/title"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="50dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:padding="10dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:hint="-" />
+            <TextView
+                android:id="@+id/weight"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="605dp"
+                android:layout_marginLeft="220dp"
+                android:text="Weight"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/newItemCategory"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemName"
-                    android:layout_marginTop="50dp"
-                    android:layout_centerInParent="true"
-                    android:textSize="20dp"
-                    android:padding="10dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:hint="-" />
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="705dp"
+                android:layout_marginLeft="60dp"
+                android:text="Description"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/newItemQuantity"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemCategory"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="50dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:inputType="number"
-                    android:hint="-"/>
+            <TextView
+                android:id="@+id/usc_code"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pixelify_sans"
+                android:layout_marginTop="805dp"
+                android:layout_marginLeft="60dp"
+                android:text="EAN-13 Code"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/newItemCostPrice"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemQuantity"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="50dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:inputType="numberDecimal"
-                    android:hint="-"/>
+            <EditText
+                android:id="@+id/newItemName"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="135dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <EditText
-                    android:id="@+id/newItemSalePrice"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemCostPrice"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="50dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:inputType="numberDecimal"
-                    android:hint="-"/>
+            <EditText
+                android:id="@+id/newItemCategory"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="235dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <EditText
-                    android:id="@+id/newItemSize"
-                    android:layout_width="145dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemSalePrice"
-                    android:layout_centerInParent="false"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginLeft="56dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:hint="-"/>
+            <EditText
+                android:id="@+id/newItemQuantity"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="335dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:inputType="number"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <EditText
-                    android:id="@+id/newItemWeight"
-                    android:layout_width="145dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemSalePrice"
-                    android:layout_centerInParent="false"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginLeft="215dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    tools:ignore="SpeakableTextPresent"
-                    android:hint="-"/>
+            <EditText
+                android:id="@+id/newItemCostPrice"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="435dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:inputType="numberDecimal"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <EditText
-                    android:id="@+id/newItemDescription"
-                    android:layout_width="303dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemSize"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="50dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:hint="-"/>
+            <EditText
+                android:id="@+id/newItemSalePrice"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="535dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:inputType="numberDecimal"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <EditText
-                    android:id="@+id/code"
-                    android:layout_width="225dp"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/newItemDescription"
-                    android:layout_centerInParent="false"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginLeft="56dp"
-                    android:padding="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#000000"
-                    android:background="@drawable/add_item_edit_box"
-                    android:hint="-" />
+            <EditText
+                android:id="@+id/newItemSize"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="635dp"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/size_weight_container"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <ImageButton
-                    android:id="@+id/barcodeBtn"
-                    android:layout_below="@+id/newItemWeight"
-                    android:layout_width="152dp"
-                    android:layout_height="116dp"
-                    android:layout_centerInParent="false"
-                    android:layout_marginTop="113dp"
-                    android:layout_marginLeft="255dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Barcode button"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/barcode_btn" />
+            <EditText
+                android:id="@+id/newItemWeight"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="635dp"
+                android:layout_marginLeft="80dp"
+                android:background="@drawable/size_weight_container"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
 
-                <ImageButton
-                    android:id="@+id/newItemSaveBtn"
-                    android:layout_below="@+id/code"
-                    android:layout_centerInParent="true"
-                    android:layout_width="152dp"
-                    android:layout_height="116dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="50dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Save button"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/add_item_save_button" />
-            </RelativeLayout>
+            <EditText
+                android:id="@+id/newItemDescription"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="735dp"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
+
+            <EditText
+                android:id="@+id/code"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="835dp"
+                android:layout_marginRight="35dp"
+                android:background="@drawable/code_container"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black"
+                />
+
+            <ImageButton
+                android:id="@+id/barcodeBtn"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="825dp"
+                android:layout_marginLeft="100dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Barcode button"
+                android:visibility="visible"
+                app:srcCompat="@drawable/barcode_btn" />
+
+            <ImageButton
+                android:id="@+id/newItemSaveBtn"
+                android:layout_width="305dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="910dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Save button"
+                android:visibility="visible"
+                app:srcCompat="@drawable/add_item_save_button" />
+
+        </FrameLayout>
+
+    </ScrollView>
 
 
-        </ScrollView>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

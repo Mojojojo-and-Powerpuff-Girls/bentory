@@ -1,122 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.SellProduct">
+    tools:context=".activities.LandingPage"
+    android:background="#FFF1D7">
 
+    <!-- Background image just for the toolbar/header area -->
+    <ImageView
+        android:id="@+id/header_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/upper_nav"
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:background="#D39B72"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white">
+        app:titleTextColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
+            android:layout_height="wrap_content"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
 
             <ImageButton
                 android:id="@+id/burgerbttn"
-                android:layout_width="93dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:contentDescription="burgerbutton"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/burger_icon" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="228dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:fontFamily="@font/pixelify_sans"
-                android:text="Selling Window"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp" />
+                app:srcCompat="@drawable/burger_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageButton
                 android:id="@+id/imageButton"
-                android:layout_width="93dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:contentDescription="bellbutton"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/bell_icon" />
+                app:srcCompat="@drawable/bell_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Selling Window"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="@font/pixelify_sans"
+                app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                app:layout_constraintEnd_toStartOf="@id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
+    <!-- Your main content goes below the Toolbar -->
 
-    <!--    <ScrollView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:fillViewport="true"-->
-    <!--        android:scrollbars="vertical" >-->
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <!-- Search bar + Filter button -->
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#FFF1D7"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Search here..."
+            android:paddingStart="50dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            android:fontFamily="@font/pixelify_sans"
+            android:background="@drawable/search_bar"
+            android:textCursorDrawable="@drawable/cursor_black"/>
 
         <ImageButton
-            android:id="@+id/scannerBtn"
+            android:id="@+id/filterBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Scan Barcode"
-            android:src="@drawable/barcode_btn" />
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="filterbutton"
+            app:srcCompat="@drawable/filter_icon" />
+    </LinearLayout>
+
+    <!-- Scan barcode button -->
+    <LinearLayout
+        android:id="@+id/scannerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="170dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
             android:id="@+id/sellingCode"
-            android:layout_width="225dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="false"
-            android:layout_marginLeft="96dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.5"
             android:background="@drawable/add_item_edit_box"
             android:hint="-"
-            android:padding="10dp"
+            android:textColorHint="#00000000"
+            android:paddingStart="15dp"
             android:textColor="#000000"
             android:textSize="20dp"
             android:imeOptions="actionDone"
-            android:singleLine="true"/>
-
-        <com.journeyapps.barcodescanner.DecoratedBarcodeView
-            android:id="@+id/barcodeScanner"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:visibility="gone" />
-    </RelativeLayout>
-
-    <!--    </ScrollView>-->
+            android:singleLine="true"
+            android:fontFamily="@font/pixelify_sans"
+            android:textCursorDrawable="@drawable/cursor_black"
+            />
+        <ImageButton
+            android:id="@+id/scannerBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="Scan Barcode"
+            android:background="@android:color/transparent"
+            android:src="@drawable/barcode_btn" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSelling"
-        android:layout_width="match_parent"
-        android:layout_height="452dp"
-        android:contentDescription="view list of available products" />
-
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:contentDescription="view list of available products"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="439dp"
-        android:layout_marginTop="20dp">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="-300dp">
 
         <ImageView
             android:id="@+id/cart_image"
@@ -130,10 +197,20 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
             android:background="@android:color/transparent"
             android:contentDescription="Pullout button for cart"
             android:src="@drawable/pullout_icon" />
     </FrameLayout>
 
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/barcodeScanner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
