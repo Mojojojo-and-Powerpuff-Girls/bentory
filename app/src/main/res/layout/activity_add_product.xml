@@ -16,11 +16,11 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/upper_nav"
-        app:layout_constraintHeight_percent="0.14"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -92,18 +92,21 @@
         android:id="@+id/formScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="90dp"
         android:fillViewport="true"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/header_background"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header_background">
+
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:padding="10dp">
+
 
             <ImageView
                 android:layout_width="match_parent"
@@ -115,9 +118,9 @@
                 android:id="@+id/title"
                 android:layout_width="260dp"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/backgroundImage"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
-                android:layout_alignTop="@+id/backgroundImage"
                 android:fontFamily="@font/pixelify_sans"
                 android:text="Add New Item"
                 android:textAlignment="center"
@@ -129,9 +132,9 @@
                 android:id="@+id/name"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="105dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="105dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Name"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -141,9 +144,9 @@
                 android:id="@+id/category"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="205dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="205dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Category"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -153,9 +156,9 @@
                 android:id="@+id/quantity"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="305dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="305dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Quantity"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -165,9 +168,9 @@
                 android:id="@+id/cost_price"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="405dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="405dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Cost Price"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -177,9 +180,9 @@
                 android:id="@+id/sale_price"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="505dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="505dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Sale Price"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -189,9 +192,9 @@
                 android:id="@+id/size"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="605dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="605dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Size"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -201,9 +204,9 @@
                 android:id="@+id/weight"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="605dp"
                 android:layout_marginLeft="220dp"
+                android:layout_marginTop="605dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Weight"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -213,9 +216,9 @@
                 android:id="@+id/description"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="705dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="705dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="Description"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -225,9 +228,9 @@
                 android:id="@+id/usc_code"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pixelify_sans"
-                android:layout_marginTop="805dp"
                 android:layout_marginLeft="60dp"
+                android:layout_marginTop="805dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:text="EAN-13 Code"
                 android:textColor="#3A291B"
                 android:textSize="19sp"
@@ -240,14 +243,13 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="135dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemCategory"
@@ -256,14 +258,13 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="235dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemQuantity"
@@ -272,15 +273,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="335dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
+                android:inputType="number"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
-                android:inputType="number"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemCostPrice"
@@ -289,15 +289,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="435dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
+                android:inputType="numberDecimal"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
-                android:inputType="numberDecimal"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemSalePrice"
@@ -306,15 +305,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="535dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
+                android:inputType="numberDecimal"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
-                android:inputType="numberDecimal"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemSize"
@@ -324,31 +322,29 @@
                 android:layout_marginTop="635dp"
                 android:layout_marginRight="80dp"
                 android:background="@drawable/size_weight_container"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemWeight"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="635dp"
                 android:layout_marginLeft="80dp"
+                android:layout_marginTop="635dp"
                 android:background="@drawable/size_weight_container"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/newItemDescription"
@@ -357,14 +353,13 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="735dp"
                 android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
                 android:hint="-"
-                android:textColorHint="#00000000"
                 android:paddingStart="15dp"
                 android:textColor="#000000"
-                android:textSize="20dp"
-                android:fontFamily="@font/pixelify_sans"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/code"
@@ -374,22 +369,23 @@
                 android:layout_marginTop="835dp"
                 android:layout_marginRight="35dp"
                 android:background="@drawable/code_container"
-                android:hint="-"
-                android:textColorHint="#00000000"
-                android:paddingStart="15dp"
-                android:textColor="#000000"
-                android:textSize="20dp"
                 android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:maxLength="13"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
                 android:textCursorDrawable="@drawable/cursor_black"
-                />
+                android:textSize="20dp" />
 
             <ImageButton
                 android:id="@+id/barcodeBtn"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="825dp"
                 android:layout_marginLeft="100dp"
+                android:layout_marginTop="825dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="Barcode button"
                 android:visibility="visible"
@@ -405,6 +401,7 @@
                 android:contentDescription="Save button"
                 android:visibility="visible"
                 app:srcCompat="@drawable/add_item_save_button" />
+
 
         </FrameLayout>
 
@@ -442,6 +439,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="64dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/back_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.089"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

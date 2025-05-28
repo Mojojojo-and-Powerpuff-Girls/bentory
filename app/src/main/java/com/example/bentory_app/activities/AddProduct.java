@@ -42,7 +42,7 @@ public class AddProduct extends AppCompatActivity {
 
     // XML UI
     private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight, itemDescription, scannedCode;
-    private ImageButton itemSaveBtn, barcodeButton;
+    private ImageButton itemSaveBtn, barcodeButton, backBtn;
     private DecoratedBarcodeView barcodeView;
     private View targetOverlay;
 
@@ -77,6 +77,26 @@ public class AddProduct extends AppCompatActivity {
         barcodeButton = findViewById(R.id.barcodeBtn);
         barcodeView = findViewById(R.id.addBarcodeScanner);
         targetOverlay = findViewById(R.id.targetOverlay);
+        backBtn = findViewById(R.id.back_btn);
+
+
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (barcodeView.getVisibility() == View.VISIBLE) {
+                    // Hide scanner and show form
+                    barcodeView.setVisibility(View.GONE);
+                    targetOverlay.setVisibility(View.GONE);
+                    barcodeView.pause(); // stop scanning
+                } else {
+                    // Normal back behavior — e.g., finish activity
+                    finish();
+                }
+            }
+        });
+
+
 
 
 
@@ -105,15 +125,22 @@ public class AddProduct extends AppCompatActivity {
             // Validate required fields using a helper method that checks emptiness and sets error if empty.
             //// 'isFieldEmpty' is a helper method (found at the bottom of the code).
             if (isFieldEmpty(itemName, "Name is required") ||
-                isFieldEmpty(itemCategory, "Category is required") ||
-                isFieldEmpty(itemQuantity, "Quantity is required") ||
-                isFieldEmpty(itemCostPrice, "Cost Price is required") ||
-                isFieldEmpty(itemSalePrice, "Sale Price is required") ||
-                isFieldEmpty(scannedCode, "Product Code is required")) {
+                    isFieldEmpty(itemCategory, "Category is required") ||
+                    isFieldEmpty(itemQuantity, "Quantity is required") ||
+                    isFieldEmpty(itemCostPrice, "Cost Price is required") ||
+                    isFieldEmpty(itemSalePrice, "Sale Price is required") ||
+                    isFieldEmpty(scannedCode, "Product Code is required")) {
 
                 // Show a message if any required field is missing.
                 Toast.makeText(AddProduct.this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
                 return; // Stop further processing if validation fails.
+            }
+
+            // Extract and validate barcode length
+            if (scannedCode.length() < 13) {
+                scannedCode.setError("Code must be at least 13 digits.");
+                Toast.makeText(AddProduct.this, "Product code must be at least 13 digits.", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             // Extract and sanitize user inputs from the EditText fields.
