@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -175,8 +176,20 @@ public class SellProduct extends AppCompatActivity {
         ImageButton cartButton = findViewById(R.id.pullout_btn);
         cartButton.setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
-            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null);
+            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null, false);
             bottomSheetDialog.setContentView(bottomSheetView);
+
+            ImageButton confirmBtn = bottomSheetView.findViewById(R.id.confirm_button);
+            TextView totalPriceView = bottomSheetView.findViewById(R.id.total_price_text);
+            double total = cartViewModel.getCartTotal();
+            totalPriceView.setText(String.format("₱%.2f", total));
+
+            confirmBtn.setOnClickListener(view -> {
+                cartViewModel.confirmCart(() -> {
+                    Toast.makeText(this, "Stock updated and cart cleared", Toast.LENGTH_SHORT).show();
+                    bottomSheetDialog.dismiss(); // Optional: close cart after confirming.
+                });
+            });
 
             // Pause barcode scanner when bottom sheet is shown
             bottomSheetDialog.setOnShowListener(dialog -> barcodeView.pause());
