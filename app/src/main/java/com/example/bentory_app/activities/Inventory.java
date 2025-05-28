@@ -1,11 +1,17 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -24,81 +30,120 @@ import com.example.bentory_app.subcomponents.InventoryAdapter;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 public class Inventory extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    // ViewModels
     private ProductViewModel productViewModel;
+
+    // Adapter
     private InventoryAdapter adapter;
-    private ImageButton dltButton;
+
+    // XML UI
+    private RecyclerView recyclerView;
+    private ImageButton dltButton, filterBtn;
+    private EditText searchEditText;
+
+    // Data Types
+    private String scannedBarcode;
+    private List<ProductModel> fullProductList; // store full list for filtering
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inventory);
+
+        // Initialize Views FIRST
+        recyclerView = findViewById(R.id.recyclerView);
+        dltButton = findViewById(R.id.deleteBtn);
+        filterBtn = findViewById(R.id.filterBtn);
+        searchEditText = findViewById(R.id.searchView);
+
+        // Get scanned barcode
+        scannedBarcode = getIntent().getStringExtra("scannedBarcode");
+
+        // System bar insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize Views
-        dltButton = findViewById(R.id.deleteBtn);
-        recyclerView = findViewById(R.id.recyclerView);
-
+        // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        productViewModel.getItems().observe(this, new Observer<List<ProductModel>>() {
-            @Override
-            public void onChanged(List<ProductModel> itemList) {
-                adapter = new InventoryAdapter(Inventory.this, itemList, item ->{
-                    showBottomSheet(item);
-                });
-                recyclerView.setAdapter(adapter);
+        adapter = new InventoryAdapter(this, new ArrayList<>(), item -> {
+            if (scannedBarcode != null && !scannedBarcode.isEmpty()) {
+                showProductSelectConfirmation(item);
+            } else {
+                showBottomSheet(item);
             }
         });
+        recyclerView.setAdapter(adapter);
 
-        // 1. Set click listener for the delete mode button (trash icon)
-        dltButton.setOnClickListener(v -> {
-            // Step 1: Toggle the current state of delete mode
-            boolean isDeleteModeActive = !adapter.getDeleteMode(); // true if we're switching into delete mode
+        // Initialize ViewModel
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
-            if (isDeleteModeActive) {
-                // Step 2: Entering delete mode
-                adapter.setDeleteMode(true); // enable delete mode in the InventoryAdapter
-                dltButton.setImageResource(R.drawable.trash);
+        // Observe data from ViewModel
+        productViewModel.getItems().observe(this, itemList -> {
+            fullProductList = new ArrayList<>(itemList); // For filtering
+            adapter.updateData(itemList); // Just update data — don't reinitialize adapter
+        });
+
+        // Filter Button
+        filterBtn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(Inventory.this, filterBtn);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (fullProductList == null) return false;
+                List<ProductModel> sortedList = new ArrayList<>(fullProductList);
+                if (item.getItemId() == R.id.menu_az) {
+                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName));
+                } else if (item.getItemId() == R.id.menu_za) {
+                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName).reversed());
+                }
+                adapter.updateData(sortedList);
+                return true;
+            });
+            popupMenu.show();
+        });
+
+        // Search Input
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterProducts(s.toString());
             }
-            else {
-                // Step 3: Already in delete mode and user clicked to confirm or exit
-                // Step 4: Get the list of selected items to delete (based on checkboxes)
-                Set<String> selectedItems = adapter.getSelectedItems();
+            @Override public void afterTextChanged(Editable s) {}
+        });
 
+        // Delete Mode Logic
+        dltButton.setOnClickListener(v -> {
+            boolean isDeleteModeActive = !adapter.getDeleteMode();
+            if (isDeleteModeActive) {
+                adapter.setDeleteMode(true);
+                dltButton.setImageResource(R.drawable.trash);
+            } else {
+                Set<String> selectedItems = adapter.getSelectedItems();
                 if (!selectedItems.isEmpty()) {
-                    // Step 5: If there are selected items, show a confirmation dialog
                     new AlertDialog.Builder(this)
                             .setTitle("Delete Items")
                             .setMessage("Are you sure you want to delete the selected items?")
                             .setPositiveButton("Delete", (dialog, which) -> {
-                                // Step 6: If user confirms, call the ViewModel to delete selected items
-                                // Backend logic: ViewModel calls repository -> repository deletes from database
                                 productViewModel.deleteSelectedProducts(selectedItems);
-
-                                // Step 7: After deletion, exit delete mode and reset button icon
                                 adapter.setDeleteMode(false);
                                 dltButton.setImageResource(R.drawable.select_items);
                             })
                             .setNegativeButton("Cancel", (dialog, which) -> {
-                                // Step 8: If user cancels, exit delete mode without deleting
                                 adapter.setDeleteMode(false);
                                 dltButton.setImageResource(R.drawable.select_items);
-                            })
-                            .show();
-                }
-                else {
-                    // Step 9: If no items selected, just exit delete mode
+                            }).show();
+                } else {
                     adapter.setDeleteMode(false);
                     dltButton.setImageResource(R.drawable.select_items);
                 }
@@ -106,18 +151,77 @@ public class Inventory extends AppCompatActivity {
         });
     }
 
+
+
+    //// !!! METHODS OUTSIDE onCreate !!! ////
+
+    // Filtering Search Results
+    // Called when user types in the search field.
+    private void filterProducts(String query) {
+        if (fullProductList == null) return;
+
+        List<ProductModel> filteredList = new ArrayList<>();
+        if (query.isEmpty()) {
+            filteredList.addAll(fullProductList);
+        } else {
+            String lowerQuery = query.toLowerCase();
+            for (ProductModel product : fullProductList) {
+                if (product.getName().toLowerCase().contains(lowerQuery)) {
+                    filteredList.add(product);
+                }
+            }
+        }
+        adapter.updateData(filteredList);
+    }
+
+
+
+    // Confirm Barcode Addition
+    // Called when user selects a product to link a new scanned barcode.
+    private void showProductSelectConfirmation(ProductModel product) {
+        // Check if barcode already exists
+        if (product.getBarcode().contains(scannedBarcode)) {
+            Toast.makeText(this, "Barcode already linked to this product.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if the product already has 5 barcodes (limit)
+        if (product.getBarcode().size() >= 5) {
+            Toast.makeText(this, "This product already has 5 barcodes. Cannot add more.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Prompt user for confirmation to link the barcode.
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Link Barcode")
+                .setMessage("Add barcode " + scannedBarcode + " to product " + product.getName() + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    product.getBarcode().add(scannedBarcode);
+                    productViewModel.updateProduct(product); // Update product in Firebase.
+                    Toast.makeText(this, "Barcode linked to " + product.getName(), Toast.LENGTH_SHORT).show();
+                    finish(); // Return to previous activity (SellProduct).
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
+
+    // Bottom Sheet: Display Product Details
     private void showBottomSheet(ProductModel product) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_product, null);
         bottomSheetView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                700 // height in pixels
+                700 // Fixed height for the bottom sheet.
         ));
 
+        // Bind UI Elements.
         TextView name = bottomSheetView.findViewById(R.id.product_name);
         TextView detailsLabel = bottomSheetView.findViewById(R.id.product_details_label);
         TextView details = bottomSheetView.findViewById(R.id.product_details);
 
+        // Set data.
         name.setText(product.getName());
 
         String combinedDetailsLabel = "Category: " +  "\n" +
@@ -140,6 +244,7 @@ public class Inventory extends AppCompatActivity {
 
         details.setText(combinedDetails);
 
+        // Show the bottom sheet.
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }

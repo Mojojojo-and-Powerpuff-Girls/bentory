@@ -1,5 +1,6 @@
 package com.example.bentory_app.subcomponents;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,11 +72,16 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
         // Step 4: Handle checkbox state changes (check/uncheck)
         // WHY: Adds or removes the product ID from the selectedItems set accordingly.
         holder.checkboxItemDlt.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                selectedItems.add(product.getId());
-            }
-            else {
-                selectedItems.remove(product.getId());
+            String id = product.getId();
+            if (id != null && !id.trim().isEmpty()) {
+                Log.d("InventoryAdapter", "Checkbox toggled for id=" + id + ", checked=" + isChecked);
+                if (isChecked) {
+                    selectedItems.add(id);
+                } else {
+                    selectedItems.remove(id);
+                }
+            } else {
+                Log.e("InventoryAdapter", "Invalid product ID when toggling checkbox");
             }
         });
 
@@ -134,5 +140,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
             sale_price = itemView.findViewById(R.id.productSalePrice);
             checkboxItemDlt = itemView.findViewById(R.id.itemCheckBox); // Initialize
         }
+    }
+
+    // COMMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void updateData(List<ProductModel> newData) {
+        this.productList = newData;
+        notifyDataSetChanged();
     }
 }

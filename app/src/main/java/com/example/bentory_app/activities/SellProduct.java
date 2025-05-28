@@ -1,16 +1,21 @@
 package com.example.bentory_app.activities;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -40,6 +45,9 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SellProduct extends AppCompatActivity {
@@ -47,13 +55,16 @@ public class SellProduct extends AppCompatActivity {
     private ToneGenerator toneGen;
     private Vibrator vibrator;
     private DecoratedBarcodeView barcodeView;
+    private View targetOverlay;
     private boolean isScannerActive = false;
-    private ImageButton scanBtn;
-    private EditText manualCode;
+    private ImageButton scanBtn, filterBtn;
+    private EditText manualCode, searchEditText;
     private RecyclerView recyclerViewSelling;
     private SellingViewModel sellingViewModel;
     private CartViewModel cartViewModel;
     private SellingProductAdapter sellingAdapter;
+    private ProductViewModel productViewModel;
+    private List<ProductModel> fullProductList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +80,61 @@ public class SellProduct extends AppCompatActivity {
         });
 
         // Initialize ViewModels
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class); // !!!!!!!!!!!!!!!!!!!!
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
 
         // FindByViewById
+        filterBtn = findViewById(R.id.filterBtn); // filter button
+        searchEditText = findViewById(R.id.searchView); // search view
+        targetOverlay = findViewById(R.id.targetOverlay); // barcode's target size
         barcodeView = findViewById(R.id.barcodeScanner); // setup barcode
         scanBtn = findViewById(R.id.scannerBtn); // setup barcode
         manualCode = findViewById(R.id.sellingCode); // setup barcode
         recyclerViewSelling = findViewById(R.id.recyclerViewSelling); // Setup RecyclerView for selling products
         recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! filter
+        filterBtn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(SellProduct.this, filterBtn);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (fullProductList == null) return false;
+                List<ProductModel> sortedList = new ArrayList<>(fullProductList);
+
+                if (item.getItemId() == R.id.menu_az) {
+                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName));
+                } else if (item.getItemId() == R.id.menu_za) {
+                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName).reversed());
+                }
+
+                sellingAdapter.setProductList(sortedList);
+                return true;
+            });
+            popupMenu.show();
+        });
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 search
+        productViewModel.getItems().observe(this, itemList -> {
+            fullProductList = new ArrayList<>(itemList); // Save full list for filtering
+            sellingAdapter.setProductList(itemList); // Set initial full list
+        });
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterProducts(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
 
         // Setup adapter and handle Add to Cart logic
         sellingAdapter = new SellingProductAdapter(product -> {
@@ -147,9 +204,11 @@ public class SellProduct extends AppCompatActivity {
         scanBtn.setOnClickListener(v -> {
             if (isScannerActive) {
                 barcodeView.setVisibility(View.GONE);
+                targetOverlay.setVisibility(View.GONE);
                 barcodeView.pause();
             } else {
                 barcodeView.setVisibility(View.VISIBLE);
+                targetOverlay.setVisibility(View.VISIBLE);
                 barcodeView.resume();
             }
             isScannerActive = !isScannerActive; // Update scanner state flag
@@ -157,7 +216,7 @@ public class SellProduct extends AppCompatActivity {
 
 
         // Initialize sounds and vibration
-        toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 200);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
 
@@ -171,8 +230,8 @@ public class SellProduct extends AppCompatActivity {
 
                 // Search for product by code
                 ProductModel matched = null;
-                for (ProductModel p : sellingViewModel.getItems().getValue()) {
-                    if (p.getBarcode().equals(enteredCode)) {
+                for (ProductModel p : products) {
+                    if (p.getBarcode().contains(enteredCode)) {
                         matched = p;
                         break;
                     }
@@ -200,11 +259,36 @@ public class SellProduct extends AppCompatActivity {
                     sellingAdapter.notifyDataSetChanged();
 
                 } else {
-                    manualCode.setError("Product not found");
+                    // Barcode not found - prompt user to link it
+                    new AlertDialog.Builder(SellProduct.this)
+                            .setTitle("Unknown Barcode")
+                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                Intent intent = new Intent(SellProduct.this, Inventory.class);
+                                intent.putExtra("scannedBarcode", enteredCode); // pass the barcode
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }
             }
             return true;
         });
+    }
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void filterProducts(String query) {
+        if (fullProductList == null) return;
+
+        List<ProductModel> filtered = new ArrayList<>();
+        for (ProductModel product : fullProductList) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase()) ||
+                    product.getSize().toLowerCase().contains(query.toLowerCase())) {
+                filtered.add(product);
+            }
+        }
+
+        sellingAdapter.setProductList(filtered);
     }
 
 
@@ -238,18 +322,18 @@ public class SellProduct extends AppCompatActivity {
             @Override
             public void onProductNotFound() {
                 toneGen.startTone(ToneGenerator.TONE_SUP_ERROR); // distinct tone for not found
-                // Stop the tone after a short delay (e.g., 500ms)
-                new android.os.Handler().postDelayed(() -> {
-                    toneGen.stopTone();
-                }, 500);
-                if (vibrator != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(200);
-                    }
-                }
-                Toast.makeText(SellProduct.this, "Product not found", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(SellProduct.this)
+                            .setTitle("Unknown Barcode")
+                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setPositiveButton("Yes", (dialog,which) -> {
+                                Intent intent = new Intent(SellProduct.this, Inventory.class);
+                                intent.putExtra("scannedBarcode", scannedBarcode);
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                });
 
             }
 
@@ -280,7 +364,7 @@ public class SellProduct extends AppCompatActivity {
             // Lookup product from firebase
             ProductModel matched = null;
             for (ProductModel p : sellingViewModel.getItems().getValue()) {
-                if (p.getBarcode().equals(scannedCode)) {
+                if (p.getBarcode() != null && p.getBarcode().contains(scannedCode)) {
                     matched = p;
                     break;
                 }
@@ -328,17 +412,60 @@ public class SellProduct extends AppCompatActivity {
                 new android.os.Handler().postDelayed(() -> {
                     toneGen.stopTone();
                 }, 500);
-                if (vibrator != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(200);
-                    }
-                }
-                Toast.makeText(SellProduct.this, "Product not found", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(SellProduct.this)
+                            .setTitle("Unknown Barcode")
+                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                Intent intent = new Intent(SellProduct.this, Inventory.class);
+                                intent.putExtra("scannedBarcode", scannedCode); // pass the barcode
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                });
             }
         }
     };
+
+
+    // COMMENTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+    private void showProductSelectionDialog(String newBarcode) {
+        List<ProductModel> products = sellingViewModel.getItems().getValue();
+        if (products == null || products.isEmpty()) return;
+
+        String[] productNames = new String[products.size()];
+        for (int i = 0; i < products.size(); i++) {
+            productNames[i] = products.get(i).getName() + " - " + products.get(i).getSize();
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Select Product to Associate")
+                .setItems(productNames, (dialog, which) -> {
+                    ProductModel selected = products.get(which);
+
+                    // If barcode already exists, show toast immediately
+                    if (selected.getBarcode() != null && selected.getBarcode().contains(newBarcode)) {
+                        Toast.makeText(this, "Barcode already exists for this product.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Confirmation Dialog
+                    new AlertDialog.Builder(this)
+                            .setTitle("Confirm Association")
+                            .setMessage("Are you sure you want to add this barcode to " + selected.getName() + "?")
+                            .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
+                                // Add barcode
+                                selected.getBarcode().add(newBarcode);
+                                sellingViewModel.updateProduct(selected);
+                                Toast.makeText(this, "Barcode linked to " + selected.getName(), Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 
     @Override
     protected void onResume() {
