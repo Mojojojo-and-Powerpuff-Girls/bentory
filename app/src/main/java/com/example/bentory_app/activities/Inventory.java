@@ -1,14 +1,14 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.view.View; // Added back
+// import android.view.ViewGroup; // Still needed for BottomSheet
+// import android.widget.ImageButton; // Still needed for dltButton
+// import android.widget.TextView; // Not needed for toolbar title
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+// import androidx.appcompat.app.AppCompatActivity; // Extends BaseActivity now
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,19 +16,22 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.app.ActionBar;
+// import androidx.appcompat.widget.Toolbar; // Handled by BaseActivity
+// import androidx.appcompat.app.ActionBar; // Handled by BaseActivity
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.ProductModel;
 import com.example.bentory_app.subcomponents.InventoryAdapter;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import android.view.ViewGroup; // Ensure this is present for BottomSheetDialog
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.Set;
 
-public class Inventory extends AppCompatActivity {
+public class Inventory extends BaseDrawerActivity { // Extends BaseDrawerActivity
 
     private RecyclerView recyclerView;
     private ProductViewModel productViewModel;
@@ -46,22 +49,12 @@ public class Inventory extends AppCompatActivity {
             return insets;
         });
 
-        // setup toolbar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        // Set the title using the custom TextView in the toolbar
-        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
-        if (toolbarTitle != null) {
-            toolbarTitle.setText("Inventory");
-        }
+        // Setup toolbar using BaseActivity method
+        // For Inventory, we likely want the burger menu, so showBurgerMenu is true
+        setupToolbar(R.id.my_toolbar, "Inventory", true);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-
-            actionBar.setDisplayHomeAsUpEnabled(false);
-
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
+        // Setup drawer functionality
+        setupDrawer();
 
         // Initialize Views
         dltButton = findViewById(R.id.deleteBtn);
@@ -72,7 +65,7 @@ public class Inventory extends AppCompatActivity {
         productViewModel.getItems().observe(this, new Observer<List<ProductModel>>() {
             @Override
             public void onChanged(List<ProductModel> itemList) {
-                adapter = new InventoryAdapter(Inventory.this, itemList, item ->{
+                adapter = new InventoryAdapter(Inventory.this, itemList, item -> {
                     showBottomSheet(item);
                 });
                 recyclerView.setAdapter(adapter);
@@ -87,9 +80,9 @@ public class Inventory extends AppCompatActivity {
             if (isDeleteModeActive) {
                 // Step 2: Entering delete mode
                 adapter.setDeleteMode(true); // enable delete mode in the InventoryAdapter
-                dltButton.setImageResource(R.drawable.add_item_save_button); // change the icon !!!PAPALITAN PA 'TO NG ICON!
-            }
-            else {
+                dltButton.setImageResource(R.drawable.add_item_save_button); // change the icon !!!PAPALITAN PA 'TO NG
+                                                                             // ICON!
+            } else {
                 // Step 3: Already in delete mode and user clicked to confirm or exit
                 // Step 4: Get the list of selected items to delete (based on checkboxes)
                 Set<String> selectedItems = adapter.getSelectedItems();
@@ -114,8 +107,7 @@ public class Inventory extends AppCompatActivity {
                                 dltButton.setImageResource(R.drawable.scanner); // !!!PAPALITAN PA 'TO NG ICON!
                             })
                             .show();
-                }
-                else {
+                } else {
                     // Step 9: If no items selected, just exit delete mode
                     adapter.setDeleteMode(false);
                     dltButton.setImageResource(R.drawable.scanner); // !!PAPALITAN PA 'TO NG ICON! [PATI XML]
@@ -138,11 +130,11 @@ public class Inventory extends AppCompatActivity {
 
         name.setText(product.getName());
 
-        String combinedDetailsLabel = "Category: " +  "\n" +
-                "Quantity: " +  "\n" +
-                "Cost Price: " +  "\n" +
+        String combinedDetailsLabel = "Category: " + "\n" +
+                "Quantity: " + "\n" +
+                "Cost Price: " + "\n" +
                 "Sale Price: " + "\n" +
-                "Size: " +  "\n" +
+                "Size: " + "\n" +
                 "Weight: " + "\n" +
                 "Description: ";
 
@@ -161,7 +153,5 @@ public class Inventory extends AppCompatActivity {
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
-
-
 
 }

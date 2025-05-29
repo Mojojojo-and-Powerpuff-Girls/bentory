@@ -3,13 +3,8 @@ package com.example.bentory_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -19,16 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.StatsModel;
 import com.example.bentory_app.subcomponents.MenuAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandingPage extends AppCompatActivity {
+public class LandingPage extends BaseDrawerActivity {
 
     private ImageButton addProductBtn, sellProductBtn, inventoryBtn, statsBtn;
-    private ImageButton logoutBtn;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,26 +28,11 @@ public class LandingPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        // Setup toolbar using BaseActivity method
+        setupToolbar(R.id.my_toolbar, "Landing Page", true);
 
-        // setup toolbar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-        // Set the title using the custom TextView in the toolbar
-        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
-        if (toolbarTitle != null) {
-            toolbarTitle.setText("Landing Page");
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-
-            actionBar.setDisplayHomeAsUpEnabled(false);
-
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
+        // Setup drawer functionality
+        setupDrawer();
 
         // window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -64,30 +41,17 @@ public class LandingPage extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize buttons
+        // Initialize main content buttons
         addProductBtn = findViewById(R.id.addProductBtn);
         sellProductBtn = findViewById(R.id.sellProductBtn);
         inventoryBtn = findViewById(R.id.inventoryBtn);
         statsBtn = findViewById(R.id.statsBtn);
-        logoutBtn = findViewById(R.id.logoutBtn);
 
         // animate buttons
         setButtonClickListener(addProductBtn, AddProduct.class);
         setButtonClickListener(sellProductBtn, SellProduct.class);
         setButtonClickListener(inventoryBtn, Inventory.class);
         setButtonClickListener(statsBtn, Statistics.class);
-
-        // Set up logout button
-        if (logoutBtn != null) {
-            logoutBtn.setOnClickListener(v -> {
-                mAuth.signOut();
-                Toast.makeText(LandingPage.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LandingPage.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            });
-        }
 
         // SETUP RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -99,10 +63,9 @@ public class LandingPage extends AppCompatActivity {
         MenuAdapter adapter = new MenuAdapter(itemList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
     }
 
-    // animation method
+    // animation method for main content buttons
     private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {
         button.setOnClickListener(v -> {
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
@@ -112,5 +75,4 @@ public class LandingPage extends AppCompatActivity {
                     });
         });
     }
-
 }

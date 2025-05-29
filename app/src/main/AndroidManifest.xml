@@ -45,6 +45,9 @@
             android:name=".activities.LandingPage"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".activities.BurgerMenuActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

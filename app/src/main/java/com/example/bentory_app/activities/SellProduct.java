@@ -12,30 +12,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.app.ActionBar;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.CartModel;
 import com.example.bentory_app.model.ProductModel;
-import com.example.bentory_app.model.StatsModel;
 import com.example.bentory_app.repository.ProductRepository;
 import com.example.bentory_app.subcomponents.CartAdapter;
-import com.example.bentory_app.subcomponents.InventoryAdapter;
-import com.example.bentory_app.subcomponents.MenuAdapter;
 import com.example.bentory_app.subcomponents.SellingProductAdapter;
 import com.example.bentory_app.viewmodel.CartViewModel;
-import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.example.bentory_app.viewmodel.SellingViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -45,7 +37,7 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SellProduct extends AppCompatActivity {
+public class SellProduct extends BaseActivity {
 
     private ToneGenerator toneGen;
     private Vibrator vibrator;
@@ -71,22 +63,9 @@ public class SellProduct extends AppCompatActivity {
             return insets;
         });
 
-        // setup toolbar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        // Set the title using the custom TextView in the toolbar
-        TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
-        if (toolbarTitle != null) {
-            toolbarTitle.setText("Sell Product");
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-
-            actionBar.setDisplayHomeAsUpEnabled(false);
-
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
+        // Setup toolbar using BaseActivity method
+        // For SellProduct, we likely want the burger menu, so showBurgerMenu is true
+        setupToolbar(R.id.my_toolbar, "Sell Product", true);
 
         // Initialize ViewModels
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);

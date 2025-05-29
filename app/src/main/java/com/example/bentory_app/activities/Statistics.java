@@ -1,17 +1,17 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
-import android.widget.TextView;
+// import android.widget.TextView; // No longer needed for toolbar title
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+// import androidx.appcompat.app.AppCompatActivity; // Extends BaseActivity
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.app.ActionBar;
+// import androidx.appcompat.widget.Toolbar; // Handled by BaseActivity
+// import androidx.appcompat.app.ActionBar; // Handled by BaseActivity
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.StatsModel;
@@ -22,7 +22,7 @@ import com.example.bentory_app.subcomponents.TopSellingAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Statistics extends AppCompatActivity {
+public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +34,30 @@ public class Statistics extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        
-         // setup toolbar
-         Toolbar myToolbar = findViewById(R.id.my_toolbar);
-         setSupportActionBar(myToolbar);
-         // Set the title using the custom TextView in the toolbar
-         TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
-         if (toolbarTitle != null) {
-             toolbarTitle.setText("Statistics");
-         }
- 
-         ActionBar actionBar = getSupportActionBar();
-         if (actionBar != null) {
- 
-             actionBar.setDisplayHomeAsUpEnabled(false);
- 
-             actionBar.setDisplayShowTitleEnabled(false);
-         }
+
+        // Setup toolbar using BaseActivity method
+        // For Statistics, we likely want the burger menu, so showBurgerMenu is true
+        setupToolbar(R.id.my_toolbar, "Statistics", true);
+
+        // Setup drawer functionality
+        setupDrawer();
+
+        // // Old toolbar setup (remove or comment out)
+        // Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        // setSupportActionBar(myToolbar);
+        // // Set the title using the custom TextView in the toolbar
+        // TextView toolbarTitle = myToolbar.findViewById(R.id.textView); // This was
+        // the error
+        // if (toolbarTitle != null) {
+        // toolbarTitle.setText("Statistics");
+        // }
+        //
+        // ActionBar actionBar = getSupportActionBar();
+        // if (actionBar != null) {
+        // actionBar.setDisplayHomeAsUpEnabled(false);
+        // actionBar.setDisplayShowTitleEnabled(false);
+        // }
+
         // SETUP RecyclerView
         RecyclerView recyclerViewTop = findViewById(R.id.recyclerViewTopStatistics);
         List<StatsModel> itemList1 = new ArrayList<>();
@@ -74,8 +81,6 @@ public class Statistics extends AppCompatActivity {
         TopSellingAdapter adapter2 = new TopSellingAdapter(itemList2);
         recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBottom.setAdapter(adapter2);
-
-
 
     }
 }
