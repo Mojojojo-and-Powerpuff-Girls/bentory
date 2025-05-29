@@ -87,14 +87,25 @@
     </androidx.appcompat.widget.Toolbar>
     <!-- Your main content goes below the Toolbar -->
 
-
     <!-- Top Stats RecyclerView -->
+
+    <ImageButton
+        android:id="@+id/back_btn"
+        android:layout_width="64dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="116dp"
+        android:src="@drawable/back_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTopStatistics"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="10dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="360dp"
         android:contentDescription="view list of stats"
         app:layout_constraintTop_toBottomOf="@id/header_background"
         app:layout_constraintBottom_toTopOf="@id/statistics_container"

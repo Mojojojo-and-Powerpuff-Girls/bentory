@@ -10,10 +10,12 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import com.example.bentory_app.subcomponents.SellingProductAdapter;
 import com.example.bentory_app.viewmodel.CartViewModel;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.example.bentory_app.viewmodel.SellingViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
@@ -58,7 +61,7 @@ public class SellProduct extends AppCompatActivity {
     private DecoratedBarcodeView barcodeView;
     private View targetOverlay, touchBlock;
     private boolean isScannerActive = false;
-    private ImageButton scanBtn, filterBtn, searchScanBtn;
+    private ImageButton scanBtn, filterBtn, searchScanBtn, backBtn;
     private EditText manualCode, searchEditText;
     private RecyclerView recyclerViewSelling;
     private SellingViewModel sellingViewModel;
@@ -96,6 +99,7 @@ public class SellProduct extends AppCompatActivity {
         manualCode = findViewById(R.id.sellingCode); // setup barcode
         recyclerViewSelling = findViewById(R.id.recyclerViewSelling); // Setup RecyclerView for selling products
         recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+        backBtn = findViewById(R.id.back_btn);
 
         // Search barcode
         searchScanBtn.setOnClickListener(v -> {
@@ -164,6 +168,7 @@ public class SellProduct extends AppCompatActivity {
                     product // pass the reference
             );
             cartViewModel.addToCart(cartItem);
+            Toast.makeText(SellProduct.this, "Item added!", Toast.LENGTH_SHORT).show();
             // Reduce product stock
             product.setQuantity(currentStock - 1);
             // Optional: Notify UI of changes if needed
@@ -179,11 +184,11 @@ public class SellProduct extends AppCompatActivity {
         });
 
 
-        // Set up cart button click listener to show BottomSheet with cart items
         ImageButton cartButton = findViewById(R.id.pullout_btn);
         cartButton.setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
             View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null, false);
+
             bottomSheetDialog.setContentView(bottomSheetView);
 
             ImageButton confirmBtn = bottomSheetView.findViewById(R.id.confirm_button);
@@ -194,12 +199,31 @@ public class SellProduct extends AppCompatActivity {
             confirmBtn.setOnClickListener(view -> {
                 cartViewModel.confirmCart(() -> {
                     Toast.makeText(this, "Stock updated and cart cleared", Toast.LENGTH_SHORT).show();
-                    bottomSheetDialog.dismiss(); // Optional: close cart after confirming.
+                    bottomSheetDialog.dismiss();
                 });
             });
 
             // Pause barcode scanner when bottom sheet is shown
-            bottomSheetDialog.setOnShowListener(dialog -> barcodeView.pause());
+            bottomSheetDialog.setOnShowListener(dialog -> {
+                barcodeView.pause();
+
+                // Method 1: Force full height using display metrics
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenHeight = 2100;
+
+                FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+                    ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
+                    layoutParams.height = screenHeight;
+                    bottomSheet.setLayoutParams(layoutParams);
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    behavior.setSkipCollapsed(true);
+                    behavior.setPeekHeight(screenHeight);
+                }
+            });
+
             // Resume scanner only if it was active before when bottom sheet is dismissed
             bottomSheetDialog.setOnDismissListener(dialog -> {
                 if (isScannerActive) barcodeView.resume();
@@ -207,7 +231,6 @@ public class SellProduct extends AppCompatActivity {
 
             RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
             recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
-
             cartViewModel.getCartItems().observe(SellProduct.this, cartItems -> {
                 CartAdapter adapter1 = new CartAdapter(cartItems, () -> sellingAdapter.notifyDataSetChanged());
                 recyclerViewTop.setAdapter(adapter1);
@@ -296,6 +319,14 @@ public class SellProduct extends AppCompatActivity {
             }
             return true;
         });
+
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     // Filter products method
@@ -339,6 +370,7 @@ public class SellProduct extends AppCompatActivity {
 
                 product.setQuantity(currentStock - 1);
                 sellingAdapter.notifyDataSetChanged();
+
             }
 
             @Override

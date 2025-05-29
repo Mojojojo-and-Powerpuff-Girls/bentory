@@ -1,5 +1,6 @@
 package com.example.bentory_app.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,7 +52,7 @@ public class Inventory extends AppCompatActivity {
 
     // XML UI
     private RecyclerView recyclerView;
-    private ImageButton dltButton, filterBtn, searchScanBtn;
+    private ImageButton dltButton, filterBtn, searchScanBtn, backBtn;
     private EditText searchEditText;
     private DecoratedBarcodeView searchBarcode;
     private View searchTargetOverlay, touchBlock;
@@ -76,6 +77,7 @@ public class Inventory extends AppCompatActivity {
         searchBarcode = findViewById(R.id.barcodeScanner);
         searchTargetOverlay = findViewById(R.id.targetOverlay);
         touchBlock = findViewById(R.id.touchBlocker);
+        backBtn = findViewById(R.id.back_btn);
 
         // Get scanned barcode
         scannedBarcode = getIntent().getStringExtra("scannedBarcode");
@@ -178,6 +180,27 @@ public class Inventory extends AppCompatActivity {
                 }
             }
         });
+
+        backBtn.setOnClickListener(v -> {
+            finish();
+
+
+//            if (isScannerActive) {
+//                // Hide scanner if it's active
+//                searchBarcode.setVisibility(View.GONE);
+//                searchTargetOverlay.setVisibility(View.GONE);
+//                touchBlock.setVisibility(View.GONE);
+//                backBtn.setVisibility(View.GONE); // hide back button again
+//                searchBarcode.pause();
+//                isScannerActive = false;
+//            } else {
+//                // Otherwise, act like a normal back press
+//                finish();
+//            }
+        });
+
+
+
     }
 
 

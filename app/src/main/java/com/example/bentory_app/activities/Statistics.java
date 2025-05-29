@@ -1,6 +1,8 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,8 @@ import java.util.List;
 
 public class Statistics extends AppCompatActivity {
 
+    ImageButton backBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,8 @@ public class Statistics extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        backBtn = findViewById(R.id.back_btn);
 
         // SETUP RecyclerView
         RecyclerView recyclerViewTop = findViewById(R.id.recyclerViewTopStatistics);
@@ -56,6 +62,13 @@ public class Statistics extends AppCompatActivity {
         recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBottom.setAdapter(adapter2);
 
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
     }
