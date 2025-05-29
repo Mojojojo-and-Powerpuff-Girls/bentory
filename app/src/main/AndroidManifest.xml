@@ -29,15 +29,21 @@
             android:exported="false" />
         <activity
             android:name=".activities.Inventory"
-            android:exported="false" /> <!-- This is the main entry point of the app -->
+            android:exported="false" />
         <activity
-            android:name=".activities.LandingPage"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LandingPage"
+            android:exported="false">
         </activity>
 
         <meta-data

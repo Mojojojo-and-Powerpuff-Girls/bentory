@@ -73,18 +73,33 @@
 
             <ImageButton
                 android:id="@+id/statsBtn"
-                android:layout_width="154dp"
-                android:layout_height="121dp"
-                android:layout_marginTop="24dp"
+                android:layout_width="152dp"
+                android:layout_height="116dp"
+                android:layout_marginStart="47dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="28dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="view statistics"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/inventoryBtn"
                 app:layout_constraintTop_toBottomOf="@+id/sellProductBtn"
                 app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/stats_largeicon" />
+
+            <ImageButton
+                android:id="@+id/logoutBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/logout_icon" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
