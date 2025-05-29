@@ -181,19 +181,25 @@ public class ProductRepository {
 
     // Looks through all products to find one that contains the given barcode in its barcode list.
     public void getProductByMatchingBarcode(String barcode, ProductCallback callback) {
+        Log.d("ProductRepo", "getProductByMatchingBarcode called with: " + barcode);
+
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("ProductRepo", "Data snapshot received");
                 ProductModel match = findMatchingProduct(snapshot, barcode);
                 if (match != null) {
+                    Log.d("ProductRepo", "Product match found: " + match.getName());
                     callback.onProductFound(match);
                 } else {
+                    Log.d("ProductRepo", "No product match found");
                     callback.onProductNotFound();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ProductRepo", "Firebase error: " + error.getMessage());
                 callback.onError(error.getMessage());
             }
         });
@@ -270,16 +276,24 @@ public class ProductRepository {
 
     // Helper method to search all products and match any barcode in the list.
     private ProductModel findMatchingProduct(DataSnapshot snapshot, String barcode) {
+        // DEBUGGER
+        if (barcode == null) {
+            Log.d("ProductRepo", "Scanned barcode is null!");
+            return null;
+        }
         for (DataSnapshot child : snapshot.getChildren()) {
             ProductModel product = child.getValue(ProductModel.class);
             if (product != null && product.getBarcode() != null) {
                 for (String b : product.getBarcode()) {
-                    if (b.equals(barcode)) {
+                    Log.d("ProductRepo", "Checking product barcode: " + b + " against scanned barcode: " + barcode);
+                    if (b != null && barcode != null && b.trim().equals(barcode.trim())) {
+                        Log.d("ProductRepo", "Match found: " + product.getName());
                         return product;
                     }
                 }
             }
         }
+        Log.d("ProductRepo", "No matching product found for barcode " + barcode);
         return null;
     }
 

@@ -56,9 +56,9 @@ public class SellProduct extends AppCompatActivity {
     private ToneGenerator toneGen;
     private Vibrator vibrator;
     private DecoratedBarcodeView barcodeView;
-    private View targetOverlay;
+    private View targetOverlay, touchBlock;
     private boolean isScannerActive = false;
-    private ImageButton scanBtn, filterBtn;
+    private ImageButton scanBtn, filterBtn, searchScanBtn;
     private EditText manualCode, searchEditText;
     private RecyclerView recyclerViewSelling;
     private SellingViewModel sellingViewModel;
@@ -86,16 +86,23 @@ public class SellProduct extends AppCompatActivity {
         sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
 
         // FindByViewById
+        searchScanBtn = findViewById(R.id.searchScannerBtn);
         filterBtn = findViewById(R.id.filterBtn); // filter button
         searchEditText = findViewById(R.id.searchView); // search view
         targetOverlay = findViewById(R.id.targetOverlay); // barcode's target size
+        touchBlock = findViewById(R.id.touchBlocker);
         barcodeView = findViewById(R.id.barcodeScanner); // setup barcode
         scanBtn = findViewById(R.id.scannerBtn); // setup barcode
         manualCode = findViewById(R.id.sellingCode); // setup barcode
         recyclerViewSelling = findViewById(R.id.recyclerViewSelling); // Setup RecyclerView for selling products
         recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! filter
+        // Search barcode
+        searchScanBtn.setOnClickListener(v -> {
+            scanBarcodeForProductSearch();
+        });
+
+        // Filter A-Z Z-A
         filterBtn.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(SellProduct.this, filterBtn);
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
@@ -116,13 +123,13 @@ public class SellProduct extends AppCompatActivity {
             popupMenu.show();
         });
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 search
+        // Search button
         productViewModel.getItems().observe(this, itemList -> {
             fullProductList = new ArrayList<>(itemList); // Save full list for filtering
             sellingAdapter.setProductList(itemList); // Set initial full list
         });
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        // Search listener
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -218,10 +225,12 @@ public class SellProduct extends AppCompatActivity {
             if (isScannerActive) {
                 barcodeView.setVisibility(View.GONE);
                 targetOverlay.setVisibility(View.GONE);
+                touchBlock.setVisibility(View.GONE);
                 barcodeView.pause();
             } else {
                 barcodeView.setVisibility(View.VISIBLE);
                 targetOverlay.setVisibility(View.VISIBLE);
+                touchBlock.setVisibility(View.VISIBLE);
                 barcodeView.resume();
             }
             isScannerActive = !isScannerActive; // Update scanner state flag
@@ -289,7 +298,7 @@ public class SellProduct extends AppCompatActivity {
         });
     }
 
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Filter products method
     private void filterProducts(String query) {
         if (fullProductList == null) return;
 
@@ -441,8 +450,7 @@ public class SellProduct extends AppCompatActivity {
         }
     };
 
-
-    // COMMENTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+    // BALIKAN TO!!!!!!!!!!!!!!!!!!!!!!!!
     private void showProductSelectionDialog(String newBarcode) {
         List<ProductModel> products = sellingViewModel.getItems().getValue();
         if (products == null || products.isEmpty()) return;
@@ -480,6 +488,52 @@ public class SellProduct extends AppCompatActivity {
                 .show();
     }
 
+
+    // Scans code for product search method
+    private void scanBarcodeForProductSearch() {
+        barcodeView.setVisibility(View.VISIBLE);
+        targetOverlay.setVisibility(View.VISIBLE);
+        touchBlock.setVisibility(View.VISIBLE);
+        isScannerActive = true;
+
+        barcodeView.resume();
+
+        barcodeView.decodeSingle(new BarcodeCallback() {
+            @Override
+            public void barcodeResult(BarcodeResult result) {
+                String searchScannedCode = result.getText();
+                List<ProductModel> products = sellingViewModel.getItems().getValue();
+
+                if (products != null) {
+                    ProductModel matched = null;
+                    for (ProductModel p : products) {
+                        if (p.getBarcode() != null && p.getBarcode().contains(searchScannedCode)) {
+                            matched = p;
+                            break;
+                        }
+                    }
+
+                    if (matched != null) {
+                        List<ProductModel> filteredList = new ArrayList<>();
+                        filteredList.add(matched);
+                        sellingAdapter.setProductList(filteredList);
+
+                        // Cleanup scanner
+                        barcodeView.pause();
+                        barcodeView.setVisibility(View.GONE);
+                        targetOverlay.setVisibility(View.GONE);
+                        touchBlock.setVisibility(View.GONE);
+                        isScannerActive = false;
+
+                    } else {
+                        Toast.makeText(SellProduct.this, "Product not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -491,5 +545,6 @@ public class SellProduct extends AppCompatActivity {
         super.onPause();
         barcodeView.pause();
     }
+
 
 }

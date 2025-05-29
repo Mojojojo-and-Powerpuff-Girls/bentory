@@ -417,6 +417,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ExtraText">
 
+        <!-- This blocks touch but NOT the toolbar -->
+        <View
+            android:id="@+id/touchBlocker"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <com.journeyapps.barcodescanner.DecoratedBarcodeView
             android:id="@+id/addBarcodeScanner"
             android:layout_width="0dp"

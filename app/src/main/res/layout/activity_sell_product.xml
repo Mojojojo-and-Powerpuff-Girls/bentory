@@ -101,19 +101,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
-            android:id="@+id/searchView"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Search here..."
-            android:paddingStart="50dp"
-            android:textColorHint="#888888"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:fontFamily="@font/pixelify_sans"
-            android:background="@drawable/search_bar"
-            android:textCursorDrawable="@drawable/cursor_black"/>
+            android:layout_weight="1" >
+
+            <EditText
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Search here..."
+                android:paddingStart="50dp"
+                android:textColorHint="#888888"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:background="@drawable/search_bar"
+                android:textCursorDrawable="@drawable/cursor_black"/>
+
+            <ImageButton
+                android:id="@+id/searchScannerBtn"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="Scan Barcode"
+                android:background="@android:color/transparent"
+                android:src="@drawable/search_barcode_btn" />
+        </FrameLayout>
 
         <ImageButton
             android:id="@+id/filterBtn"
@@ -123,13 +139,14 @@
             android:background="@android:color/transparent"
             android:contentDescription="filterbutton"
             app:srcCompat="@drawable/filter_icon" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_begin="530dp"
+        app:layout_constraintGuide_begin="630dp"
         android:orientation="horizontal" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -153,7 +170,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:translationY="250dp">
+        android:translationY="350dp">
 
         <ImageView
             android:id="@+id/cart_image"
@@ -222,6 +239,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ExtraText">
+
+        <!-- This blocks touch but NOT the toolbar -->
+        <View
+            android:id="@+id/touchBlocker"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.journeyapps.barcodescanner.DecoratedBarcodeView
             android:id="@+id/barcodeScanner"

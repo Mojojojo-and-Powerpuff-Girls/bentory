@@ -44,7 +44,7 @@ public class AddProduct extends AppCompatActivity {
     private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight, itemDescription, scannedCode;
     private ImageButton itemSaveBtn, barcodeButton, backBtn;
     private DecoratedBarcodeView barcodeView;
-    private View targetOverlay;
+    private View targetOverlay, touchBlock;
 
     // Data Types
     private boolean scanned = false;
@@ -77,6 +77,7 @@ public class AddProduct extends AppCompatActivity {
         barcodeButton = findViewById(R.id.barcodeBtn);
         barcodeView = findViewById(R.id.addBarcodeScanner);
         targetOverlay = findViewById(R.id.targetOverlay);
+        touchBlock = findViewById(R.id.touchBlocker);
         backBtn = findViewById(R.id.back_btn);
 
 
@@ -88,6 +89,7 @@ public class AddProduct extends AppCompatActivity {
                     // Hide scanner and show form
                     barcodeView.setVisibility(View.GONE);
                     targetOverlay.setVisibility(View.GONE);
+                    touchBlock.setVisibility(View.GONE);
                     barcodeView.pause(); // stop scanning
                 } else {
                     // Normal back behavior — e.g., finish activity
@@ -111,6 +113,7 @@ public class AddProduct extends AppCompatActivity {
         barcodeButton.setOnClickListener(v -> {
             barcodeView.setVisibility(View.VISIBLE);    // Show barcode camera view.
             targetOverlay.setVisibility(View.VISIBLE);  // Show overlay (like scan target frame).
+            touchBlock.setVisibility(View.VISIBLE);
             barcodeView.resume();                       // Resume scanning if it was paused.
             scanned = false;                            // Reset flag to allow new scan.
         });
@@ -221,6 +224,7 @@ public class AddProduct extends AppCompatActivity {
                 // Hide the scanner view and target overlay after successful scan.
                 barcodeView.setVisibility(View.GONE);
                 targetOverlay.setVisibility(View.GONE);
+                touchBlock.setVisibility(View.GONE);
 
                 // Pause the scanner to prevent further scanning (stops scanning).
                 barcodeView.pause();

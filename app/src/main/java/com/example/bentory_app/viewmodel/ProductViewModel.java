@@ -1,5 +1,7 @@
 package com.example.bentory_app.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -46,6 +48,11 @@ public class ProductViewModel extends ViewModel {
         repository.deleteProductsByIds(idsToDelete); //// 'deleteProductsByIds()' contains a method (found at 'ProductRepository' in 'repository' directory).
     }
 
+    // Search product through barcode
+    public void searchProductByBarcode(String barcode, ProductRepository.ProductCallback callback) {
+        Log.d("ProductVM", "searchProductByBarcode called with: " + barcode);
+        repository.getProductByMatchingBarcode(barcode, callback);
+    }
 
 
     // Updates an existing product in Firebase.

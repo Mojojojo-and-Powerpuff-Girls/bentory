@@ -26,9 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.ProductModel;
+import com.example.bentory_app.repository.ProductRepository;
 import com.example.bentory_app.subcomponents.InventoryAdapter;
 import com.example.bentory_app.viewmodel.ProductViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.zxing.ResultPoint;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,11 +51,14 @@ public class Inventory extends AppCompatActivity {
 
     // XML UI
     private RecyclerView recyclerView;
-    private ImageButton dltButton, filterBtn;
+    private ImageButton dltButton, filterBtn, searchScanBtn;
     private EditText searchEditText;
+    private DecoratedBarcodeView searchBarcode;
+    private View searchTargetOverlay, touchBlock;
 
     // Data Types
     private String scannedBarcode;
+    private boolean isScannerActive = false;
     private List<ProductModel> fullProductList; // store full list for filtering
 
     @Override
@@ -64,6 +72,10 @@ public class Inventory extends AppCompatActivity {
         dltButton = findViewById(R.id.deleteBtn);
         filterBtn = findViewById(R.id.filterBtn);
         searchEditText = findViewById(R.id.searchView);
+        searchScanBtn = findViewById(R.id.searchScannerBtn);
+        searchBarcode = findViewById(R.id.barcodeScanner);
+        searchTargetOverlay = findViewById(R.id.targetOverlay);
+        touchBlock = findViewById(R.id.touchBlocker);
 
         // Get scanned barcode
         scannedBarcode = getIntent().getStringExtra("scannedBarcode");
@@ -120,6 +132,23 @@ public class Inventory extends AppCompatActivity {
                 filterProducts(s.toString());
             }
             @Override public void afterTextChanged(Editable s) {}
+        });
+
+        // Search by barcode
+        searchBarcode.decodeContinuous(callback);
+        searchScanBtn.setOnClickListener(v -> {
+            if (isScannerActive) {
+                searchBarcode.setVisibility(View.GONE);
+                searchTargetOverlay.setVisibility(View.GONE);
+                touchBlock.setVisibility(View.GONE);
+                searchBarcode.pause();
+            } else {
+                searchBarcode.setVisibility(View.VISIBLE);
+                searchTargetOverlay.setVisibility(View.VISIBLE);
+                touchBlock.setVisibility(View.VISIBLE);
+                searchBarcode.resume();
+            }
+            isScannerActive = !isScannerActive; // Update scanner state flag
         });
 
         // Delete Mode Logic
@@ -247,5 +276,68 @@ public class Inventory extends AppCompatActivity {
         // Show the bottom sheet.
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
+    }
+
+    private final BarcodeCallback callback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            String searchScannedBarcode = result.getText();
+            Log.d("BarcodeScan", "Scanned Barcode: " + searchScannedBarcode);
+
+            if (searchScannedBarcode != null && !searchScannedBarcode.isEmpty()) {
+                searchBarcode.pause(); // Pause to prevent multiple scans
+                Log.d("BarcodeScan", "Calling ViewModel to search product...");
+
+                // Search using viewmodel.
+                productViewModel.searchProductByBarcode(searchScannedBarcode, new ProductRepository.ProductCallback() {
+                    @Override
+                    public void onProductFound(ProductModel product) {
+                        Log.d("BarcodeScan", "Product found: " + product.getName());
+                        List<ProductModel> scannedList = new ArrayList<>();
+                        scannedList.add(product);
+                        adapter.updateData(scannedList);
+
+                        recyclerView.setVisibility(View.VISIBLE); // <-- Ensure it's visible
+                        searchBarcode.setVisibility(View.GONE);
+                        searchTargetOverlay.setVisibility(View.GONE);
+                        touchBlock.setVisibility(View.GONE);
+                        isScannerActive = false;
+                    }
+
+                    @Override
+                    public void onProductNotFound() {
+                        Log.d("BarcodeScan", "Product NOT found");
+                        Toast.makeText(getApplicationContext(), "Product not found", Toast.LENGTH_SHORT).show();
+                        searchBarcode.resume();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("BarcodeScan", "Error: " + error);
+                        Toast.makeText(getApplicationContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                        searchBarcode.resume();
+                    }
+                });
+            } else {
+                Log.d("BarcodeScan", "Scanned barcode is empty or null");
+            }
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+            // Optional.
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isScannerActive) searchBarcode.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        searchBarcode.pause();
     }
 }
