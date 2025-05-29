@@ -44,6 +44,16 @@ public class ProductModel {
         this.barcode = barcode;
     }
 
+    // Minimal constructor for test purposes
+    public ProductModel(String id, String name, double cost_price, int quantity) {
+        this.id = id;
+        this.name = name;
+        this.cost_price = cost_price;
+        this.quantity = quantity;
+        this.barcode = new ArrayList<>();
+    }
+
+
 
     // Getters
     @PropertyName("id")

@@ -99,9 +99,6 @@ public class AddProduct extends AppCompatActivity {
         });
 
 
-
-
-
         // STEP 1 (BARCODE SCANNER AND BUTTON):
         // Initialize the barcode scanner and start listening for scans continuously.
         barcodeView.initializeFromIntent(getIntent());
@@ -120,7 +117,6 @@ public class AddProduct extends AppCompatActivity {
 
         // NOTE (BARCODE SCANNER AND BUTTON):
         //// To see the logic of the barcode after this, proceed to 'callback' (found at the bottom of the code).
-
 
 
         // STEP 1 (ADDING PRODUCTS TO FIREBASE):

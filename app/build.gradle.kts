@@ -35,6 +35,11 @@ android {
 dependencies {
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:5.12.0")
+    testImplementation ("net.bytebuddy:byte-buddy:1.14.12")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    testImplementation ("org.mockito:mockito-inline:4.5.1")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -43,4 +48,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }

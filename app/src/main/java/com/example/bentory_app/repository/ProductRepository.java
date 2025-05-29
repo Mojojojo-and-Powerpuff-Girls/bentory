@@ -24,16 +24,22 @@ public class ProductRepository {
 
     // Firebase reference pointing to the 'products' node in the RealTime Database
     private DatabaseReference database;
+    private ValueEventListener listener;
     public ProductRepository() {
-        database = FirebaseDatabase.getInstance().getReference().child("products");
+        this(FirebaseDatabase.getInstance().getReference().child("products"), null);
+    }
+
+    // This constructor allows injecting a custom listener (for testing)
+    public ProductRepository(DatabaseReference databaseReference, ValueEventListener listener) {
+        this.database = databaseReference;
+        this.listener = listener;
     }
 
     // Retrieve all products from Firebase and wraps the result in LiveData.
     public LiveData<List<ProductModel>> getData() {
         MutableLiveData<List<ProductModel>> mutableData = new MutableLiveData<>();
-        database.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = listener != null ? listener : new ValueEventListener() {
             final List<ProductModel> listData = new ArrayList<>();
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -53,7 +59,8 @@ public class ProductRepository {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Optional: Handle read error.
             }
-        });
+        };
+        database.addValueEventListener(valueEventListener);
         return mutableData;
     }
 
