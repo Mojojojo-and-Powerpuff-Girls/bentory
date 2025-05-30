@@ -2,25 +2,107 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.LandingPage"
     android:background="#FFF1D7">
 
-    <!-- Main content -->
-    <LinearLayout
-        android:id="@+id/main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFF1D7"
-        android:orientation="vertical">
+    <!-- Background image just for the toolbar/header area -->
+    <ImageView
+        android:id="@+id/header_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/upper_nav"
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
 
-        <include layout="@layout/reusable_toolbar" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/burgerbttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="burgerbutton"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/burger_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="bellbutton"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/bell_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Inventory"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="@font/pixelify_sans"
+                app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                app:layout_constraintEnd_toStartOf="@id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <!-- Your main content goes below the Toolbar -->
+
+    <!-- Search bar + Filter button -->
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
 
@@ -49,7 +131,6 @@
                 android:src="@drawable/search_barcode_btn" />
         </FrameLayout>
 
-        </LinearLayout>
         <ImageButton
             android:id="@+id/filterBtn"
             android:layout_width="wrap_content"
@@ -123,14 +204,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-    <!-- Navigation drawer (burger menu) -->
-    <LinearLayout
-        android:id="@+id/nav_drawer"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/menu_background"
-        android:orientation="vertical">
 
         <View
             android:id="@+id/targetOverlay"
@@ -144,122 +217,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-            <ImageView
-                android:id="@+id/burgerNameplate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/burger_nameplate"
-                android:contentDescription="Burger Nameplate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-            <TextView
-                android:id="@+id/textViewGreeting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/pixelify_sans"
-                android:padding="16dp"
-                android:text="Hi, Oilai"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-        </FrameLayout>
-
-        <ImageButton
-            android:id="@+id/buttonAddProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Add Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_add_product_button" />
-
-        <ImageButton
-            android:id="@+id/buttonInventory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Inventory"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_inventory_button" />
-
-        <ImageButton
-            android:id="@+id/buttonSellingWindow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Selling Window"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_selling_window_button" />
-
-        <ImageButton
-            android:id="@+id/buttonStatistics"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Statistics"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_statistics_button" />
-
-        <ImageButton
-            android:id="@+id/buttonScanProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Scan Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_scan_button" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/buttonLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="100dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Logout"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logout_icon" />
-
-    </LinearLayout>
-
-</androidx.drawerlayout.widget.DrawerLayout>

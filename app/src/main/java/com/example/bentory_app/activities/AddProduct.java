@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,18 +34,18 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class AddProduct extends BaseActivity {
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends BaseActivity {
 
     // ViewModels
     private ProductViewModel productViewModel;
 
     // XML UI
-    private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight, itemDescription, scannedCode;
+    private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight,
+            itemDescription, scannedCode;
     private ImageButton itemSaveBtn, barcodeButton, backBtn;
     private DecoratedBarcodeView barcodeView;
     private View targetOverlay, touchBlock;
@@ -62,26 +67,6 @@ public class AddProduct extends AppCompatActivity {
         // Setup toolbar using BaseActivity method
         setupToolbar(R.id.my_toolbar, "Add Product");
 
-        // 1. Initialize Model
-        
-         // setup toolbar
-         Toolbar myToolbar = findViewById(R.id.my_toolbar);
-         setSupportActionBar(myToolbar);
-         // Set the title using the custom TextView in the toolbar
-         TextView toolbarTitle = myToolbar.findViewById(R.id.textView);
-         if (toolbarTitle != null) {
-             toolbarTitle.setText("Add Product");
-         }
- 
-         ActionBar actionBar = getSupportActionBar();
-         if (actionBar != null) {
- 
-             actionBar.setDisplayHomeAsUpEnabled(false);
- 
-             actionBar.setDisplayShowTitleEnabled(false);
-         }
-        
-
         // Initialize Model/List = set and prepare for use.
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
@@ -102,8 +87,6 @@ public class AddProduct extends AppCompatActivity {
         touchBlock = findViewById(R.id.touchBlocker);
         backBtn = findViewById(R.id.back_btn);
 
-
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,30 +103,31 @@ public class AddProduct extends AppCompatActivity {
             }
         });
 
-
         // STEP 1 (BARCODE SCANNER AND BUTTON):
         // Initialize the barcode scanner and start listening for scans continuously.
         barcodeView.initializeFromIntent(getIntent());
         barcodeView.decodeContinuous(callback); //// 'callback' contains a method (found at the bottom of the code).
 
         // STEP 2 (BARCODE SCANNER AND BUTTON):
-        // When the barcode button is clicked, show the scanner view and resume scanning.
+        // When the barcode button is clicked, show the scanner view and resume
+        // scanning.
         // This resets the 'scanned' flag so it can scan a new item.
         barcodeButton.setOnClickListener(v -> {
-            barcodeView.setVisibility(View.VISIBLE);    // Show barcode camera view.
-            targetOverlay.setVisibility(View.VISIBLE);  // Show overlay (like scan target frame).
+            barcodeView.setVisibility(View.VISIBLE); // Show barcode camera view.
+            targetOverlay.setVisibility(View.VISIBLE); // Show overlay (like scan target frame).
             touchBlock.setVisibility(View.VISIBLE);
-            barcodeView.resume();                       // Resume scanning if it was paused.
-            scanned = false;                            // Reset flag to allow new scan.
+            barcodeView.resume(); // Resume scanning if it was paused.
+            scanned = false; // Reset flag to allow new scan.
         });
 
         // NOTE (BARCODE SCANNER AND BUTTON):
-        //// To see the logic of the barcode after this, proceed to 'callback' (found at the bottom of the code).
-
+        //// To see the logic of the barcode after this, proceed to 'callback' (found at
+        // the bottom of the code).
 
         // STEP 1 (ADDING PRODUCTS TO FIREBASE):
         itemSaveBtn.setOnClickListener(v -> {
-            // Validate required fields using a helper method that checks emptiness and sets error if empty.
+            // Validate required fields using a helper method that checks emptiness and sets
+            // error if empty.
             //// 'isFieldEmpty' is a helper method (found at the bottom of the code).
             if (isFieldEmpty(itemName, "Name is required") ||
                     isFieldEmpty(itemCategory, "Category is required") ||
@@ -190,7 +174,8 @@ public class AddProduct extends AppCompatActivity {
             product.setBarcode(barcode); // Set barcodes list.
 
             // Use the productViewModel to handle data submission to Firebase.
-            productViewModel.addProduct(product); //// 'addProduct' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
+            productViewModel.addProduct(product); //// 'addProduct' contains a method (found at 'ProductViewModel' in
+                                                  //// 'viewmodel' directory).
 
             // Notify the user with a confirmation message.
             Toast.makeText(this, "Item added successfully!", Toast.LENGTH_SHORT).show();
@@ -212,14 +197,15 @@ public class AddProduct extends AppCompatActivity {
             finish(); // Close current activity to prevent returning via back buttons.
         });
         // NOTE (ADDING PRODUCTS TO FIREBASE):
-        //// This is the last part of code for the logic of adding products to firebase in the 'activities' directory.
-        //// This fulfills the role of adding products to firebase when save button is clicked.
+        //// This is the last part of code for the logic of adding products to firebase
+        // in the 'activities' directory.
+        //// This fulfills the role of adding products to firebase when save button is
+        // clicked.
         //// These are the methods used for STEP 1: ADDING PRODUCTS TO FIREBASE
         //// 'isFieldEmpty' is a helper method (found at the bottom of the code).
-        //// 'addProduct' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
+        //// 'addProduct' contains a method (found at 'ProductViewModel' in 'viewmodel'
+        // directory).
     }
-
-
 
     //// !!! METHODS OUTSIDE onCreate !!! ////
 
@@ -266,7 +252,8 @@ public class AddProduct extends AppCompatActivity {
     }
 
     // Helper method
-    private boolean isFieldEmpty(EditText field, String errorMessage) {
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -275,17 +262,19 @@ public class AddProduct extends AppCompatActivity {
         }
     }
     // NOTE (BARCODE SCANNER AND BUTTON):
-    //// This is the last part of code for the logic of barcode scanner and button in the 'activities' directory.
-    //// This just fulfills the role that the barcode button should open a scanner when pressed.
+    //// This is the last part of code for the logic of barcode scanner and button
+    // in the 'activities' directory.
+    //// This just fulfills the role that the barcode button should open a scanner
+    // when pressed.
     //// The barcode scanner should be able to scan code.
-    //// If you want to know the logic structure of adding all the products as well as the scanned code to the firebase.
-    //// Proceed to 'STEP 1: ADDING PRODUCTS TO FIREBASE' of AddProduct (found at 'activities' directory).
-
-
+    //// If you want to know the logic structure of adding all the products as well
+    // as the scanned code to the firebase.
+    //// Proceed to 'STEP 1: ADDING PRODUCTS TO FIREBASE' of AddProduct (found at
+    // 'activities' directory).
 
     // (ADDING PRODUCTS TO FIREBASE):
     // Helper method to check if an EditText field is empty.
-    private boolean isFieldEmpty (EditText field, String errorMessage) {
+    private boolean isFieldEmpty(EditText field, String errorMessage) {
         // Trimmed text from the field and checks if the field is empty.
         if (field.getText().toString().trim().isEmpty()) {
             field.setError(errorMessage); // Display error message directly on the field.

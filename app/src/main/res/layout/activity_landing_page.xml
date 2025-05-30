@@ -1,127 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.LandingPage"
-    android:background="#FFF1D7">
+    android:background="#FFF1D7"
+    tools:context=".activities.LandingPage">
 
-    <!-- Main content -->
-    <LinearLayout
-        android:id="@+id/main"
+    <!-- Main content area -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="0sp">
+        android:background="#FFF1D7">
 
-        <include layout="@layout/reusable_toolbar" />
-    <!-- Sell Product Button -->
-    <ImageButton
-        android:id="@+id/sellProductBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="sell products"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/header_background"
-        app:layout_constraintStart_toEndOf="@id/addProductBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.40"
-        app:layout_constraintHeight_percent="0.15"
-        app:srcCompat="@drawable/sell_largeicon" />
+        <!-- Main content -->
+        <LinearLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="0sp"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Inventory Button -->
-    <ImageButton
-        android:id="@+id/inventoryBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="view inventory"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/addProductBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/statsBtn"
-        app:layout_constraintWidth_percent="0.40"
-        app:layout_constraintHeight_percent="0.15"
-        app:srcCompat="@drawable/inventory_largeicon" />
+            <include layout="@layout/reusable_toolbar" />
 
-    <!-- Stats Button -->
-    <ImageButton
-        android:id="@+id/statsBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="view statistics"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/sellProductBtn"
-        app:layout_constraintStart_toEndOf="@id/inventoryBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.40"
-        app:layout_constraintHeight_percent="0.15"
-        app:srcCompat="@drawable/stats_largeicon" />
+        </LinearLayout>
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="view list of stats"
-        app:layout_constraintTop_toBottomOf="@id/inventoryBtn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp" />
+        <!-- Add Product Button -->
+        <ImageButton
+            android:id="@+id/addProductBtn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="add product"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/main"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/sellProductBtn"
+            app:layout_constraintWidth_percent="0.40"
+            app:layout_constraintHeight_percent="0.15"
+            app:srcCompat="@drawable/add_largeicon" />
 
+        <!-- Sell Product Button -->
+        <ImageButton
+            android:id="@+id/sellProductBtn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="sell products"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/main"
+            app:layout_constraintStart_toEndOf="@id/addProductBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.40"
+            app:layout_constraintHeight_percent="0.15"
+            app:srcCompat="@drawable/sell_largeicon" />
 
-                <ImageButton
-                    android:id="@+id/inventoryBtn"
-                    android:layout_width="153dp"
-                    android:layout_height="118dp"
-                    android:layout_marginTop="25dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="view inventory"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintEnd_toEndOf="@+id/addProductBtn"
-                    app:layout_constraintStart_toStartOf="@+id/addProductBtn"
-                    app:layout_constraintTop_toBottomOf="@+id/addProductBtn"
-                    app:srcCompat="@drawable/inventory_largeicon" />
+        <!-- Inventory Button -->
+        <ImageButton
+            android:id="@+id/inventoryBtn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="view inventory"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/addProductBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/statsBtn"
+            app:layout_constraintWidth_percent="0.40"
+            app:layout_constraintHeight_percent="0.15"
+            app:srcCompat="@drawable/inventory_largeicon" />
 
-                <ImageButton
-                    android:id="@+id/statsBtn"
-                    android:layout_width="152dp"
-                    android:layout_height="116dp"
-                    android:layout_marginTop="25dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="view statistics"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintEnd_toEndOf="@+id/sellProductBtn"
-                    app:layout_constraintStart_toStartOf="@+id/sellProductBtn"
-                    app:layout_constraintTop_toBottomOf="@+id/sellProductBtn"
-                    app:srcCompat="@drawable/stats_largeicon" />
+        <!-- Stats Button -->
+        <ImageButton
+            android:id="@+id/statsBtn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="view statistics"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/sellProductBtn"
+            app:layout_constraintStart_toEndOf="@id/inventoryBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.40"
+            app:layout_constraintHeight_percent="0.15"
+            app:srcCompat="@drawable/stats_largeicon" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="376dp"
-                    android:layout_height="434dp"
-                    android:contentDescription="view list of stats"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.457"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inventoryBtn"
-                    app:layout_constraintVertical_bias="0.724" />
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="view list of stats"
+            app:layout_constraintTop_toBottomOf="@id/inventoryBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </FrameLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Navigation drawer (burger menu) -->
     <LinearLayout

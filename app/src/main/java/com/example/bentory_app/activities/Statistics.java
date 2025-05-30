@@ -26,8 +26,6 @@ import java.util.List;
 
 public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivity
 
-    ImageButton backBtn;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +73,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
         recyclerViewTop.setAdapter(adapter1);
 
         // SETUP RecyclerView
-        RecyclerView recyclerViewBottom = findViewById(R.id.recyclerViewBottomStatistics);
+        RecyclerView recyclerViewBottom = findViewById(R.id.recyclerViewTopSellingStatistics);
         List<TopSellingModel> itemList2 = new ArrayList<>();
         itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
         itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
@@ -86,14 +84,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
         recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBottom.setAdapter(adapter2);
 
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
+        // Note: No back button in statistics layout - navigation handled by
+        // toolbar/drawer
     }
 }
