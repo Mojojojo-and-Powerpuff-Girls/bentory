@@ -1,7 +1,10 @@
 package com.example.bentory_app.model;
 
 import com.google.firebase.database.PropertyName;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ProductModel {
     //stats list in inventory
@@ -18,7 +21,7 @@ public class ProductModel {
 
     private String date_added;
 
-    private String barcode;
+    private List<String> barcode = new ArrayList<>();
 
     private String description;
 
@@ -27,7 +30,7 @@ public class ProductModel {
     // open constructor for firebase
     public ProductModel(){}
 
-    public ProductModel(String id, String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added, String barcode) {
+    public ProductModel(String id, String name, String category, int quantity, double cost_price, double sale_price, String size, String weight, String description, String date_added, List<String> barcode) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -40,6 +43,16 @@ public class ProductModel {
         this.date_added = date_added;
         this.barcode = barcode;
     }
+
+    // Minimal constructor for test purposes
+    public ProductModel(String id, String name, double cost_price, int quantity) {
+        this.id = id;
+        this.name = name;
+        this.cost_price = cost_price;
+        this.quantity = quantity;
+        this.barcode = new ArrayList<>();
+    }
+
 
 
     // Getters
@@ -66,7 +79,7 @@ public class ProductModel {
     @PropertyName("date_added")
     public String getDate_Added() { return date_added; }
     @PropertyName("barcode")
-    public String getBarcode() { return barcode; }
+    public List<String> getBarcode() { return barcode; }
 
 
     // Setters
@@ -91,5 +104,5 @@ public class ProductModel {
     @PropertyName("date_added")
     public void setDate_Added(String date_added) { this.date_added = date_added; }
     @PropertyName("barcode")
-    public void setBarcode(String barcode) { this.barcode = barcode; }
+    public void setBarcode(List<String> barcode) { this.barcode = barcode; }
 }

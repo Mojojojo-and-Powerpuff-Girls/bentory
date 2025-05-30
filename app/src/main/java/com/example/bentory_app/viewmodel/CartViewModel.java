@@ -11,14 +11,8 @@ import java.util.List;
 
 public class CartViewModel extends ViewModel {
 
-    private SellingWindowRepository repository;
-    private MutableLiveData<List<CartModel>> cartItems;
-
-    // Initialization
-    public CartViewModel() {
-        repository = new SellingWindowRepository();
-        cartItems = new MutableLiveData<>(repository.getCartItems());
-    }
+    private final SellingWindowRepository repository = SellingWindowRepository.getInstance();
+    private final MutableLiveData<List<CartModel>> cartItems = new MutableLiveData<>(repository.getCartItems());
 
     // Get Cart Items
     public LiveData<List<CartModel>> getCartItems() {
@@ -31,6 +25,18 @@ public class CartViewModel extends ViewModel {
         cartItems.setValue(repository.getCartItems()); // Update liveData
     }
 
+    // Confirm cart and deduct stock in Firebase
+    public void confirmCart(Runnable onComplete) {
+        repository.confirmCartAndDeductStock(() -> {
+            cartItems.setValue(repository.getCartItems()); // Only update after stock changes
+            if (onComplete != null) onComplete.run();      // Optional: Notify the UI
+        });
 
+    }
+
+    // Calculates the total cost of all cart items.
+    public double getCartTotal() {
+        return SellingWindowRepository.calculateTotal(repository.getCartItems());
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.example.bentory_app.activities;
 
 import android.os.Bundle;
-// import android.widget.TextView; // No longer needed for toolbar title
+import android.widget.TextView;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 // import androidx.appcompat.app.AppCompatActivity; // Extends BaseActivity
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivity
+
+    ImageButton backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,15 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
         TopSellingAdapter adapter2 = new TopSellingAdapter(itemList2);
         recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBottom.setAdapter(adapter2);
+
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
     }
 }

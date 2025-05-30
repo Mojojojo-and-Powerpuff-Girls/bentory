@@ -1,6 +1,9 @@
 package com.example.bentory_app.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bentory_app.model.ProductModel;
@@ -10,30 +13,51 @@ import java.util.List;
 import java.util.Set;
 
 public class ProductViewModel extends ViewModel {
+
+    // Repository instance used to abstract and manage all Firebase operations.
     private ProductRepository repository;
+
+    // LiveData that holds the current list of products retrieved from the repository.
     public LiveData<List<ProductModel>> items;
-
-    public ProductViewModel() {
-        repository = new ProductRepository();
-        items = repository.getData();
-    }
-
     public LiveData<List<ProductModel>> getItems() {
         return items;
     }
 
-    // 1. Method to add a new product through the repository, this method acts as a middle layer between the UI and
-    // the repo, delegating the actual database operation to the repository to maintain a clean separation of concerns.
-    public void addProduct (ProductModel product) {
-        // Step 1: Pass the product object to the repository for saving to the database.
-        // WHY: The repository is responsible for managing data operations, including adding products to Firebase.
-        repository.addProduct(product);
+
+
+    // Constructor for the ViewModel.
+    // Initializes the repository and fetches the product list from Firebase through the repository.
+    public ProductViewModel() {
+        // Connect LiveData to repository’s product list.
+        repository = new ProductRepository();
+        items = repository.getData(); //// 'getData()' contains a method (found at 'ProductRepository' in 'repository' directory).
     }
 
-    // 2. Delete selected products by their IDs
-    // WHY: This method delegates the deletion process to the repository.
+
+
+    // (ADDING PRODUCTS TO FIREBASE):
+    // Adds a new product to Firebase through the repository.
+    public void addProduct (ProductModel product) {
+        repository.addProduct(product); //// 'addProduct()' contains a method (found at 'ProductRepository' in 'repository' directory).
+    }
+
+
+
+    // Delete multiple products from Firebase using their IDs.
     public void deleteSelectedProducts(Set<String> idsToDelete) {
-        repository.deleteProductsByIds(idsToDelete);
+        repository.deleteProductsByIds(idsToDelete); //// 'deleteProductsByIds()' contains a method (found at 'ProductRepository' in 'repository' directory).
+    }
+
+    // Search product through barcode
+    public void searchProductByBarcode(String barcode, ProductRepository.ProductCallback callback) {
+        Log.d("ProductVM", "searchProductByBarcode called with: " + barcode);
+        repository.getProductByMatchingBarcode(barcode, callback);
+    }
+
+
+    // Updates an existing product in Firebase.
+    public void updateProduct(ProductModel updatedProduct) {
+        repository.updateProduct(updatedProduct); //// 'updateProduct()' contains a method (found at 'ProductRepository' in 'repository' directory).
     }
 
 }

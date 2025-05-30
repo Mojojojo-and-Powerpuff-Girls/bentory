@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Inventory">
+    android:orientation="vertical"
+    tools:context=".activities.LandingPage"
+    android:background="#FFF1D7">
 
     <!-- Main content -->
     <LinearLayout
@@ -20,61 +22,107 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:paddingLeft="15dp">
+            android:layout_weight="1" >
 
-            <androidx.appcompat.widget.SearchView
+            <EditText
                 android:id="@+id/searchView"
-                android:layout_width="323dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Search here..."
+                android:paddingStart="50dp"
+                android:textColorHint="#888888"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:fontFamily="@font/pixelify_sans"
                 android:background="@drawable/search_bar"
-                android:iconifiedByDefault="false"
-                android:queryHint="Search here" />
+                android:textCursorDrawable="@drawable/cursor_black"/>
 
             <ImageButton
-                android:id="@+id/filterBtn"
-                android:layout_width="49dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
+                android:id="@+id/searchScannerBtn"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="Scan Barcode"
                 android:background="@android:color/transparent"
-                android:contentDescription="filterbutton"
-                app:srcCompat="@drawable/filter_icon" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/deleteBtnContainer"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:visibility="visible"
-            android:layout_marginTop="0dp"
-            android:layout_marginStart="300dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/deleteBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="deletebutton"
-                app:srcCompat="@drawable/scanner" />
+                android:src="@drawable/search_barcode_btn" />
         </FrameLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="697dp"
-            android:contentDescription="view list of products"
-            android:paddingTop="20dp"
-            android:paddingHorizontal="10dp"/>
+        </LinearLayout>
+        <ImageButton
+            android:id="@+id/filterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="filterbutton"
+            app:srcCompat="@drawable/filter_icon" />
 
     </LinearLayout>
 
+    <!-- Delete Button below Search -->
+    <ImageButton
+        android:id="@+id/deleteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="85dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="deletebutton"
+        app:srcCompat="@drawable/select_items"
+        app:layout_constraintTop_toBottomOf="@id/searchLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- RecyclerView fills the rest -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="10dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/deleteBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="view list of products"
+        android:padding="8dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barcodeScannerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ExtraText">
+
+        <!-- This blocks touch but NOT the toolbar -->
+        <View
+            android:id="@+id/touchBlocker"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.journeyapps.barcodescanner.DecoratedBarcodeView
+            android:id="@+id/barcodeScanner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     <!-- Navigation drawer (burger menu) -->
     <LinearLayout
         android:id="@+id/nav_drawer"
@@ -84,6 +132,18 @@
         android:background="@drawable/menu_background"
         android:orientation="vertical">
 
+        <View
+            android:id="@+id/targetOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:background="@drawable/target_size"
+            app:layout_constraintWidth_percent="1"
+            app:layout_constraintHeight_percent="0.60"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,6 +151,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp">
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
             <ImageView
                 android:id="@+id/burgerNameplate"
                 android:layout_width="match_parent"
@@ -100,6 +161,7 @@
                 android:src="@drawable/burger_nameplate"
                 android:contentDescription="Burger Nameplate" />
 
+</androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
                 android:id="@+id/textViewGreeting"
                 android:layout_width="match_parent"

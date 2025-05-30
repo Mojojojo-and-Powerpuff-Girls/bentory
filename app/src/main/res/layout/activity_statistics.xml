@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Statistics">
+    android:orientation="vertical"
+    tools:context=".activities.LandingPage"
+    android:background="#FFF1D7">
 
     <!-- Main content -->
     <LinearLayout
@@ -13,16 +15,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+    <include layout="@layout/reusable_toolbar" />
 
-        <include layout="@layout/reusable_toolbar" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTopStatistics"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        android:layout_marginTop="360dp"
+        android:contentDescription="view list of stats"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintBottom_toTopOf="@id/statistics_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.35" />
+
+    <!-- Top Selling Section (with background image) -->
+    <FrameLayout
+        android:id="@+id/statistics_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewTopStatistics"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:padding="5dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <ImageView
+            android:background="@drawable/topsellingsection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTopStatistics"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
-            android:padding="10dp"
-            android:layout_gravity="center"
-            android:contentDescription="view list of stats" />
+            android:layout_height="200dp"
+            android:layout_marginTop="150dp"
+            android:padding="1.5dp"
+            android:contentDescription="view list of top selling" />
 
         <FrameLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,146 +64,4 @@
             android:layout_height="632dp"
             android:layout_gravity="center">
 
-            <ImageView
-                android:background="@drawable/topsellingsection"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewBottomStatistics"
-                android:layout_width="match_parent"
-                android:layout_height="320dp"
-                android:layout_marginTop="135dp"
-                android:padding="10dp"
-                android:contentDescription="view list of top selling" />
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-    <!-- Navigation drawer (burger menu) -->
-    <LinearLayout
-        android:id="@+id/nav_drawer"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/menu_background"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp">
-
-            <ImageView
-                android:id="@+id/burgerNameplate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/burger_nameplate"
-                android:contentDescription="Burger Nameplate" />
-
-            <TextView
-                android:id="@+id/textViewGreeting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/pixelify_sans"
-                android:padding="16dp"
-                android:text="Hi, Oilai"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-        </FrameLayout>
-
-        <ImageButton
-            android:id="@+id/buttonAddProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Add Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_add_product_button" />
-
-        <ImageButton
-            android:id="@+id/buttonInventory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Inventory"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_inventory_button" />
-
-        <ImageButton
-            android:id="@+id/buttonSellingWindow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Selling Window"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_selling_window_button" />
-
-        <ImageButton
-            android:id="@+id/buttonStatistics"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Statistics"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_statistics_button" />
-
-        <ImageButton
-            android:id="@+id/buttonScanProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Scan Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_scan_button" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/buttonLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="100dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Logout"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logout_icon" />
-
-    </LinearLayout>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

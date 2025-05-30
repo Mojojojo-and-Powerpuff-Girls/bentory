@@ -1,5 +1,7 @@
 package com.example.bentory_app.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -20,52 +22,57 @@ import java.util.TimeZone;
 
 public class ProductRepository {
 
+    // Firebase reference pointing to the 'products' node in the RealTime Database
     private DatabaseReference database;
-
+    private ValueEventListener listener;
     public ProductRepository() {
-        database = FirebaseDatabase.getInstance().getReference().child("products");
+        this(FirebaseDatabase.getInstance().getReference().child("products"), null);
     }
 
-    public LiveData<List<ProductModel>> getData() {
+    // This constructor allows injecting a custom listener (for testing)
+    public ProductRepository(DatabaseReference databaseReference, ValueEventListener listener) {
+        this.database = databaseReference;
+        this.listener = listener;
+    }
 
+    // Retrieve all products from Firebase and wraps the result in LiveData.
+    public LiveData<List<ProductModel>> getData() {
         MutableLiveData<List<ProductModel>> mutableData = new MutableLiveData<>();
-        database.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = listener != null ? listener : new ValueEventListener() {
             final List<ProductModel> listData = new ArrayList<>();
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     listData.clear();
-
                     for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                         ProductModel productModel = dataSnapshot.getValue(ProductModel.class);
                         if (productModel != null){
+                            productModel.setId(dataSnapshot.getKey());
                             listData.add(productModel);
                         }
                     }
-                    mutableData.setValue(listData);
+                    mutableData.setValue(listData); // Push updated list to observers.
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Optional: Handle read error.
             }
-        });
+        };
+        database.addValueEventListener(valueEventListener);
         return mutableData;
     }
 
 
-    // 1. Method to add a new product to Firebase Realtime Database
-    // WHY: This method handles saving the product data to Firebase under a unique key.
-    public void addProduct (ProductModel product) {
 
-        // Step 1: Fetch the existing data from the Firebase database.
-        // WHY: We need to know how many items are already stored to generate a new, unique key for the new item.
+    // (ADDING PRODUCTS TO FIREBASE):
+    // Adds a new product to Firebase with an (customized) auto-generated ID and timestamp.
+    public void addProduct (ProductModel product) {
+        // Fetch the existing data from the Firebase database.
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Step 2: Find the highest numbered item key (e.g., "item3", "item4").
-                // WHY: So we can create a new item key that doesn't conflict (e.g., "item5").
                 long maxId = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
                     String key = child.getKey();
@@ -78,67 +85,65 @@ public class ProductRepository {
                         } catch (NumberFormatException ignored) {}
                     }
                 }
+
+                // Generate new unique product ID (e.g, "item4").
                 String itemKey = "item" + (maxId + 1);
 
-                // Step 3: Format the current date into a readable format and set the correct timezone
-                // WHY: This step ensures the date is displayed in the desired format ("May 8, 2025 | 5:44 PM")
-                // and in the correct timezone, regardless of the device's locale or timezone settings.
+                // Format and assign the current timestamp to product. Desired format: ("May 8, 2025 | 5:44 PM").
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy | h:mm a", Locale.getDefault());
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-                String formattedDate = sdf.format(new Date()); // get the current date and time
-                product.setDate_Added(formattedDate); // set formatted date
+                String formattedDate = sdf.format(new Date());  // get the current date and time.
+                product.setDate_Added(formattedDate);           // set formatted date.
 
-                // Step 4: Save the product data under the generated unique key.
-                // WHY: This stores the product's information in the Firebase database under the new key.
-                product.setId(itemKey); // Save the key in the product model for multiple deletion
+                // Save product under new key.
                 database.child(itemKey).setValue(product);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                // Optional: Handle error.
             }
         });
 
     }
 
 
-    // 2. Method to delete multiple products by their IDs from Firebase
-    // WHY: Centralizes deletion logic in repository, keeping activity/viewmodel clean.
-    public void deleteProductsByIds (Set<String> idsToDelete) {
 
-        // Step 1: Delete each selected item by its ID (key).
-        // WHY: This removes the chosen items from the database.
+    // Deletes products by ID and re-numbers the remaining ones sequentially.
+    public void deleteProductsByIds (Set<String> idsToDelete) {
+        // Delete each selected item by its ID (key).
         for (String id : idsToDelete) {
-            database.child(id).removeValue();
+            if (id != null && !id.trim().isEmpty()) {
+                database.child(id).removeValue();
+            } else {
+                Log.e("DeleteProducts", "Null or empty ID encountered in deleteProductsByIds");
+            }
         }
 
-        // Step 2: After deletion, fetch all remaining products.
-        // WHY: We'll need to reassign new sequential keys to remaining products.
+        // Reassign keys to remove gaps.
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<ProductModel> remainingProducts = new ArrayList<>();
 
-                // Step 3: Collect all remaining products into a list.
-                // WHY: We need to temporarily store them so we can reinsert them with new keys.
+                // Collect all remaining products into a list.
                 for (DataSnapshot child : snapshot.getChildren()) {
                     ProductModel product = child.getValue(ProductModel.class);
                     if (product != null) {
+                        product.setId(child.getKey());
                         remainingProducts.add(product);
                     }
                 }
 
-                // Step 4: Clear the entire database node.
-                // WHY: This ensures we remove all old keys before reinserting.
+                // Clear the entire database node.
                 database.removeValue().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Step 5: Reinsert remaining products with new sequential keys (item1, item2...).
-                        // WHY: This keeps the keys ordered and avoids gaps like "item1", "item3".
+
+                        // Reinsert remaining products with new sequential keys (item1, item2...).
                         for (int i = 0; i < remainingProducts.size(); i++) {
                             String newKey = "item" + (i + 1);
                             ProductModel updateProduct = remainingProducts.get(i);
-                            updateProduct.setId(newKey); // update the product's ID to the new key
+                            updateProduct.setId(newKey); // update the product's ID to the new key.
                             database.child(newKey).setValue(updateProduct);
                         }
                     }
@@ -147,12 +152,14 @@ public class ProductRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                // optional: Handle error.
             }
         });
     }
 
-    // 3. Method that Fetch a product from Firebase based on its barcode
+
+
+    // Looks for a product where the first/only barcode matches.
     public void getProductByBarcode(String barcode, ProductCallback callback) {
         database.orderByChild("barcode").equalTo(barcode)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -162,25 +169,139 @@ public class ProductRepository {
                             for (DataSnapshot child : snapshot.getChildren()) {
                                 ProductModel product = child.getValue(ProductModel.class);
                                 if (product != null) {
-                                    callback.onProductFound(product); // Product found
+                                    callback.onProductFound(product);    // Product found
                                     return;
                                 }
                             }
                         }
-                        callback.onProductNotFound(); // No matching product found
+                        callback.onProductNotFound();                   // No matching product found
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        callback.onError(error.getMessage()); // Handle Firebase query error
+                        callback.onError(error.getMessage());           // Handle Firebase query error
                     }
                 });
     }
 
-    // Callback interface for barcode product lookup
+
+
+    // Looks through all products to find one that contains the given barcode in its barcode list.
+    public void getProductByMatchingBarcode(String barcode, ProductCallback callback) {
+        Log.d("ProductRepo", "getProductByMatchingBarcode called with: " + barcode);
+
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("ProductRepo", "Data snapshot received");
+                ProductModel match = findMatchingProduct(snapshot, barcode);
+                if (match != null) {
+                    Log.d("ProductRepo", "Product match found: " + match.getName());
+                    callback.onProductFound(match);
+                } else {
+                    Log.d("ProductRepo", "No product match found");
+                    callback.onProductNotFound();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ProductRepo", "Firebase error: " + error.getMessage());
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+
+
+    // Adds a new barcode to a product, if not already in the list and under the 5-barcode limit.
+    public void addBarcodeToProduct(String productId, String newBarcode, BarcodeUpdateCallback callback) {
+        database.child(productId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ProductModel product = snapshot.getValue(ProductModel.class);
+                if (product != null) {
+                    List<String> barcode = product.getBarcode();
+                    if (barcode == null) barcode = new ArrayList<>();
+
+                    if (barcode.contains(newBarcode)) {
+                        callback.onFailure("Barcode already exists.");
+                        return;
+                    }
+
+                    if (barcode.size() >= 5) {
+                        callback.onFailure("Limit of 5 barcodes reached.");
+                        return;
+                    }
+
+                    barcode.add(newBarcode);
+                    product.setBarcode(barcode);
+
+                    database.child(productId).setValue(product)
+                            .addOnSuccessListener(aVoid -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                } else {
+                    callback.onFailure("Product not found.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.getMessage());
+            }
+        });
+    }
+
+
+
+    // Updates an existing product record in Firebase.
+    public void updateProduct(ProductModel updatedProduct) {
+        if (updatedProduct == null || updatedProduct.getId() == null) return;
+        database.child(updatedProduct.getId()).setValue(updatedProduct);
+    }
+
+
+
+    //// !!! CALLBACK INTERFACES !!! ////
+
+    // Callback for product search based on barcode.
     public interface ProductCallback {
         void onProductFound(ProductModel product);
         void onProductNotFound();
         void onError(String error);
     }
+
+    // Callback for adding a barcode to an existing product.
+    public interface BarcodeUpdateCallback {
+        void onSuccess();
+        void onFailure(String error);
+    }
+
+
+
+    //// !!! METHODS !!! ////
+
+    // Helper method to search all products and match any barcode in the list.
+    private ProductModel findMatchingProduct(DataSnapshot snapshot, String barcode) {
+        // DEBUGGER
+        if (barcode == null) {
+            Log.d("ProductRepo", "Scanned barcode is null!");
+            return null;
+        }
+        for (DataSnapshot child : snapshot.getChildren()) {
+            ProductModel product = child.getValue(ProductModel.class);
+            if (product != null && product.getBarcode() != null) {
+                for (String b : product.getBarcode()) {
+                    Log.d("ProductRepo", "Checking product barcode: " + b + " against scanned barcode: " + barcode);
+                    if (b != null && barcode != null && b.trim().equals(barcode.trim())) {
+                        Log.d("ProductRepo", "Match found: " + product.getName());
+                        return product;
+                    }
+                }
+            }
+        }
+        Log.d("ProductRepo", "No matching product found for barcode " + barcode);
+        return null;
+    }
+
 }
