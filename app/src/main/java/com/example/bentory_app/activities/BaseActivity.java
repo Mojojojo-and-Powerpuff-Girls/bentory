@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,21 +36,33 @@ public class BaseActivity extends AppCompatActivity {
             if (burgerIcon != null) {
                 if (showBurgerMenu) {
                     burgerIcon.setVisibility(View.VISIBLE);
-                    // Remove the automatic click listener - let individual activities handle this
-                    // burgerIcon.setOnClickListener(v -> {
-                    // Intent intent = new Intent(BaseActivity.this, BurgerMenuActivity.class);
-                    // startActivity(intent);
-                    // });
+
                 } else {
                     burgerIcon.setVisibility(View.GONE);
                 }
             }
+
+            // Setup bell icon click listener for all activities
+            setupBellIconClick();
         }
     }
 
-    // Overloaded method for activities that don't need to show the burger menu by
-    // default
     protected void setupToolbar(int toolbarId, String title) {
         setupToolbar(toolbarId, title, false);
+    }
+
+    protected void setupBellIconClick() {
+        // Use post to ensure views are fully inflated
+        findViewById(android.R.id.content).post(() -> {
+            ImageButton bellIcon = findViewById(R.id.imageButton);
+            if (bellIcon != null) {
+                bellIcon.setOnClickListener(v -> {
+                    // Navigate to Notifications activity
+                    Intent intent = new Intent(this, Notifications.class);
+                    startActivity(intent);
+
+                });
+            }
+        });
     }
 }

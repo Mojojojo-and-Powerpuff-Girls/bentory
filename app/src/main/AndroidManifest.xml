@@ -31,6 +31,9 @@
             android:name=".activities.Inventory"
             android:exported="false" />
         <activity
+            android:name=".activities.Notifications"
+            android:exported="false" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
