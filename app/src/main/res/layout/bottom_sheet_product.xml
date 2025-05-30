@@ -17,7 +17,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center_vertical">
 
-        <TextView
+        <EditText
             android:id="@+id/product_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -27,7 +27,11 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:hint="Name"
+            android:enabled="false"
+            android:inputType="text"
+            android:background="@android:color/transparent"/>
 
         <ImageButton
             android:id="@+id/editBtn"
@@ -52,23 +56,142 @@
             android:id="@+id/product_details_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
             android:fontFamily="@font/pixelify_sans"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="Details:" />
 
-        <TextView
-            android:id="@+id/product_details"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:gravity="end"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/pixelify_sans"
-            android:text="N/A" />
+            android:minHeight="250dp"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" >
+
+            <EditText
+                android:id="@+id/edit_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Category"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="text"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Quantity"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="number"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_cost_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cost Price"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="numberDecimal"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_sale_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sale Price"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="numberDecimal"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="N/A"
+                android:textColorHint="@color/black"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="text"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="N/A"
+                android:textColorHint="@color/black"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="text"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="N/A"
+                android:textColorHint="@color/black"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:background="@android:color/transparent"/>
+
+            <EditText
+                android:id="@+id/edit_barcodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Barcodes"
+                android:fontFamily="@font/pixelify_sans"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:enabled="false"
+                android:inputType="textMultiLine"
+                android:digits="0123456789876\n"
+                android:maxLines="5"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

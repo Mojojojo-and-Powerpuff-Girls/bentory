@@ -3,6 +3,7 @@ package com.example.bentory_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -158,7 +160,7 @@ public class Inventory extends AppCompatActivity {
             boolean isDeleteModeActive = !adapter.getDeleteMode();
             if (isDeleteModeActive) {
                 adapter.setDeleteMode(true);
-                dltButton.setImageResource(R.drawable.trash);
+                dltButton.setImageResource(R.drawable.delete_items);
             } else {
                 Set<String> selectedItems = adapter.getSelectedItems();
                 if (!selectedItems.isEmpty()) {
@@ -265,16 +267,31 @@ public class Inventory extends AppCompatActivity {
         View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_product, null);
         bottomSheetView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                700 // Fixed height for the bottom sheet.
+                1000 // Fixed height for the bottom sheet.
         ));
 
         // Bind UI Elements.
-        TextView name = bottomSheetView.findViewById(R.id.product_name);
         TextView detailsLabel = bottomSheetView.findViewById(R.id.product_details_label);
-        TextView details = bottomSheetView.findViewById(R.id.product_details);
+        ImageButton editButton = bottomSheetView.findViewById(R.id.editBtn);
+        EditText name = bottomSheetView.findViewById(R.id.product_name);
+        EditText category = bottomSheetView.findViewById(R.id.edit_category);
+        EditText quantity = bottomSheetView.findViewById(R.id.edit_quantity);
+        EditText costPrice = bottomSheetView.findViewById(R.id.edit_cost_price);
+        EditText salePrice = bottomSheetView.findViewById(R.id.edit_sale_price);
+        EditText size = bottomSheetView.findViewById(R.id.edit_size);
+        EditText weight = bottomSheetView.findViewById(R.id.edit_weight);
+        EditText description = bottomSheetView.findViewById(R.id.edit_description);
+        EditText barcode_list = bottomSheetView.findViewById(R.id.edit_barcodes);
 
         // Set data.
         name.setText(product.getName());
+        category.setText(product.getCategory());
+        quantity.setText(String.valueOf(product.getQuantity()));
+        costPrice.setText(String.format("%.2f", product.getCost_Price())); // if you want two decimal places
+        salePrice.setText(String.format("%.2f", product.getSale_Price()));
+        size.setText(product.getSize());
+        weight.setText(product.getWeight());
+        description.setText(product.getDescription());
 
         String combinedDetailsLabel = "Category: " +  "\n" +
                 "Quantity: " +  "\n" +
@@ -282,23 +299,88 @@ public class Inventory extends AppCompatActivity {
                 "Sale Price: " + "\n" +
                 "Size: " +  "\n" +
                 "Weight: " + "\n" +
-                "Description: ";
+                "Description: " + "\n" +
+                "Barcode List: ";
+
+        String barcodeListText = TextUtils.join(", ", product.getBarcode());
 
         detailsLabel.setText(combinedDetailsLabel);
+        barcode_list.setText(barcodeListText);
 
-        String combinedDetails = product.getCategory() + "\n" +
-                product.getQuantity() + "\n" +
-                product.getCost_Price() + "\n" +
-                product.getSale_Price() + "\n" +
-                product.getSize() + "\n" +
-                product.getWeight() + "\n" +
-                product.getDescription();
+        // Toggle editing on click.
+        editButton.setOnClickListener(v -> {
+            boolean isEditing = !category.isEnabled(); // Check if we're entering or exiting edit mode.
 
-        details.setText(combinedDetails);
+            if (!isEditing) {
+                // Validate all required fields.
+                if (!validateField(name, "Name cannot be empty")) return;
+                if (!validateField(category, "Category cannot be empty")) return;
+                if (!validateField(quantity, "Quantity cannot be empty")) return;
+                if (!validateField(costPrice, "Cost Price cannot be empty")) return;
+                if (!validateField(salePrice, "Sale Price cannot be empty")) return;
+                if (!validateField(barcode_list, "Barcode list cannot be empty")) return;
+
+                // Save data
+                product.setName(name.getText().toString().trim());
+                product.setCategory(category.getText().toString().trim());
+                product.setQuantity(Integer.parseInt(quantity.getText().toString().trim()));
+                product.setCost_Price(Double.parseDouble(costPrice.getText().toString().trim()));
+                product.setSale_Price(Double.parseDouble(salePrice.getText().toString().trim()));
+                product.setSize(size.getText().toString().trim());
+                product.setWeight(weight.getText().toString().trim());
+                product.setDescription(description.getText().toString().trim());
+
+                // Optional fields: size, weight, description.
+                product.setSize(getOptionalValue(size));
+                product.setWeight(getOptionalValue(weight));
+                product.setDescription(getOptionalValue(description));
+
+                // Parse updated barcode list (comma-separated)
+                String rawInput = barcode_list.getText().toString();
+                List<String> barcodes = Arrays.asList(rawInput.split("\\n"));
+                product.setBarcode(barcodes);
+
+                productViewModel.updateProduct(product); // Update in firebase.
+                Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
+                editButton.setImageResource(R.drawable.square_pen); // the pen edit button.
+            } else {
+                editButton.setImageResource(R.drawable.red_square_pen); // switch to save icon.
+                category.requestFocus(); // Optional: focus on first field.
+            }
+
+            // Toggle all fields.
+            name.setEnabled(isEditing);
+            category.setEnabled(isEditing);
+            quantity.setEnabled(isEditing);
+            costPrice.setEnabled(isEditing);
+            salePrice.setEnabled(isEditing);
+            size.setEnabled(isEditing);
+            weight.setEnabled(isEditing);
+            description.setEnabled(isEditing);
+            barcode_list.setEnabled(isEditing);
+
+        });
 
         // Show the bottom sheet.
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
+    }
+
+    // Validate fields, do not allow to leave empty editText.
+    private boolean validateField(EditText field, String errorMsg) {
+        String text = field.getText().toString().trim();
+        if (text.isEmpty()) {
+            field.setError(errorMsg);
+            field.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    // For optional fields, matic NA for empty when saved. (For firebase)
+    private String getOptionalValue(EditText field) {
+        String text = field.getText().toString().trim();
+        return text.isEmpty() ? "N/A" : text;
     }
 
     private final BarcodeCallback callback = new BarcodeCallback() {
