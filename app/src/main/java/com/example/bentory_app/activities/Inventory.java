@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -44,7 +43,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public class Inventory extends AppCompatActivity {
+public class Inventory extends BaseActivity { // Extends BaseActivity
 
     // ViewModels
     private ProductViewModel productViewModel;
@@ -101,6 +100,9 @@ public class Inventory extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+        // Setup toolbar using BaseActivity method
+        // For Inventory, we likely want the burger menu, so showBurgerMenu is true
+        setupToolbar(R.id.my_toolbar, "Inventory", true);
 
         // Initialize ViewModel
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
@@ -293,11 +295,11 @@ public class Inventory extends AppCompatActivity {
         weight.setText(product.getWeight());
         description.setText(product.getDescription());
 
-        String combinedDetailsLabel = "Category: " +  "\n" +
-                "Quantity: " +  "\n" +
-                "Cost Price: " +  "\n" +
+        String combinedDetailsLabel = "Category: " + "\n" +
+                "Quantity: " + "\n" +
+                "Cost Price: " + "\n" +
                 "Sale Price: " + "\n" +
-                "Size: " +  "\n" +
+                "Size: " + "\n" +
                 "Weight: " + "\n" +
                 "Description: " + "\n" +
                 "Barcode List: ";

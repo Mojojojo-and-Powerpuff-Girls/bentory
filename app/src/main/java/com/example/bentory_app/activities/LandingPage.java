@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,7 +18,9 @@ import com.example.bentory_app.subcomponents.MenuAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandingPage extends AppCompatActivity {
+public class LandingPage extends BaseDrawerActivity {
+
+    private ImageButton addProductBtn, sellProductBtn, inventoryBtn, statsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +28,11 @@ public class LandingPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
 
-        // setup toolbar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        // Setup toolbar using BaseActivity method
+        setupToolbar(R.id.my_toolbar, "Landing Page", true);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("My Landing Page");
-            actionBar.setDisplayHomeAsUpEnabled(false);
-        }
+        // Setup drawer functionality
+        setupDrawer();
 
         // window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -46,11 +41,11 @@ public class LandingPage extends AppCompatActivity {
             return insets;
         });
 
-        // init buttons
-        ImageButton addProductBtn = findViewById(R.id.addProductBtn);
-        ImageButton sellProductBtn = findViewById(R.id.sellProductBtn);
-        ImageButton inventoryBtn = findViewById(R.id.inventoryBtn);
-        ImageButton statsBtn = findViewById(R.id.statsBtn);
+        // Initialize main content buttons
+        addProductBtn = findViewById(R.id.addProductBtn);
+        sellProductBtn = findViewById(R.id.sellProductBtn);
+        inventoryBtn = findViewById(R.id.inventoryBtn);
+        statsBtn = findViewById(R.id.statsBtn);
 
         // animate buttons
         setButtonClickListener(addProductBtn, AddProduct.class);
@@ -61,7 +56,6 @@ public class LandingPage extends AppCompatActivity {
         // SETUP RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         List<StatsModel> itemList = new ArrayList<>();
-        itemList.add(new StatsModel("Total Sales", "Month of April", "PHP 55,456.90"));
         itemList.add(new StatsModel("Total Expenses", "Month of April", "PHP 10,456.00"));
         itemList.add(new StatsModel("Net Profit", "Month of April", "PHP 45,000.90"));
         itemList.add(new StatsModel("Projected Sales", "Month of May", "PHP 70,000.00"));
@@ -69,19 +63,16 @@ public class LandingPage extends AppCompatActivity {
         MenuAdapter adapter = new MenuAdapter(itemList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
     }
-        // animation method
-        private void setButtonClickListener(ImageButton button, Class<?> targetActivity){
-            button.setOnClickListener(v ->{
-                v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
-                        .withEndAction(() -> {
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(100);
-                    startActivity(new Intent(LandingPage.this, targetActivity));
+
+    // animation method for main content buttons
+    private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {
+        button.setOnClickListener(v -> {
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
+                    .withEndAction(() -> {
+                        v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                        startActivity(new Intent(LandingPage.this, targetActivity));
                     });
-                });
-        }
-
-
+        });
+    }
 }
-

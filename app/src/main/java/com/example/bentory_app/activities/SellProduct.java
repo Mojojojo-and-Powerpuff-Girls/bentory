@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,11 +32,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.CartModel;
 import com.example.bentory_app.model.ProductModel;
-import com.example.bentory_app.model.StatsModel;
 import com.example.bentory_app.repository.ProductRepository;
 import com.example.bentory_app.subcomponents.CartAdapter;
-import com.example.bentory_app.subcomponents.InventoryAdapter;
-import com.example.bentory_app.subcomponents.MenuAdapter;
 import com.example.bentory_app.subcomponents.SellingProductAdapter;
 import com.example.bentory_app.viewmodel.CartViewModel;
 import com.example.bentory_app.viewmodel.ProductViewModel;
@@ -54,7 +50,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SellProduct extends AppCompatActivity {
+public class SellProduct extends BaseDrawerActivity {
 
     private ToneGenerator toneGen;
     private Vibrator vibrator;
@@ -77,11 +73,18 @@ public class SellProduct extends AppCompatActivity {
         setContentView(R.layout.activity_sell_product);
 
         // Set padding for system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Setup toolbar using BaseActivity method
+        // For SellProduct, we likely want the burger menu, so showBurgerMenu is true
+        setupToolbar(R.id.my_toolbar, "Selling Window", true);
+
+        // Setup drawer functionality
+        setupDrawer();
 
         // Initialize ViewModels
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class); // !!!!!!!!!!!!!!!!!!!!
@@ -175,7 +178,6 @@ public class SellProduct extends AppCompatActivity {
             sellingAdapter.notifyDataSetChanged();
         });
 
-
         recyclerViewSelling.setAdapter(sellingAdapter);
 
         // Observe product data from SellingViewModel
@@ -226,7 +228,8 @@ public class SellProduct extends AppCompatActivity {
 
             // Resume scanner only if it was active before when bottom sheet is dismissed
             bottomSheetDialog.setOnDismissListener(dialog -> {
-                if (isScannerActive) barcodeView.resume();
+                if (isScannerActive)
+                    barcodeView.resume();
             });
 
             RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
@@ -238,7 +241,6 @@ public class SellProduct extends AppCompatActivity {
 
             bottomSheetDialog.show();
         });
-
 
         // Start continuous barcode scanning with the provided callback
         barcodeView.decodeContinuous(callback);
@@ -259,11 +261,9 @@ public class SellProduct extends AppCompatActivity {
             isScannerActive = !isScannerActive; // Update scanner state flag
         });
 
-
         // Initialize sounds and vibration
         toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 200);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
 
         // Manual input of code
         manualCode.setOnEditorActionListener((v, actionId, event) -> {
@@ -271,7 +271,8 @@ public class SellProduct extends AppCompatActivity {
 
             if (!enteredCode.isEmpty()) {
                 List<ProductModel> products = sellingViewModel.getItems().getValue();
-                if (products == null) return true;
+                if (products == null)
+                    return true;
 
                 // Search for product by code
                 ProductModel matched = null;
@@ -295,8 +296,7 @@ public class SellProduct extends AppCompatActivity {
                             matched.getSize(),
                             1,
                             matched.getSale_Price(),
-                            matched
-                    );
+                            matched);
 
                     cartViewModel.addToCart(cartItem);
                     matched.setQuantity(matched.getQuantity() - 1);
@@ -364,8 +364,7 @@ public class SellProduct extends AppCompatActivity {
                         product.getSize(),
                         1,
                         product.getSale_Price(),
-                        product
-                );
+                        product);
                 cartViewModel.addToCart(cartItem);
 
                 product.setQuantity(currentStock - 1);
@@ -397,7 +396,6 @@ public class SellProduct extends AppCompatActivity {
             }
         });
     }
-
 
     // Handle Barcode scans in real time.
     private final BarcodeCallback callback = new BarcodeCallback() {
@@ -441,8 +439,7 @@ public class SellProduct extends AppCompatActivity {
                 // Add to cart
                 CartModel cartItem = new CartModel(
                         matched.getId(), matched.getName(), matched.getSize(), 1,
-                        matched.getSale_Price(), matched
-                );
+                        matched.getSale_Price(), matched);
                 cartViewModel.addToCart(cartItem);
                 matched.setQuantity(matched.getQuantity() - 1);
 
@@ -569,7 +566,8 @@ public class SellProduct extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isScannerActive) barcodeView.resume();
+        if (isScannerActive)
+            barcodeView.resume();
     }
 
     @Override

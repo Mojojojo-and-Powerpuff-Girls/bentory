@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -38,6 +39,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            
+            <include layout="@layout/reusable_toolbar" />
             android:layout_height="wrap_content"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
@@ -127,20 +135,31 @@
         android:padding="5dp"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <ImageView
-            android:background="@drawable/topsellingsection"
+        <ImageButton
+            android:id="@+id/buttonScanProduct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewBottomStatistics"
+        <Space
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="150dp"
             android:padding="1.5dp"
             android:contentDescription="view list of top selling" />
 
-    </FrameLayout>
+        <ImageButton
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="100dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Logout"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logout_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

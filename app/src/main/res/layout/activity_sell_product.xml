@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -49,7 +50,85 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:contentDescription="burgerbutton"
+                android:contentDescription="Open cart"
+                android:src="@drawable/pullout_icon" />
+
+        </FrameLayout>
+
+        <!-- Barcode scanner overlay -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/barcodeScannerLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/main"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Touch blocker -->
+            <View
+                android:id="@+id/touchBlocker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Barcode scanner view -->
+            <com.journeyapps.barcodescanner.DecoratedBarcodeView
+                android:id="@+id/barcodeScanner"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Scanner target overlay -->
+            <View
+                android:id="@+id/targetOverlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                android:background="@drawable/target_size"
+                app:layout_constraintWidth_percent="1"
+                app:layout_constraintHeight_percent="0.60"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Navigation drawer (burger menu) -->
+    <LinearLayout
+        android:id="@+id/nav_drawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/menu_background"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/burgerNameplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/burger_icon"
                 app:layout_constraintStart_toStartOf="parent"
@@ -184,9 +263,8 @@
         <ImageView
             android:id="@+id/cart_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="Cart image"
-            android:src="@drawable/cart_box" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/pullout_btn"
@@ -195,9 +273,10 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Pullout button for cart"
-            android:src="@drawable/pullout_icon" />
-    </FrameLayout>
+            android:contentDescription="Logout"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logout_icon" />
 
     <!-- Scan barcode button -->
     <LinearLayout

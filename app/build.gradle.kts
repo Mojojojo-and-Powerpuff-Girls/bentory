@@ -38,7 +38,15 @@ android {
 }
 
 dependencies {
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    
+    // Firebase dependencies (no version needed when using BOM)
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
 
+    // Other dependencies
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     testImplementation ("junit:junit:4.13.2")
     testImplementation ("org.mockito:mockito-core:5.12.0")
@@ -49,7 +57,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

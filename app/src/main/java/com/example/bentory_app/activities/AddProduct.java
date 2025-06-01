@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends BaseActivity {
 
     // ViewModels
     private ProductViewModel productViewModel;
@@ -61,6 +64,10 @@ public class AddProduct extends AppCompatActivity {
         });
 
         // Initialize Model/List = set and prepare for use.
+        // Setup toolbar using BaseActivity method
+        setupToolbar(R.id.my_toolbar, "Add Product");
+
+        // Initialize Model/List = set and prepare for use.
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         // Initialize Views = connect using findViewById.
@@ -79,8 +86,6 @@ public class AddProduct extends AppCompatActivity {
         targetOverlay = findViewById(R.id.targetOverlay);
         touchBlock = findViewById(R.id.touchBlocker);
         backBtn = findViewById(R.id.back_btn);
-
-
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
