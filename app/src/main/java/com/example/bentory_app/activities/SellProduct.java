@@ -73,7 +73,7 @@ public class SellProduct extends BaseDrawerActivity {
         setContentView(R.layout.activity_sell_product);
 
         // Set padding for system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_content), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -115,7 +115,8 @@ public class SellProduct extends BaseDrawerActivity {
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
 
             popupMenu.setOnMenuItemClickListener(item -> {
-                if (fullProductList == null) return false;
+                if (fullProductList == null)
+                    return false;
                 List<ProductModel> sortedList = new ArrayList<>(fullProductList);
 
                 if (item.getItemId() == R.id.menu_az) {
@@ -139,7 +140,8 @@ public class SellProduct extends BaseDrawerActivity {
         // Search listener
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -147,9 +149,9 @@ public class SellProduct extends BaseDrawerActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
-
 
         // Setup adapter and handle Add to Cart logic
         sellingAdapter = new SellingProductAdapter(product -> {
@@ -185,7 +187,6 @@ public class SellProduct extends BaseDrawerActivity {
             sellingAdapter.setProductList(productModels);
         });
 
-
         ImageButton cartButton = findViewById(R.id.pullout_btn);
         cartButton.setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
@@ -214,7 +215,8 @@ public class SellProduct extends BaseDrawerActivity {
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 int screenHeight = 2100;
 
-                FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = bottomSheetDialog
+                        .findViewById(com.google.android.material.R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
                     ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
@@ -307,7 +309,8 @@ public class SellProduct extends BaseDrawerActivity {
                     // Barcode not found - prompt user to link it
                     new AlertDialog.Builder(SellProduct.this)
                             .setTitle("Unknown Barcode")
-                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setMessage(
+                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Intent intent = new Intent(SellProduct.this, Inventory.class);
                                 intent.putExtra("scannedBarcode", enteredCode); // pass the barcode
@@ -320,7 +323,6 @@ public class SellProduct extends BaseDrawerActivity {
             return true;
         });
 
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +333,8 @@ public class SellProduct extends BaseDrawerActivity {
 
     // Filter products method
     private void filterProducts(String query) {
-        if (fullProductList == null) return;
+        if (fullProductList == null)
+            return;
 
         List<ProductModel> filtered = new ArrayList<>();
         for (ProductModel product : fullProductList) {
@@ -343,7 +346,6 @@ public class SellProduct extends BaseDrawerActivity {
 
         sellingAdapter.setProductList(filtered);
     }
-
 
     // Handle scanned barcode
     private void handleScannedBarcode(String scannedBarcode) {
@@ -378,8 +380,9 @@ public class SellProduct extends BaseDrawerActivity {
                 runOnUiThread(() -> {
                     new AlertDialog.Builder(SellProduct.this)
                             .setTitle("Unknown Barcode")
-                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
-                            .setPositiveButton("Yes", (dialog,which) -> {
+                            .setMessage(
+                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
                                 Intent intent = new Intent(SellProduct.this, Inventory.class);
                                 intent.putExtra("scannedBarcode", scannedBarcode);
                                 startActivity(intent);
@@ -466,7 +469,8 @@ public class SellProduct extends BaseDrawerActivity {
                 runOnUiThread(() -> {
                     new AlertDialog.Builder(SellProduct.this)
                             .setTitle("Unknown Barcode")
-                            .setMessage("This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setMessage(
+                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Intent intent = new Intent(SellProduct.this, Inventory.class);
                                 intent.putExtra("scannedBarcode", scannedCode); // pass the barcode
@@ -482,7 +486,8 @@ public class SellProduct extends BaseDrawerActivity {
     // BALIKAN TO!!!!!!!!!!!!!!!!!!!!!!!!
     private void showProductSelectionDialog(String newBarcode) {
         List<ProductModel> products = sellingViewModel.getItems().getValue();
-        if (products == null || products.isEmpty()) return;
+        if (products == null || products.isEmpty())
+            return;
 
         String[] productNames = new String[products.size()];
         for (int i = 0; i < products.size(); i++) {
@@ -508,7 +513,8 @@ public class SellProduct extends BaseDrawerActivity {
                                 // Add barcode
                                 selected.getBarcode().add(newBarcode);
                                 sellingViewModel.updateProduct(selected);
-                                Toast.makeText(this, "Barcode linked to " + selected.getName(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Barcode linked to " + selected.getName(), Toast.LENGTH_SHORT)
+                                        .show();
                             })
                             .setNegativeButton("No", null)
                             .show();
@@ -516,7 +522,6 @@ public class SellProduct extends BaseDrawerActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
 
     // Scans code for product search method
     private void scanBarcodeForProductSearch() {
@@ -562,7 +567,6 @@ public class SellProduct extends BaseDrawerActivity {
         });
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -575,6 +579,5 @@ public class SellProduct extends BaseDrawerActivity {
         super.onPause();
         barcodeView.pause();
     }
-
 
 }

@@ -89,7 +89,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
     private void setupBurgerMenuClick() {
         // Use post to ensure views are fully inflated
         findViewById(android.R.id.content).post(() -> {
-            ImageButton burgerIcon = findViewById(R.id.burger_icon);
+            ImageButton burgerIcon = findViewById(R.id.burgerbttn);
             if (burgerIcon != null && drawerLayout != null) {
                 burgerIcon.setOnClickListener(v -> {
                     drawerLayout.openDrawer(findViewById(R.id.nav_drawer));

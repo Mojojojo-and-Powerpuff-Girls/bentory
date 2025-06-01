@@ -1,57 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.LandingPage"
-    android:background="#FFF1D7">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.SellProduct">
 
-    <!-- Background image just for the toolbar/header area -->
-    <ImageView
-        android:id="@+id/header_background"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/upper_nav"
-        app:layout_constraintHeight_percent="0.14"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
+    <!-- Main content -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FFF1D7">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:contentInsetStart="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- Background image just for the toolbar/header area -->
+        <ImageView
+            android:id="@+id/header_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/upper_nav"
+            app:layout_constraintHeight_percent="0.14"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/my_toolbar"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="25dp"
-            android:paddingEnd="25dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="10dp">
+            android:background="@android:color/transparent"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="25dp"
+                android:paddingEnd="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="10dp">
+
+                <ImageButton
+                    android:id="@+id/burgerbttn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Open cart"
+                    android:src="@drawable/burger_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="bellbutton"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/bell_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Selling Window"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:fontFamily="@font/pixelify_sans"
+                    app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                    app:layout_constraintEnd_toStartOf="@id/imageButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- Search bar + Filter button -->
+        <LinearLayout
+            android:id="@+id/searchLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageButton
-                android:id="@+id/burgerbttn"
+                android:id="@+id/back_btn"
+                android:layout_width="64dp"
+                android:layout_height="71dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/back_btn" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <EditText
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search here..."
+                    android:paddingStart="50dp"
+                    android:textColorHint="#888888"
+                    android:textColor="#000000"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/pixelify_sans"
+                    android:background="@drawable/search_bar"
+                    android:textCursorDrawable="@drawable/cursor_black"/>
+
+                <ImageButton
+                    android:id="@+id/searchScannerBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:contentDescription="Scan Barcode"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/search_barcode_btn" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/filterBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Open cart"
-                android:src="@drawable/pullout_icon" />
+                android:contentDescription="filterbutton"
+                app:srcCompat="@drawable/filter_icon" />
+
+        </LinearLayout>
+
+        <!-- Scan barcode button -->
+        <LinearLayout
+            android:id="@+id/scannerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="180dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <EditText
+                android:id="@+id/sellingCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3.5"
+                android:background="@drawable/add_item_edit_box"
+                android:hint="-"
+                android:textColorHint="#00000000"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:fontFamily="@font/pixelify_sans"
+                android:textCursorDrawable="@drawable/cursor_black" />
+
+            <ImageButton
+                android:id="@+id/scannerBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="Scan Barcode"
+                android:background="@android:color/transparent"
+                android:src="@drawable/barcode_btn" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_begin="630dp"
+            android:orientation="horizontal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSelling"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:contentDescription="view list of available products"
+            app:layout_constraintTop_toBottomOf="@id/scannerLayout"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/pull_out"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/pullout_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:background="@android:color/transparent"
+                android:contentDescription="Open Cart"
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/view_cart_pullout" />
 
         </FrameLayout>
 
@@ -60,7 +243,7 @@
             android:id="@+id/barcodeScannerLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/main"
+            app:layout_constraintTop_toBottomOf="@id/header_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -130,241 +313,107 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/burger_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:contentDescription="bellbutton"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/bell_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:src="@drawable/burger_nameplate"
+                android:contentDescription="Burger Nameplate" />
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Selling Window"
-                android:textColor="#FFFFFF"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:fontFamily="@font/pixelify_sans"
-                app:layout_constraintStart_toEndOf="@id/burgerbttn"
-                app:layout_constraintEnd_toStartOf="@id/imageButton"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.appcompat.widget.Toolbar>
-    <!-- Your main content goes below the Toolbar -->
-
-    <!-- Search bar + Filter button -->
-    <LinearLayout
-        android:id="@+id/searchLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-        <ImageButton
-            android:id="@+id/back_btn"
-            android:layout_width="64dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/back_btn" />
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
-
-            <EditText
-                android:id="@+id/searchView"
+                android:id="@+id/textViewGreeting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Search here..."
-                android:paddingStart="50dp"
-                android:textColorHint="#888888"
-                android:textColor="#000000"
-                android:textSize="20dp"
+                android:layout_gravity="center"
                 android:fontFamily="@font/pixelify_sans"
-                android:background="@drawable/search_bar"
-                android:textCursorDrawable="@drawable/cursor_black"/>
+                android:padding="16dp"
+                android:text="Hi, User"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
 
-            <ImageButton
-                android:id="@+id/searchScannerBtn"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="15dp"
-                android:contentDescription="Scan Barcode"
-                android:background="@android:color/transparent"
-                android:src="@drawable/search_barcode_btn" />
         </FrameLayout>
 
         <ImageButton
-            android:id="@+id/filterBtn"
-            android:layout_width="wrap_content"
+            android:id="@+id/buttonAddProduct"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:contentDescription="filterbutton"
-            app:srcCompat="@drawable/filter_icon" />
+            android:contentDescription="Add Product"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/burger_add_product_button" />
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/buttonInventory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Inventory"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/burger_inventory_button" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintGuide_begin="630dp"
-        android:orientation="horizontal" />
+        <ImageButton
+            android:id="@+id/buttonSellingWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Selling Window"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/burger_selling_window_button" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSelling"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:contentDescription="view list of available products"
-        app:layout_constraintTop_toBottomOf="@id/scannerLayout"
-        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <ImageButton
+            android:id="@+id/buttonStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Statistics"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/burger_statistics_button" />
 
-    <FrameLayout
-        android:id="@+id/pull_out"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:translationY="350dp">
+        <ImageButton
+            android:id="@+id/buttonScanProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Scan Product"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/burger_scan_button" />
 
-        <ImageView
-            android:id="@+id/cart_image"
+        <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/pullout_btn"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="100dp"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Logout"
             android:padding="2dp"
             android:scaleType="fitCenter"
             android:src="@drawable/logout_icon" />
 
-    <!-- Scan barcode button -->
-    <LinearLayout
-        android:id="@+id/scannerLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_marginTop="180dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <EditText
-            android:id="@+id/sellingCode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3.5"
-            android:background="@drawable/add_item_edit_box"
-            android:hint="-"
-            android:textColorHint="#00000000"
-            android:paddingStart="15dp"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:fontFamily="@font/pixelify_sans"
-            android:textCursorDrawable="@drawable/cursor_black"
-            />
-        <ImageButton
-            android:id="@+id/scannerBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="Scan Barcode"
-            android:background="@android:color/transparent"
-            android:src="@drawable/barcode_btn" />
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/barcodeScannerLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/header_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ExtraText">
-
-        <!-- This blocks touch but NOT the toolbar -->
-        <View
-            android:id="@+id/touchBlocker"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <com.journeyapps.barcodescanner.DecoratedBarcodeView
-            android:id="@+id/barcodeScanner"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <View
-            android:id="@+id/targetOverlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            android:background="@drawable/target_size"
-            app:layout_constraintWidth_percent="1"
-            app:layout_constraintHeight_percent="0.60"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

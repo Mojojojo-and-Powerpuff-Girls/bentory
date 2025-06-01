@@ -21,6 +21,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +44,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public class Inventory extends BaseActivity { // Extends BaseActivity
+public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity to BaseDrawerActivity
 
     // ViewModels
     private ProductViewModel productViewModel;
@@ -104,6 +105,9 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
         // For Inventory, we likely want the burger menu, so showBurgerMenu is true
         setupToolbar(R.id.my_toolbar, "Inventory", true);
 
+        // Setup drawer functionality
+        setupDrawer();
+
         // Initialize ViewModel
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
@@ -118,7 +122,8 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
             PopupMenu popupMenu = new PopupMenu(Inventory.this, filterBtn);
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
-                if (fullProductList == null) return false;
+                if (fullProductList == null)
+                    return false;
                 List<ProductModel> sortedList = new ArrayList<>(fullProductList);
                 if (item.getItemId() == R.id.menu_az) {
                     Collections.sort(sortedList, Comparator.comparing(ProductModel::getName));
@@ -133,11 +138,18 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
 
         // Search Input
         searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterProducts(s.toString());
             }
-            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         // Search by barcode
@@ -188,33 +200,29 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
         backBtn.setOnClickListener(v -> {
             finish();
 
-
-//            if (isScannerActive) {
-//                // Hide scanner if it's active
-//                searchBarcode.setVisibility(View.GONE);
-//                searchTargetOverlay.setVisibility(View.GONE);
-//                touchBlock.setVisibility(View.GONE);
-//                backBtn.setVisibility(View.GONE); // hide back button again
-//                searchBarcode.pause();
-//                isScannerActive = false;
-//            } else {
-//                // Otherwise, act like a normal back press
-//                finish();
-//            }
+            // if (isScannerActive) {
+            // // Hide scanner if it's active
+            // searchBarcode.setVisibility(View.GONE);
+            // searchTargetOverlay.setVisibility(View.GONE);
+            // touchBlock.setVisibility(View.GONE);
+            // backBtn.setVisibility(View.GONE); // hide back button again
+            // searchBarcode.pause();
+            // isScannerActive = false;
+            // } else {
+            // // Otherwise, act like a normal back press
+            // finish();
+            // }
         });
 
-
-
     }
-
-
 
     //// !!! METHODS OUTSIDE onCreate !!! ////
 
     // Filtering Search Results
     // Called when user types in the search field.
     private void filterProducts(String query) {
-        if (fullProductList == null) return;
+        if (fullProductList == null)
+            return;
 
         List<ProductModel> filteredList = new ArrayList<>();
         if (query.isEmpty()) {
@@ -229,8 +237,6 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
         }
         adapter.updateData(filteredList);
     }
-
-
 
     // Confirm Barcode Addition
     // Called when user selects a product to link a new scanned barcode.
@@ -260,8 +266,6 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
                 .setNegativeButton("No", null)
                 .show();
     }
-
-
 
     // Bottom Sheet: Display Product Details
     private void showBottomSheet(ProductModel product) {
@@ -315,12 +319,18 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
 
             if (!isEditing) {
                 // Validate all required fields.
-                if (!validateField(name, "Name cannot be empty")) return;
-                if (!validateField(category, "Category cannot be empty")) return;
-                if (!validateField(quantity, "Quantity cannot be empty")) return;
-                if (!validateField(costPrice, "Cost Price cannot be empty")) return;
-                if (!validateField(salePrice, "Sale Price cannot be empty")) return;
-                if (!validateField(barcode_list, "Barcode list cannot be empty")) return;
+                if (!validateField(name, "Name cannot be empty"))
+                    return;
+                if (!validateField(category, "Category cannot be empty"))
+                    return;
+                if (!validateField(quantity, "Quantity cannot be empty"))
+                    return;
+                if (!validateField(costPrice, "Cost Price cannot be empty"))
+                    return;
+                if (!validateField(salePrice, "Sale Price cannot be empty"))
+                    return;
+                if (!validateField(barcode_list, "Barcode list cannot be empty"))
+                    return;
 
                 // Save data
                 product.setName(name.getText().toString().trim());
@@ -439,7 +449,8 @@ public class Inventory extends BaseActivity { // Extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (isScannerActive) searchBarcode.resume();
+        if (isScannerActive)
+            searchBarcode.resume();
     }
 
     @Override

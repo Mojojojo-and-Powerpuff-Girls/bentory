@@ -32,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
                 toolbarTitleTextView.setText(title);
             }
 
-            ImageButton burgerIcon = toolbar.findViewById(R.id.burger_icon); // Assuming you'll add this ID
+            ImageButton burgerIcon = toolbar.findViewById(R.id.burgerbttn); // Changed from burger_icon to burgerbttn
             if (burgerIcon != null) {
                 if (showBurgerMenu) {
                     burgerIcon.setVisibility(View.VISIBLE);

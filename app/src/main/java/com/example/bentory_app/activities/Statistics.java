@@ -76,18 +76,20 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
         recyclerViewTop.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTop.setAdapter(adapter1);
 
+        // Note: Since there's only one RecyclerView in the layout, we'll comment out
+        // the second one
         // SETUP RecyclerView
-        RecyclerView recyclerViewBottom = findViewById(R.id.recyclerViewTopSellingStatistics);
-        List<TopSellingModel> itemList2 = new ArrayList<>();
-        itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
-        itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
-        itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
-        itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
-
-        TopSellingAdapter adapter2 = new TopSellingAdapter(itemList2);
-        recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewBottom.setAdapter(adapter2);
-
+        // RecyclerView recyclerViewBottom =
+        // findViewById(R.id.recyclerViewTopSellingStatistics);
+        // List<TopSellingModel> itemList2 = new ArrayList<>();
+        // itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
+        // itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
+        // itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
+        // itemList2.add(new TopSellingModel("Coke", "Mismo", "10", "30", "OK"));
+        //
+        // TopSellingAdapter adapter2 = new TopSellingAdapter(itemList2);
+        // recyclerViewBottom.setLayoutManager(new LinearLayoutManager(this));
+        // recyclerViewBottom.setAdapter(adapter2);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +97,6 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                 finish();
             }
         });
-
 
     }
 }
