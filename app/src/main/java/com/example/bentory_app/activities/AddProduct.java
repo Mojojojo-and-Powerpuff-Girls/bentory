@@ -284,4 +284,15 @@ public class AddProduct extends BaseDrawerActivity {
         return false; // Return false if field is not empty (i.e validation passed).
     }
 
+    // animation method
+    private void setButtonClickListener(ImageButton button, Class<?> targetActivity){
+        button.setOnClickListener(v ->{
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
+                    .withEndAction(() -> {
+                        v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                        startActivity(new Intent(AddProduct.this, targetActivity));
+                    });
+        });
+    }
+
 }

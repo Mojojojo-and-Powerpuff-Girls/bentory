@@ -85,7 +85,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="text"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/edit_quantity"
@@ -99,7 +100,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="number"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_cost_price"
@@ -113,7 +115,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="numberDecimal"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_sale_price"
@@ -127,7 +130,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="numberDecimal"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_size"
@@ -142,7 +146,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="text"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_weight"
@@ -157,7 +162,8 @@
                 android:textAlignment="viewEnd"
                 android:enabled="false"
                 android:inputType="text"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_description"
@@ -171,9 +177,10 @@
                 android:gravity="end"
                 android:textAlignment="viewEnd"
                 android:enabled="false"
-                android:inputType="textMultiLine"
+                android:inputType="text"
                 android:maxLines="3"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/edit_barcodes"
@@ -186,7 +193,7 @@
                 android:gravity="end"
                 android:textAlignment="viewEnd"
                 android:enabled="false"
-                android:inputType="textMultiLine"
+                android:inputType="number"
                 android:digits="0123456789876\n"
                 android:maxLines="5"
                 android:background="@android:color/transparent"/>

@@ -308,7 +308,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 "Description: " + "\n" +
                 "Barcode List: ";
 
-        String barcodeListText = TextUtils.join(", ", product.getBarcode());
+        String barcodeListText = TextUtils.join("\n", product.getBarcode());
 
         detailsLabel.setText(combinedDetailsLabel);
         barcode_list.setText(barcodeListText);
@@ -348,9 +348,30 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 product.setDescription(getOptionalValue(description));
 
                 // Parse updated barcode list (comma-separated)
-                String rawInput = barcode_list.getText().toString();
-                List<String> barcodes = Arrays.asList(rawInput.split("\\n"));
-                product.setBarcode(barcodes);
+                String rawInput = barcode_list.getText().toString().trim();
+                String[] rawBarcodes = rawInput.split("\\n");
+
+                List<String> cleanedBarcodes = new ArrayList<>();
+                // Validate the length of the barcode. Must be 13 digits.
+                for (String code : rawBarcodes) {
+                    code = code.trim();
+                    if (code.isEmpty()) continue;
+
+                    if (code.length() != 13 || !code.matches("\\d{13}")) {
+                        Toast.makeText(this, "Barcode must be exactly 13 digits.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    cleanedBarcodes.add(code);
+                }
+
+                // Validate barcode count. 5 max barcodes.
+                if (cleanedBarcodes.size() > 5) {
+                    Toast.makeText(this, "You can only enter up to 5 barcodes.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                product.setBarcode(cleanedBarcodes);
 
                 productViewModel.updateProduct(product); // Update in firebase.
                 Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
