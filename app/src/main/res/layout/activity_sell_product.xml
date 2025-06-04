@@ -172,33 +172,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/pull_out"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:translationY="350dp">
-
-        <ImageView
-            android:id="@+id/cart_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="Cart image"
-            android:src="@drawable/cart_box" />
-
-        <ImageButton
-            android:id="@+id/pullout_btn"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="Pullout button for cart"
-            android:src="@drawable/pullout_icon" />
-    </FrameLayout>
-
     <!-- Scan barcode button -->
     <LinearLayout
         android:id="@+id/scannerLayout"
@@ -224,6 +197,7 @@
             android:paddingStart="15dp"
             android:textColor="#000000"
             android:textSize="20dp"
+            android:inputType="number"
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:fontFamily="@font/pixelify_sans"
@@ -287,5 +261,32 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/pull_out"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:translationY="350dp">
+
+        <ImageView
+            android:id="@+id/cart_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Cart image"
+            android:src="@drawable/cart_box" />
+
+        <ImageButton
+            android:id="@+id/pullout_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Pullout button for cart"
+            android:src="@drawable/pullout_icon" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

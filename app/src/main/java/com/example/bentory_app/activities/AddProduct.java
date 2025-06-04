@@ -38,43 +38,55 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+// ===============================
+// AddProduct Activity
+//
+// Purpose:
+// - Allows users to add new products to Firebase.
+// - Includes barcode scanning functionality.
+// ===============================
 public class AddProduct extends BaseDrawerActivity {
 
-    // ViewModels
-    private ProductViewModel productViewModel;
-
-    // XML UI
-    private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight,
-            itemDescription, scannedCode;
+    // UI Components
     private ImageButton itemSaveBtn, barcodeButton, backBtn;
+    private EditText itemName, itemCategory, itemQuantity, itemCostPrice, itemSalePrice, itemSize, itemWeight, itemDescription, scannedCode;
     private DecoratedBarcodeView barcodeView;
     private View targetOverlay, touchBlock;
 
-    // Data Types
-    private boolean scanned = false;
+    // State
+    private boolean hasScannedBarcode = false;
+    private String name;
+    private String category;
+    private String size;
+    private String weight;
+    private String description;
+    private String code;
+    private int quantity;
+    private double costPrice;
+    private double salePrice;
+
+    // ViewModel
+    private ProductViewModel productViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_product);
+
+        // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setupToolbar(R.id.my_toolbar, "Add Product", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
 
-        // Initialize Model/List = set and prepare for use.
-        // Setup toolbar using BaseActivity method
-        setupToolbar(R.id.my_toolbar, "Add Product", true);
-
-        // Setup drawer functionality
-        setupDrawer();
-
-        // Initialize Model/List = set and prepare for use.
+        // ⬛ Initialize ViewModel
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
-        // Initialize Views = connect using findViewById.
+        // ⬛ Bind Views
         itemName = findViewById(R.id.newItemName);
         itemCategory = findViewById(R.id.newItemCategory);
         itemQuantity = findViewById(R.id.newItemQuantity);
@@ -91,6 +103,9 @@ public class AddProduct extends BaseDrawerActivity {
         touchBlock = findViewById(R.id.touchBlocker);
         backBtn = findViewById(R.id.back_btn);
 
+        // ===============================
+        // 🔙 Back Button: Close Activity. (FEATURE)
+        // ===============================
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,31 +122,27 @@ public class AddProduct extends BaseDrawerActivity {
             }
         });
 
-        // STEP 1 (BARCODE SCANNER AND BUTTON):
-        // Initialize the barcode scanner and start listening for scans continuously.
+
+        // ===============================
+        // 📷 Barcode Scanner Setup: Initialize the barcode scanner and start listening for scans continuously. (FEATURE)
+        // ===============================
         barcodeView.initializeFromIntent(getIntent());
         barcodeView.decodeContinuous(callback); //// 'callback' contains a method (found at the bottom of the code).
 
-        // STEP 2 (BARCODE SCANNER AND BUTTON):
-        // When the barcode button is clicked, show the scanner view and resume
-        // scanning.
-        // This resets the 'scanned' flag so it can scan a new item.
+        // When the barcode button is clicked, show the scanner view and resume scanning.
         barcodeButton.setOnClickListener(v -> {
-            barcodeView.setVisibility(View.VISIBLE); // Show barcode camera view.
-            targetOverlay.setVisibility(View.VISIBLE); // Show overlay (like scan target frame).
-            touchBlock.setVisibility(View.VISIBLE);
-            barcodeView.resume(); // Resume scanning if it was paused.
-            scanned = false; // Reset flag to allow new scan.
+            barcodeView.setVisibility(View.VISIBLE);    // show barcode camera view.
+            targetOverlay.setVisibility(View.VISIBLE);  // show overlay (like scan target frame).
+            touchBlock.setVisibility(View.VISIBLE);     // prevents users from interacting with the UI behind the scanner (like form fields or buttons).
+            barcodeView.resume();                       // Resume scanning if it was paused.
+            hasScannedBarcode = false;                            // Reset flag to allow new scan.
         });
 
-        // NOTE (BARCODE SCANNER AND BUTTON):
-        //// To see the logic of the barcode after this, proceed to 'callback' (found at
-        // the bottom of the code).
 
-        // STEP 1 (ADDING PRODUCTS TO FIREBASE):
+        // ===============================
+        // 💾 Save Button: Validates input & barcode then save new product. (FEATURE)
+        // ===============================
         itemSaveBtn.setOnClickListener(v -> {
-            // Validate required fields using a helper method that checks emptiness and sets
-            // error if empty.
             //// 'isFieldEmpty' is a helper method (found at the bottom of the code).
             if (isFieldEmpty(itemName, "Name is required") ||
                     isFieldEmpty(itemCategory, "Category is required") ||
@@ -145,28 +156,28 @@ public class AddProduct extends BaseDrawerActivity {
                 return; // Stop further processing if validation fails.
             }
 
-            // Extract and validate barcode length
+            // Validate scanned code length: show error if it's less than 13 digits (EAN-13).
             if (scannedCode.length() < 13) {
-                scannedCode.setError("Code must be at least 13 digits.");
-                Toast.makeText(AddProduct.this, "Product code must be at least 13 digits.", Toast.LENGTH_SHORT).show();
+                scannedCode.setError("Code must be 13 digits.");
+                Toast.makeText(AddProduct.this, "Product code must 13 digits.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Extract and sanitize user inputs from the EditText fields.
-            String name = itemName.getText().toString().trim();
-            String category = itemCategory.getText().toString().trim();
-            int quantity = Integer.parseInt(itemQuantity.getText().toString().trim());
-            double costPrice = Double.parseDouble(itemCostPrice.getText().toString().trim());
-            double salePrice = Double.parseDouble(itemSalePrice.getText().toString().trim());
-            String size = itemSize.getText().toString().trim();
-            String weight = itemWeight.getText().toString().trim();
-            String description = itemDescription.getText().toString().trim();
-            String code = scannedCode.getText().toString().trim();
+            // Extract and trim user inputs from the EditText fields; convert numeric fields to appropriate types.
+            name = itemName.getText().toString().trim();
+            category = itemCategory.getText().toString().trim();
+            quantity = Integer.parseInt(itemQuantity.getText().toString().trim());
+            costPrice = Double.parseDouble(itemCostPrice.getText().toString().trim());
+            salePrice = Double.parseDouble(itemSalePrice.getText().toString().trim());
+            size = itemSize.getText().toString().trim();
+            weight = itemWeight.getText().toString().trim();
+            description = itemDescription.getText().toString().trim();
+            code = scannedCode.getText().toString().trim();
 
+            // Build ProductModel
             ProductModel product = new ProductModel(); // creates a new productModel instance and populate its fields.
-            List<String> barcode = new ArrayList<>(); // allowing for future support of multiple barcodes per product.
-            // Setting of value for products and barcode.
-            barcode.add(code); // Add the current scanned barcode. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            List<String> barcode = new ArrayList<>();  // allowing for future support of multiple barcodes per product.
+            barcode.add(code);                         // Add the current scanned barcode.
             product.setName(name);
             product.setCategory(category);
             product.setQuantity(quantity);
@@ -175,13 +186,10 @@ public class AddProduct extends BaseDrawerActivity {
             product.setSize(size);
             product.setWeight(weight);
             product.setDescription(description);
-            product.setBarcode(barcode); // Set barcodes list.
+            product.setBarcode(barcode);
 
-            // Use the productViewModel to handle data submission to Firebase.
-            productViewModel.addProduct(product); //// 'addProduct' contains a method (found at 'ProductViewModel' in
-                                                  //// 'viewmodel' directory).
-
-            // Notify the user with a confirmation message.
+            // Save to Firebase: Use the productViewModel to handle data submission to Firebase.
+            productViewModel.addProduct(product); //// 'addProduct' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
             Toast.makeText(this, "Item added successfully!", Toast.LENGTH_SHORT).show();
 
             // Clear the form fields for the next input.
@@ -195,32 +203,25 @@ public class AddProduct extends BaseDrawerActivity {
             itemDescription.setText("");
             scannedCode.setText("");
 
-            // Navigates back to the 'Inventory' screen after saving.
+            // Returns to Inventory Screen after Saving.
             Intent intent = new Intent(AddProduct.this, Inventory.class);
             startActivity(intent);
             finish(); // Close current activity to prevent returning via back buttons.
         });
-        // NOTE (ADDING PRODUCTS TO FIREBASE):
-        //// This is the last part of code for the logic of adding products to firebase
-        // in the 'activities' directory.
-        //// This fulfills the role of adding products to firebase when save button is
-        // clicked.
-        //// These are the methods used for STEP 1: ADDING PRODUCTS TO FIREBASE
-        //// 'isFieldEmpty' is a helper method (found at the bottom of the code).
-        //// 'addProduct' contains a method (found at 'ProductViewModel' in 'viewmodel'
-        // directory).
     }
 
-    //// !!! METHODS OUTSIDE onCreate !!! ////
 
-    // (BARCODE SCANNER AND BUTTON):
-    // This callback handles barcode scanning events.
+    // ===============================
+    //             METHODS
+    // ===============================
+
+    // 📷 'callback' : This callback handles barcode scanning events. (METHODS)
     private final BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
             // Only process the scan if one hasn't been handled yet.
-            if (!scanned) {
-                scanned = true; // prevent multiple scans from being processed.
+            if (!hasScannedBarcode) {
+                hasScannedBarcode = true; // prevent multiple scans from being processed.
 
                 // Play a short beep sound to indicate a successful scan.
                 ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 200);
@@ -245,8 +246,7 @@ public class AddProduct extends BaseDrawerActivity {
         }
     };
 
-    // These methods manage scanner behavior when the app gains or loses focus.
-    // Ensures the scanner resumes only when it's visible and the app is active.
+    // Resume Scanner (METHODS)
     @Override
     protected void onResume() {
         super.onResume();
@@ -255,6 +255,7 @@ public class AddProduct extends BaseDrawerActivity {
         }
     }
 
+    // Pause Scanner (METHODS)
     @Override
     protected void onPause() {
         super.onPause();
@@ -262,37 +263,15 @@ public class AddProduct extends BaseDrawerActivity {
             barcodeView.pause(); // pause the scanner when activity is not in focus.
         }
     }
-    // NOTE (BARCODE SCANNER AND BUTTON):
-    //// This is the last part of code for the logic of barcode scanner and button
-    // in the 'activities' directory.
-    //// This just fulfills the role that the barcode button should open a scanner
-    // when pressed.
-    //// The barcode scanner should be able to scan code.
-    //// If you want to know the logic structure of adding all the products as well
-    // as the scanned code to the firebase.
-    //// Proceed to 'STEP 1: ADDING PRODUCTS TO FIREBASE' of AddProduct (found at
-    // 'activities' directory).
 
-    // (ADDING PRODUCTS TO FIREBASE):
-    // Helper method to check if an EditText field is empty.
+
+    // 💾 'isFieldEmpty' : Input validation. (METHODS)
     private boolean isFieldEmpty(EditText field, String errorMessage) {
         // Trimmed text from the field and checks if the field is empty.
         if (field.getText().toString().trim().isEmpty()) {
             field.setError(errorMessage); // Display error message directly on the field.
-            return true; // Return true to indicate validation failed.
+            return true;                  // Return true to indicate validation failed.
         }
-        return false; // Return false if field is not empty (i.e validation passed).
+        return false;                     // Return false if field is not empty (i.e validation passed).
     }
-
-    // animation method
-    private void setButtonClickListener(ImageButton button, Class<?> targetActivity){
-        button.setOnClickListener(v ->{
-            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
-                    .withEndAction(() -> {
-                        v.animate().scaleX(1f).scaleY(1f).setDuration(100);
-                        startActivity(new Intent(AddProduct.this, targetActivity));
-                    });
-        });
-    }
-
 }

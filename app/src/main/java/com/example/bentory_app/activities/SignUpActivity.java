@@ -15,15 +15,24 @@ import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+// ===============================
+// SignUp Activity
+//
+// Purpose:
+// - Allows new users to create an account for the app.
+// - Validates username and password input fields before creating an account.
+// - Registers the user using Firebase authentication.
+// ===============================
 public class SignUpActivity extends AppCompatActivity {
 
+    // UI Components
     private static final String EMAIL_DOMAIN = "@bentory.app";
-
     private EditText editTextUsername;
     private EditText editTextPassword;
     private EditText editTextConfirmPassword;
     private ImageButton buttonCreateAccount;
     private ImageButton backButton;
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -32,26 +41,27 @@ public class SignUpActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up);
 
-        // Initialize Firebase Auth
+        // ⬛ Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.signup_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize views
+        // ⬛ Bind Views
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPasswordSignup);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
         buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
         backButton = findViewById(R.id.backButtonSignup);
 
-        // Set up back button
+        // Back button: finish activity and return to previous screen.
         backButton.setOnClickListener(v -> finish());
 
-        // Set up create account button
+        // Set up create account button.
         buttonCreateAccount.setOnClickListener(v -> {
             String username = editTextUsername.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
@@ -89,6 +99,12 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+
+    // ===============================
+    //             METHODS
+    // ===============================
+
+    // ✅ Validate username and password input fields. (METHODS)
     private boolean validateInputs(String username, String password, String confirmPassword) {
         // Check for empty fields
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {

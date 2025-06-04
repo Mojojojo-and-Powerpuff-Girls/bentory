@@ -14,50 +14,42 @@ import java.util.Set;
 
 public class ProductViewModel extends ViewModel {
 
-    // Repository instance used to abstract and manage all Firebase operations.
+    // Repository
     private ProductRepository repository;
 
-    // LiveData that holds the current list of products retrieved from the repository.
+    // 🧠 LiveData to observe a list of products (automatically updates UI when data changes)
     public LiveData<List<ProductModel>> items;
+
+    // 🔍 Public getter to expose product list to UI as LiveData.
     public LiveData<List<ProductModel>> getItems() {
         return items;
     }
 
-
-
-    // Constructor for the ViewModel.
-    // Initializes the repository and fetches the product list from Firebase through the repository.
+    // 🛠 Constructor - initialize repository and fetch LiveData from it.
     public ProductViewModel() {
-        // Connect LiveData to repository’s product list.
-        repository = new ProductRepository();
-        items = repository.getData(); //// 'getData()' contains a method (found at 'ProductRepository' in 'repository' directory).
+        repository = new ProductRepository();   // Connect to Firebase.
+        items = repository.getData();           // Retrieve and observe product list.
     }
 
-
-
-    // (ADDING PRODUCTS TO FIREBASE):
-    // Adds a new product to Firebase through the repository.
+    // ➕ Add a new product to Firebase.
     public void addProduct (ProductModel product) {
         repository.addProduct(product); //// 'addProduct()' contains a method (found at 'ProductRepository' in 'repository' directory).
     }
 
-
-
-    // Delete multiple products from Firebase using their IDs.
+    // ❌ Delete multiple products using a set of product IDs
     public void deleteSelectedProducts(Set<String> idsToDelete) {
-        repository.deleteProductsByIds(idsToDelete); //// 'deleteProductsByIds()' contains a method (found at 'ProductRepository' in 'repository' directory).
+        repository.deleteProductsByIds(idsToDelete);
     }
 
-    // Search product through barcode
+    // 🧾 Search for a product by matching barcode.
     public void searchProductByBarcode(String barcode, ProductRepository.ProductCallback callback) {
         Log.d("ProductVM", "searchProductByBarcode called with: " + barcode);
         repository.getProductByMatchingBarcode(barcode, callback);
     }
 
-
-    // Updates an existing product in Firebase.
+    // 🔄 Update a product's info in Firebase.
     public void updateProduct(ProductModel updatedProduct) {
-        repository.updateProduct(updatedProduct); //// 'updateProduct()' contains a method (found at 'ProductRepository' in 'repository' directory).
+        repository.updateProduct(updatedProduct);
     }
 
 }

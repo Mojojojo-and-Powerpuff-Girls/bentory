@@ -18,8 +18,19 @@ import com.example.bentory_app.subcomponents.MenuAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+// ===============================
+// LandingPage Activity
+//
+// Purpose:
+// - Serves as the main dashboard of the app after login.
+// - Provides quick access to key features: Add Product, Inventory, etc...
+// - Implements animated navigation buttons for enhanced UX.
+// - Displays a summary of business metrics using a RecyclerView.
+// - Inherits drawer and toolbar setup from BaseDrawer Activity.
+// ===============================
 public class LandingPage extends BaseDrawerActivity {
 
+    // UI Components
     private ImageButton addProductBtn, sellProductBtn, inventoryBtn, statsBtn;
 
     @Override
@@ -28,20 +39,16 @@ public class LandingPage extends BaseDrawerActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
 
-        // Setup toolbar using BaseActivity method
-        setupToolbar(R.id.my_toolbar, "Landing Page", true);
-
-        // Setup drawer functionality
-        setupDrawer();
-
-        // window insets
+        // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setupToolbar(R.id.my_toolbar, "Landing Page", true);//// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
 
-        // Initialize main content buttons
+        // ⬛ Bind Views
         addProductBtn = findViewById(R.id.addProductBtn);
         sellProductBtn = findViewById(R.id.sellProductBtn);
         inventoryBtn = findViewById(R.id.inventoryBtn);
@@ -65,7 +72,12 @@ public class LandingPage extends BaseDrawerActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    // animation method for main content buttons
+
+    // ===============================
+    //             METHODS
+    // ===============================
+
+    // 🧩 'setButtonClickListener' : animates a button on click, then opens the target activity.
     private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {
         button.setOnClickListener(v -> {
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)

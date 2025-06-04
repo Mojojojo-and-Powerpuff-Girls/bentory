@@ -25,8 +25,6 @@ public class ProductModel {
 
     private String description;
 
-
-
     // open constructor for firebase
     public ProductModel(){}
 
@@ -53,12 +51,10 @@ public class ProductModel {
         this.barcode = new ArrayList<>();
     }
 
-
-
     // Getters
-    @PropertyName("id")
+    @PropertyName("id") // Ensures Firebase uses the correct field name, avoiding automatic conversion to camelCase.
     public String getId() { return id; }
-    @PropertyName("name") // Maps the java field to the Firebase key. WHY: Ensures Firebase uses the correct field name, avoiding automatic conversion to camelCase.
+    @PropertyName("name")
     public String getName() { return name; }
     @PropertyName("category")
     public String getCategory() { return category; }

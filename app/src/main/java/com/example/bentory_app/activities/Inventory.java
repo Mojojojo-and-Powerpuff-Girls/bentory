@@ -44,25 +44,35 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+// ===============================
+// Inventory Activity
+//
+// Purpose:
+// - Displays a list of all available products.
+// - Allows filtering, searching, and managing inventory items.
+// - Supports viewing/editing items via bottom sheet.
+// - Includes barcode scanning functionality for quick product lookup.
+// ===============================
 public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity to BaseDrawerActivity
 
-    // ViewModels
-    private ProductViewModel productViewModel;
-
-    // Adapter
-    private InventoryAdapter adapter;
-
-    // XML UI
+    // UI Components
     private RecyclerView recyclerView;
     private ImageButton dltButton, filterBtn, searchScanBtn, backBtn;
     private EditText searchEditText;
     private DecoratedBarcodeView searchBarcode;
     private View searchTargetOverlay, touchBlock;
 
-    // Data Types
-    private String scannedBarcode;
+    // State
     private boolean isScannerActive = false;
+    private boolean isDeleteModeActive;
+    private String scannedBarcode;
     private List<ProductModel> fullProductList; // store full list for filtering
+
+    // ViewModel
+    private ProductViewModel productViewModel;
+
+    // Adapter
+    private InventoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +80,19 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inventory);
 
-        // Initialize Views FIRST
+        // ⬛ UI Setup
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        setupToolbar(R.id.my_toolbar, "Inventory", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+
+        // ⬛ Initialize ViewModel
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+
+        // ⬛ Bind Views
         recyclerView = findViewById(R.id.recyclerView);
         dltButton = findViewById(R.id.deleteBtn);
         filterBtn = findViewById(R.id.filterBtn);
@@ -81,45 +103,38 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         touchBlock = findViewById(R.id.touchBlocker);
         backBtn = findViewById(R.id.back_btn);
 
-        // Get scanned barcode
+        // 🔎 Retrieve the scanned barcode passed from the previous activity via intent [used to search for matching product code].
         scannedBarcode = getIntent().getStringExtra("scannedBarcode");
 
-        // System bar insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        // Set up RecyclerView
+        // ===============================
+        // 📦🔎 Set up RecyclerView: Handles product display for inventory view and Supports barcode-linking when a scan fails to find a match. (FEATURE)
+        // ===============================
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new InventoryAdapter(this, new ArrayList<>(), item -> {
             if (scannedBarcode != null && !scannedBarcode.isEmpty()) {
-                showProductSelectConfirmation(item);
+                //// 'showProductSelectConfirmation' contains a method (found at the bottom of the code).
+                showProductSelectConfirmation(item); // when barcode is used for searching product.
             } else {
-                showBottomSheet(item);
+                //// 'showBottomSheet' contains a method (found at the bottom of the code).
+                showBottomSheet(item);               // when browsing manually.
             }
         });
         recyclerView.setAdapter(adapter);
-        // Setup toolbar using BaseActivity method
-        // For Inventory, we likely want the burger menu, so showBurgerMenu is true
-        setupToolbar(R.id.my_toolbar, "Inventory", true);
 
-        // Setup drawer functionality
-        setupDrawer();
 
-        // Initialize ViewModel
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-
-        // Observe data from ViewModel
+        // 🔁 Observe data from ViewModel : Keeps product data up to date and refreshes UI.
         productViewModel.getItems().observe(this, itemList -> {
-            fullProductList = new ArrayList<>(itemList); // For filtering
-            adapter.updateData(itemList); // Just update data — don't reinitialize adapter
+            fullProductList = new ArrayList<>(itemList); // keep original list for filtering.
+            //// 'updateData' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
+            adapter.updateData(itemList);                // update only data, not adapter reference.
         });
 
-        // Filter Button
+        // ===============================
+        // 🔽 Filter Button Setup: Show sorting options for the inventory list [A-Z / Z-A]. (FEATURE)
+        // ===============================
         filterBtn.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(Inventory.this, filterBtn);
+            //// 'menu_filter' is manually created (found at 'menu' in 'res' directory).
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (fullProductList == null)
@@ -136,7 +151,10 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             popupMenu.show();
         });
 
-        // Search Input
+
+        // ===============================
+        // 🔍 Search Input: Filter product list as user types in search field. (FEATURE)
+        // ===============================
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,7 +162,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterProducts(s.toString());
+                filterProducts(s.toString()); //// 'filterProducts' contains a method (found at the bottom of the code).
             }
 
             @Override
@@ -152,15 +170,20 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             }
         });
 
-        // Search by barcode
-        searchBarcode.decodeContinuous(callback);
+
+        // ===============================
+        // 📷 Barcode Scanner Setup: Enable continuous barcode scanning for product search [barcode search button]. (FEATURE)
+        // ===============================
+        searchBarcode.decodeContinuous(callback); //// 'callback' contains a method (found at the bottom of the code).
         searchScanBtn.setOnClickListener(v -> {
             if (isScannerActive) {
+                // Disable scanner UI and pause scanning.
                 searchBarcode.setVisibility(View.GONE);
                 searchTargetOverlay.setVisibility(View.GONE);
                 touchBlock.setVisibility(View.GONE);
                 searchBarcode.pause();
             } else {
+                // Enable scanner UI and resume scanning.
                 searchBarcode.setVisibility(View.VISIBLE);
                 searchTargetOverlay.setVisibility(View.VISIBLE);
                 touchBlock.setVisibility(View.VISIBLE);
@@ -169,20 +192,26 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             isScannerActive = !isScannerActive; // Update scanner state flag
         });
 
-        // Delete Mode Logic
+
+        // ===============================
+        // 🗑️️ Delete Mode: Allow users to select and delete multiple products. (FEATURE)
+        // ===============================
         dltButton.setOnClickListener(v -> {
-            boolean isDeleteModeActive = !adapter.getDeleteMode();
+            isDeleteModeActive = !adapter.getDeleteMode(); //// 'getDeleteMode' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
+            // Activate delete mode: allow item selection for deletion.
             if (isDeleteModeActive) {
-                adapter.setDeleteMode(true);
+                adapter.setDeleteMode(true); //// 'setDeleteMode' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
                 dltButton.setImageResource(R.drawable.delete_items);
             } else {
-                Set<String> selectedItems = adapter.getSelectedItems();
+                // Deactivate delete mode.
+                Set<String> selectedItems = adapter.getSelectedItems(); //// 'getSelectedItems' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
                 if (!selectedItems.isEmpty()) {
+                    // Confirm deletion if items selected.
                     new AlertDialog.Builder(this)
                             .setTitle("Delete Items")
                             .setMessage("Are you sure you want to delete the selected items?")
                             .setPositiveButton("Delete", (dialog, which) -> {
-                                productViewModel.deleteSelectedProducts(selectedItems);
+                                productViewModel.deleteSelectedProducts(selectedItems); //// 'deleteSelectedProducts' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
                                 adapter.setDeleteMode(false);
                                 dltButton.setImageResource(R.drawable.select_items);
                             })
@@ -191,12 +220,17 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                                 dltButton.setImageResource(R.drawable.select_items);
                             }).show();
                 } else {
+                    // No items selected, just exit delete mode.
                     adapter.setDeleteMode(false);
                     dltButton.setImageResource(R.drawable.select_items);
                 }
             }
         });
 
+
+        // ===============================
+        // 🔙 Back Button: Close Activity. (FEATURE)
+        // ===============================
         backBtn.setOnClickListener(v -> {
             finish();
 
@@ -213,13 +247,14 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             // finish();
             // }
         });
-
     }
 
-    //// !!! METHODS OUTSIDE onCreate !!! ////
 
-    // Filtering Search Results
-    // Called when user types in the search field.
+    // ===============================
+    //             METHODS
+    // ===============================
+
+    // 🔎 'filterProducts' : Filters the product list based on user query from the search input. (METHODS)
     private void filterProducts(String query) {
         if (fullProductList == null)
             return;
@@ -238,12 +273,12 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         adapter.updateData(filteredList);
     }
 
-    // Confirm Barcode Addition
-    // Called when user selects a product to link a new scanned barcode.
+
+    // ✅ 'showProductSelectConfirmation' : Called when user selects a product to link a new scanned barcode. (METHODS)
     private void showProductSelectConfirmation(ProductModel product) {
         // Check if barcode already exists
         if (product.getBarcode().contains(scannedBarcode)) {
-            Toast.makeText(this, "Barcode already linked to this product.", Toast.LENGTH_SHORT).show();
+            showBottomSheet(product);
             return;
         }
 
@@ -267,7 +302,8 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 .show();
     }
 
-    // Bottom Sheet: Display Product Details
+
+    // 📋 'showBottomSheet' : Display product details and Editing via bottom sheet dialog. (METHODS)
     private void showBottomSheet(ProductModel product) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_product, null);
@@ -289,7 +325,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         EditText description = bottomSheetView.findViewById(R.id.edit_description);
         EditText barcode_list = bottomSheetView.findViewById(R.id.edit_barcodes);
 
-        // Set data.
+        // Set product data to views.
         name.setText(product.getName());
         category.setText(product.getCategory());
         quantity.setText(String.valueOf(product.getQuantity()));
@@ -299,6 +335,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         weight.setText(product.getWeight());
         description.setText(product.getDescription());
 
+        // Label with field names.
         String combinedDetailsLabel = "Category: " + "\n" +
                 "Quantity: " + "\n" +
                 "Cost Price: " + "\n" +
@@ -308,18 +345,19 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 "Description: " + "\n" +
                 "Barcode List: ";
 
+        // Join barcode list with new lines.
         String barcodeListText = TextUtils.join("\n", product.getBarcode());
 
         detailsLabel.setText(combinedDetailsLabel);
         barcode_list.setText(barcodeListText);
 
-        // Toggle editing on click.
+        // Toggle edit mode on edit button click.
         editButton.setOnClickListener(v -> {
-            boolean isEditing = !category.isEnabled(); // Check if we're entering or exiting edit mode.
+            boolean isEditing = !category.isEnabled(); // If fields are disabled, entering edit mode.
 
             if (!isEditing) {
                 // Validate all required fields.
-                if (!validateField(name, "Name cannot be empty"))
+                if (!validateField(name, "Name cannot be empty")) //// 'validateField' contains a method (found at the bottom of the code).
                     return;
                 if (!validateField(category, "Category cannot be empty"))
                     return;
@@ -343,7 +381,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 product.setDescription(description.getText().toString().trim());
 
                 // Optional fields: size, weight, description.
-                product.setSize(getOptionalValue(size));
+                product.setSize(getOptionalValue(size)); //// 'getOptionalValue' contains a method (found at the bottom of the code).
                 product.setWeight(getOptionalValue(weight));
                 product.setDescription(getOptionalValue(description));
 
@@ -358,7 +396,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                     if (code.isEmpty()) continue;
 
                     if (code.length() != 13 || !code.matches("\\d{13}")) {
-                        Toast.makeText(this, "Barcode must be exactly 13 digits.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Barcode must be 13 digits.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -372,16 +410,16 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 }
 
                 product.setBarcode(cleanedBarcodes);
-
-                productViewModel.updateProduct(product); // Update in firebase.
+                //// 'updateProduct' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
+                productViewModel.updateProduct(product);                // Update in firebase.
                 Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
-                editButton.setImageResource(R.drawable.square_pen); // the pen edit button.
+                editButton.setImageResource(R.drawable.square_pen);     // the pen edit button.
             } else {
                 editButton.setImageResource(R.drawable.red_square_pen); // switch to save icon.
-                category.requestFocus(); // Optional: focus on first field.
+                category.requestFocus();                                // Optional: focus on first field.
             }
 
-            // Toggle all fields.
+            // Enable/disable all editable fields based on mode.
             name.setEnabled(isEditing);
             category.setEnabled(isEditing);
             quantity.setEnabled(isEditing);
@@ -399,7 +437,8 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         bottomSheetDialog.show();
     }
 
-    // Validate fields, do not allow to leave empty editText.
+
+    // ⚠️ 'validateField' : Validate fields to prevent empty input. (METHODS)
     private boolean validateField(EditText field, String errorMsg) {
         String text = field.getText().toString().trim();
         if (text.isEmpty()) {
@@ -410,12 +449,15 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         return true;
     }
 
-    // For optional fields, matic NA for empty when saved. (For firebase)
+
+    // ⚙️ 'getOptionalValue' : Return N/A for optional empty fields to save in Firebase. (METHODS)
     private String getOptionalValue(EditText field) {
         String text = field.getText().toString().trim();
         return text.isEmpty() ? "N/A" : text;
     }
 
+
+    // 📷 'callback' : This callback handles barcode scanning events. (METHODS)
     private final BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
@@ -423,10 +465,13 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             Log.d("BarcodeScan", "Scanned Barcode: " + searchScannedBarcode);
 
             if (searchScannedBarcode != null && !searchScannedBarcode.isEmpty()) {
-                searchBarcode.pause(); // Pause to prevent multiple scans
+                scannedBarcode = searchScannedBarcode; // assign to global variable.
+
+                searchBarcode.pause(); // Pause scanning to avoid duplicates.
                 Log.d("BarcodeScan", "Calling ViewModel to search product...");
 
-                // Search using viewmodel.
+                // Query product by scanned barcode via ViewModel.
+                //// 'searchProductByBarcode' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
                 productViewModel.searchProductByBarcode(searchScannedBarcode, new ProductRepository.ProductCallback() {
                     @Override
                     public void onProductFound(ProductModel product) {
@@ -444,9 +489,29 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
 
                     @Override
                     public void onProductNotFound() {
-                        Log.d("BarcodeScan", "Product NOT found");
-                        Toast.makeText(getApplicationContext(), "Product not found", Toast.LENGTH_SHORT).show();
-                        searchBarcode.resume();
+                        Log.d("BarcodeScan", "Product not found");
+
+                        // Offer to link the unrecognized barcode to an existing product.
+                        new AlertDialog.Builder(Inventory.this)
+                                .setTitle("Product not found")
+                                .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+
+                                    // Show inventory list for user to choose a product to link the scanned barcode.
+                                    productViewModel.getItems().observe(Inventory.this, itemList -> {
+                                        adapter.updateData(itemList);               // Display full product list.
+                                        recyclerView.setVisibility(View.VISIBLE);   // Make sure list is available.
+                                        searchBarcode.setVisibility(View.GONE);
+                                        searchTargetOverlay.setVisibility(View.GONE);
+                                        touchBlock.setVisibility(View.GONE);
+                                        isScannerActive = false;
+                                        Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                                    });
+                                })
+                                .setNegativeButton("No", (dialog, which) -> {
+                                    searchBarcode.resume();                         // Resume scanner if user declines to link the barcode.
+                                })
+                                .show();
                     }
 
                     @Override
@@ -463,10 +528,11 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
 
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints) {
-            // Optional.
+            // Optional: Handle result points if needed.
         }
     };
 
+    // Resume Scanner (METHODS)
     @Override
     protected void onResume() {
         super.onResume();
@@ -474,6 +540,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             searchBarcode.resume();
     }
 
+    // Pause Scanner (METHODS)
     @Override
     protected void onPause() {
         super.onPause();

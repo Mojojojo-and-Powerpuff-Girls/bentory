@@ -24,8 +24,17 @@ import com.example.bentory_app.subcomponents.TopSellingAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+// ===============================
+// Statistics Activity
+//
+// Purpose:
+// - Displays key financial statistics for the app, such as sales, expenses, profit, etc.
+// - Uses a RecyclerView to list summarized stats.
+// - Utilizes a custom adapter (MenuAdapter) for clean item display.
+// ===============================
 public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivity
 
+    // UI Components
     ImageButton backBtn;
 
     @Override
@@ -33,20 +42,18 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_statistics);
+
+        // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setupToolbar(R.id.my_toolbar, "Statistics", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
 
+        // ⬛ Bind Views
         backBtn = findViewById(R.id.back_btn);
-
-        // Setup toolbar using BaseActivity method
-        // For Statistics, we likely want the burger menu, so showBurgerMenu is true
-        setupToolbar(R.id.my_toolbar, "Statistics", true);
-
-        // Setup drawer functionality
-        setupDrawer();
 
         // // Old toolbar setup (remove or comment out)
         // Toolbar myToolbar = findViewById(R.id.my_toolbar);

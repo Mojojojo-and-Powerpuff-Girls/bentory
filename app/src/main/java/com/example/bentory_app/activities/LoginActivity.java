@@ -18,16 +18,26 @@ import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+// ===============================
+// Login Activity
+//
+// Purpose:
+// - Authenticates users using Firebase authentication.
+// - Redirects to LandingPage upon successful login.
+// - Provides links for signing up and resetting password.
+// - Includes error handling, UI feedback, and auto-redirect for already signed-in users.
+// ===============================
 public class LoginActivity extends AppCompatActivity {
 
+    // UI Components
     private static final String EMAIL_DOMAIN = "@bentory.app";
-
     private EditText editTextEmail;
     private EditText editTextPassword;
     private ImageButton buttonLogin;
     private TextView textViewSignUp;
     private TextView textViewForgotPassword;
     private TextView textViewSignUpLink;
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -36,19 +46,20 @@ public class LoginActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             EdgeToEdge.enable(this);
             setContentView(R.layout.activity_login);
-
             Log.d("LoginActivity", "Starting onCreate");
 
-            // Initialize Firebase Auth
+            // ⬛ Initialize Firebase Auth
             mAuth = FirebaseAuth.getInstance();
             Log.d("LoginActivity", "Firebase Auth initialized");
 
+            // ⬛ UI Setup
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login_main), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
 
+            // ⬛ Bind Views
             Log.d("LoginActivity", "Finding views");
             editTextEmail = findViewById(R.id.editTextEmail);
             editTextPassword = findViewById(R.id.editTextPassword);
@@ -68,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
 
+            // Handle login logic.
             buttonLogin.setOnClickListener(view -> {
                 String username = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
@@ -103,11 +115,13 @@ public class LoginActivity extends AppCompatActivity {
                         });
             });
 
+            // Sign-up redirection.
             textViewSignUp.setOnClickListener(view -> {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
             });
 
+            // Forgot password logic.
             textViewForgotPassword.setOnClickListener(view -> {
                 String username = editTextEmail.getText().toString().trim();
                 if (username.isEmpty()) {
@@ -136,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // 🚪 Auto-redirect if user is already signed in.
     @Override
     public void onStart() {
         super.onStart();
