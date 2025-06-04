@@ -1,606 +1,472 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".activities.AddProduct">
+    android:orientation="vertical"
+    tools:context=".activities.LandingPage"
+    android:background="#FFF1D7">
 
-    <!-- Main content -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#FFF1D7">
+    <!-- Background image just for the toolbar/header area -->
+    <ImageView
+        android:id="@+id/header_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/upper_nav"
+        app:layout_constraintBottom_toBottomOf="@id/my_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Background image just for the toolbar/header area -->
-        <ImageView
-            android:id="@+id/header_background"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/upper_nav"
-            app:layout_constraintBottom_toBottomOf="@id/my_toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.14"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/my_toolbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:contentInsetStart="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:titleTextColor="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="25dp"
-                android:paddingEnd="25dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="10dp">
-
-                <ImageButton
-                    android:id="@+id/burgerbttn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="burgerbutton"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/burger_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="bellbutton"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/bell_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Add Product"
-                    android:textColor="#FFFFFF"
-                    android:textSize="26sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:fontFamily="@font/pixelify_sans"
-                    app:layout_constraintStart_toEndOf="@id/burgerbttn"
-                    app:layout_constraintEnd_toStartOf="@id/imageButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.appcompat.widget.Toolbar>
-        <!-- Your main content goes below the Toolbar -->
-
-        <!-- Scrollable Add Item Form -->
-        <ScrollView
-            android:id="@+id/formScrollView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="90dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_background">
-
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:padding="10dp">
-
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/add_item_container" />
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/backgroundImage"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="40dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Add New Item"
-                    android:textAlignment="center"
-                    android:textColor="#3A291B"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="105dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Name"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="205dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Category"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/quantity"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="305dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Quantity"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/cost_price"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="405dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Cost Price"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/sale_price"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="505dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Sale Price"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/size"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="605dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Size"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/weight"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="220dp"
-                    android:layout_marginTop="605dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Weight"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="705dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="Description"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/usc_code"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="805dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:text="EAN-13 Code"
-                    android:textColor="#3A291B"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/newItemName"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="135dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemCategory"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="235dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemQuantity"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="335dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:inputType="number"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemCostPrice"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="435dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:inputType="numberDecimal"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemSalePrice"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="535dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:inputType="numberDecimal"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemSize"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="635dp"
-                    android:layout_marginRight="80dp"
-                    android:background="@drawable/size_weight_container"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemWeight"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="80dp"
-                    android:layout_marginTop="635dp"
-                    android:background="@drawable/size_weight_container"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/newItemDescription"
-                    android:layout_width="260dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="735dp"
-                    android:background="@drawable/add_item_edit_box"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/code"
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="835dp"
-                    android:layout_marginRight="35dp"
-                    android:background="@drawable/code_container"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:hint="-"
-                    android:paddingStart="15dp"
-                    android:maxLength="13"
-                    android:inputType="number"
-                    android:textColor="#000000"
-                    android:textColorHint="#00000000"
-                    android:textCursorDrawable="@drawable/cursor_black"
-                    android:textSize="20dp" />
-
-                <ImageButton
-                    android:id="@+id/barcodeBtn"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="100dp"
-                    android:layout_marginTop="825dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Barcode button"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/barcode_btn" />
-
-                <ImageButton
-                    android:id="@+id/newItemSaveBtn"
-                    android:layout_width="305dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="910dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Save button"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/add_item_save_button" />
-
-
-            </FrameLayout>
-
-        </ScrollView>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/addBarcodeScannerLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/header_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="ExtraText">
-
-            <!-- This blocks touch but NOT the toolbar -->
-            <View
-                android:id="@+id/touchBlocker"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.journeyapps.barcodescanner.DecoratedBarcodeView
-                android:id="@+id/addBarcodeScanner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <View
-                android:id="@+id/targetOverlay"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                android:background="@drawable/target_size"
-                app:layout_constraintWidth_percent="1"
-                app:layout_constraintHeight_percent="0.60"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <ImageButton
-                android:id="@+id/back_btn"
-                android:layout_width="64dp"
-                android:layout_height="71dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/back_btn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.089"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Navigation drawer (burger menu) -->
-    <LinearLayout
-        android:id="@+id/nav_drawer"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/menu_background"
-        android:orientation="vertical">
-
-        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp">
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
 
-            <ImageView
-                android:id="@+id/burgerNameplate"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/burgerbttn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="burgerbutton"
                 android:scaleType="fitCenter"
-                android:src="@drawable/burger_nameplate"
-                android:contentDescription="Burger Nameplate" />
+                app:srcCompat="@drawable/burger_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="bellbutton"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/bell_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
-                android:id="@+id/textViewGreeting"
-                android:layout_width="match_parent"
+                android:id="@+id/textView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:text="Add Product"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:gravity="center"
                 android:fontFamily="@font/pixelify_sans"
-                android:padding="16dp"
-                android:text="Hi, User"
+                app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                app:layout_constraintEnd_toStartOf="@id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <!-- Your main content goes below the Toolbar -->
+
+    <!-- Scrollable Add Item Form -->
+    <ScrollView
+        android:id="@+id/formScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="90dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_background">
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="10dp">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/add_item_container" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/backgroundImage"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Add New Item"
                 android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textColor="#3A291B"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="105dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Name"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="205dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Category"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="305dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Quantity"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cost_price"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="405dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Cost Price"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sale_price"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="505dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Sale Price"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="605dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Size"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/weight"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="220dp"
+                android:layout_marginTop="605dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Weight"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="705dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="Description"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/usc_code"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="805dp"
+                android:fontFamily="@font/pixelify_sans"
+                android:text="EAN-13 Code"
+                android:textColor="#3A291B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/newItemName"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="135dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemCategory"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="235dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemQuantity"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="335dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:inputType="number"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemCostPrice"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="435dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:inputType="numberDecimal"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemSalePrice"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="535dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:inputType="numberDecimal"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemSize"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="635dp"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/size_weight_container"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemWeight"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="80dp"
+                android:layout_marginTop="635dp"
+                android:background="@drawable/size_weight_container"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/newItemDescription"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="735dp"
+                android:background="@drawable/add_item_edit_box"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/code"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="835dp"
+                android:layout_marginRight="35dp"
+                android:background="@drawable/code_container"
+                android:fontFamily="@font/pixelify_sans"
+                android:hint="-"
+                android:paddingStart="15dp"
+                android:maxLength="13"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textColorHint="#00000000"
+                android:textCursorDrawable="@drawable/cursor_black"
+                android:textSize="20dp" />
+
+            <ImageButton
+                android:id="@+id/barcodeBtn"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="825dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Barcode button"
+                android:visibility="visible"
+                app:srcCompat="@drawable/barcode_btn" />
+
+            <ImageButton
+                android:id="@+id/newItemSaveBtn"
+                android:layout_width="305dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="910dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Save button"
+                android:visibility="visible"
+                app:srcCompat="@drawable/add_item_save_button" />
+
 
         </FrameLayout>
 
-        <ImageButton
-            android:id="@+id/buttonAddProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Add Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_add_product_button" />
+    </ScrollView>
 
-        <ImageButton
-            android:id="@+id/buttonInventory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Inventory"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_inventory_button" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addBarcodeScannerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ExtraText">
 
-        <ImageButton
-            android:id="@+id/buttonSellingWindow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Selling Window"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_selling_window_button" />
-
-        <ImageButton
-            android:id="@+id/buttonStatistics"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Statistics"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_statistics_button" />
-
-        <ImageButton
-            android:id="@+id/buttonScanProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Scan Product"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/burger_scan_button" />
-
-        <Space
-            android:layout_width="match_parent"
+        <!-- This blocks touch but NOT the toolbar -->
+        <View
+            android:id="@+id/touchBlocker"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.journeyapps.barcodescanner.DecoratedBarcodeView
+            android:id="@+id/addBarcodeScanner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:id="@+id/targetOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:background="@drawable/target_size"
+            app:layout_constraintWidth_percent="1"
+            app:layout_constraintHeight_percent="0.60"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <ImageButton
-            android:id="@+id/buttonLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="100dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="Logout"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logout_icon" />
+            android:id="@+id/back_btn"
+            android:layout_width="64dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/back_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.089"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

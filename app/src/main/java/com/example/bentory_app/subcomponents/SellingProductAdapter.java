@@ -17,28 +17,32 @@ import java.util.List;
 
 public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAdapter.ProductViewHolder> {
 
+    // State
     private List<ProductModel> productList = new ArrayList<>();
+
+    // Listener
     private OnAddToCartClickListener onAddToCartClickListener;
 
+    // 🧱 Constructor accepts listener that defines what happens when an item is added to cart.
     public SellingProductAdapter(OnAddToCartClickListener onAddToCartClickListener) {
         this.onAddToCartClickListener = onAddToCartClickListener;
     }
 
+    // 🔁 Used to update the product list displayed in the RecyclerView.
     public void setProductList(List<ProductModel> productList) {
         this.productList = productList;
         notifyDataSetChanged();
     }
 
+    // 🧊 ViewHolder class holds references to item layout views.
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
-
         TextView sellingName, sellingSize, sellingPrice, sellingStock;
         ImageButton sellingAddBtn, addToCartBtn;
 
-        // ViewHolder class that holds the views for each product item in the list
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            // Connect the XML views to Java variables
+            // Connect layout elements with their corresponding views.
             sellingName = itemView.findViewById(R.id.sellingProductName);
             sellingSize = itemView.findViewById(R.id.sellingProductSize);
             sellingPrice = itemView.findViewById(R.id.sellingProductPrice);
@@ -47,7 +51,7 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
             addToCartBtn = itemView.findViewById(R.id.sellingProductAdd);
         }
 
-        // This method sets the data from the product model to the views
+        // Binds a product's data to the view components.
         public void bind(ProductModel product) {
             sellingName.setText(product.getName());
             sellingSize.setText(product.getSize());
@@ -56,27 +60,22 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
         }
     }
 
-    // An interface for handling add-to-cart actions
+    // 🎯 Callback interface used to notify when a product is added to cart.
     public interface OnAddToCartClickListener {
         void onAddToCart(ProductModel product);
     }
 
-
-    // Called when a new ViewHolder needs to be created
+    // 🏗️ Called when creating new ViewHolder for each row/item.
     @NonNull
     @Override
     public SellingProductAdapter.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for a single product item from XML
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_avail_selling_product_layout, parent, false);
-
-        // Return a new ViewHolder instance with the inflated view
         return new ProductViewHolder(view);
     }
 
-    // Called when data needs to be shown in the ViewHolder
+    // 🎨 Bind data to the ViewHolder and set up listeners.
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        // Get the product at the current position and bind its data to the views
         holder.bind(productList.get(position));
 
         // When the "Add to Cart" button is clicked:
@@ -89,9 +88,9 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
         });
     }
 
-    // Tells the RecyclerView how many items are in the list
+    // 🔢 Return total number of items to display.
     @Override
     public int getItemCount() {
-        return productList.size(); // Return the total number of products
+        return productList.size();
     }
 }

@@ -11,11 +11,24 @@ import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+// ===============================
+// BaseDrawer Activity
+//
+// Purpose:
+// - Extends BaseActivity to add shared drawer functionality across screens.
+// - Sets up navigation drawer with user greeting, menu buttons, and logout.
+// - Handles burger icon behavior for opening the drawer.
+// ===============================
 public abstract class BaseDrawerActivity extends BaseActivity {
+
+    // UI Components
+    ImageButton buttonLogout, imageButton, burgerIcon;
+    TextView textViewGreeting;
 
     protected DrawerLayout drawerLayout;
     protected FirebaseAuth mAuth;
 
+    // 🔧 Initializes the drawer: greeting, nav buttons, and logout.
     protected void setupDrawer() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -26,7 +39,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         if (drawerLayout != null) {
             // Setup drawer greeting
             FirebaseUser currentUser = mAuth.getCurrentUser();
-            TextView textViewGreeting = findViewById(R.id.textViewGreeting);
+            textViewGreeting = findViewById(R.id.textViewGreeting);
             if (textViewGreeting != null) {
                 if (currentUser != null && currentUser.getEmail() != null) {
                     String email = currentUser.getEmail();
@@ -45,7 +58,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
             setupDrawerImageButton(R.id.buttonScanProduct, SellProduct.class);
 
             // Set up logout button in drawer
-            ImageButton buttonLogout = findViewById(R.id.buttonLogout);
+            buttonLogout = findViewById(R.id.buttonLogout);
             if (buttonLogout != null) {
                 buttonLogout.setOnClickListener(v -> {
                     mAuth.signOut();
@@ -62,9 +75,9 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         }
     }
 
-    // method for drawer menu buttons
+    // 🔘 method for drawer menu buttons. (METHODS)
     private void setupDrawerImageButton(int buttonId, Class<?> activityClass) {
-        ImageButton imageButton = findViewById(buttonId);
+        imageButton = findViewById(buttonId);
         if (imageButton != null) {
             imageButton.setOnClickListener(v -> {
                 if (drawerLayout != null) {
@@ -75,7 +88,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         }
     }
 
-    // Override setupToolbar to handle drawer opening
+    // 🧰 Override setupToolbar to handle drawer opening.
     @Override
     protected void setupToolbar(int toolbarId, String title, boolean showBurgerMenu) {
         super.setupToolbar(toolbarId, title, showBurgerMenu);
@@ -86,10 +99,11 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         }
     }
 
+    // 🍔 Burger menu icon opens the drawer. (METHODS)
     private void setupBurgerMenuClick() {
         // Use post to ensure views are fully inflated
         findViewById(android.R.id.content).post(() -> {
-            ImageButton burgerIcon = findViewById(R.id.burgerbttn);
+            burgerIcon = findViewById(R.id.burgerbttn);
             if (burgerIcon != null && drawerLayout != null) {
                 burgerIcon.setOnClickListener(v -> {
                     drawerLayout.openDrawer(findViewById(R.id.nav_drawer));

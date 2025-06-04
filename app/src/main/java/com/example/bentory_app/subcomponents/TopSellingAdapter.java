@@ -14,12 +14,15 @@ import java.util.List;
 
 public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.ViewHolder> {
 
+    // State
     private List<TopSellingModel> productList;
 
+    // 🧱 Constructor to initialize the adapter with a list of products.
     public TopSellingAdapter(List<TopSellingModel> productList) {
         this.productList = productList;
     }
 
+    // 🧊 ViewHolder class to hold the views for each product item.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView size;
@@ -37,6 +40,7 @@ public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.Vi
         }
     }
 
+    // 🛠️ Inflate layout and create a new ViewHolder.
     @Override
     public TopSellingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -44,7 +48,7 @@ public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.Vi
         return new ViewHolder(view);
     }
 
-    @Override
+    // 🧩 Bind data from the model to the ViewHolder's views.
     public void onBindViewHolder(ViewHolder holder, int position) {
         TopSellingModel product = productList.get(position);
         holder.name.setText(product.getName());
@@ -54,6 +58,7 @@ public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.Vi
         holder.status.setText(product.getStatus());
     }
 
+    // 🔢 Return total number of products in the list.
     @Override
     public int getItemCount() {
         return productList.size();

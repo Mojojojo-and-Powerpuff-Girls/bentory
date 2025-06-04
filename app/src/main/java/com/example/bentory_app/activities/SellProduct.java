@@ -50,21 +50,42 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+// ===============================
+// SellProduct Activity
+//
+// Purpose:
+// - Allows users to sell products by scanning barcodes or selecting from the inventory.
+// - Handles updating stock quantities after a product sale.
+// - Connects with firebase to update product information in real-time.
+// - Includes UI for entering quantity, confirming the sale, and viewing cart details.
+// ===============================
 public class SellProduct extends BaseDrawerActivity {
 
+    // UI Components
+    private RecyclerView recyclerViewSelling, recyclerViewTop;
+    private ImageButton scanBtn, filterBtn, searchScanBtn, backBtn, cartButton, confirmBtn;
+    private EditText manualCode, searchEditText;
+    private DecoratedBarcodeView barcodeView;
+    private View targetOverlay, touchBlock, bottomSheetView;
     private ToneGenerator toneGen;
     private Vibrator vibrator;
-    private DecoratedBarcodeView barcodeView;
-    private View targetOverlay, touchBlock;
+    private TextView totalPriceView;
+    private FrameLayout bottomSheet;
+
+    // State
     private boolean isScannerActive = false;
-    private ImageButton scanBtn, filterBtn, searchScanBtn, backBtn;
-    private EditText manualCode, searchEditText;
-    private RecyclerView recyclerViewSelling;
-    private SellingViewModel sellingViewModel;
-    private CartViewModel cartViewModel;
-    private SellingProductAdapter sellingAdapter;
-    private ProductViewModel productViewModel;
+    private double total;
+    private int screenHeight;
+    private String enteredCode;
     private List<ProductModel> fullProductList;
+
+    // ViewModel
+    private CartViewModel cartViewModel;
+    private SellingViewModel sellingViewModel;
+    private ProductViewModel productViewModel;
+
+    // Adapter
+    private SellingProductAdapter sellingAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,44 +93,68 @@ public class SellProduct extends BaseDrawerActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sell_product);
 
-        // Set padding for system bars
+        // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setupToolbar(R.id.my_toolbar, "Selling Window", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
 
-        // Setup toolbar using BaseActivity method
-        // For SellProduct, we likely want the burger menu, so showBurgerMenu is true
-        setupToolbar(R.id.my_toolbar, "Selling Window", true);
-
-        // Setup drawer functionality
-        setupDrawer();
-
-        // Initialize ViewModels
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class); // !!!!!!!!!!!!!!!!!!!!
+        // ⬛ Initialize ViewModel
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         sellingViewModel = new ViewModelProvider(this).get(SellingViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 200); // Initialize sounds and vibration
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        // FindByViewById
+        // ⬛ Bind Views
         searchScanBtn = findViewById(R.id.searchScannerBtn);
-        filterBtn = findViewById(R.id.filterBtn); // filter button
-        searchEditText = findViewById(R.id.searchView); // search view
-        targetOverlay = findViewById(R.id.targetOverlay); // barcode's target size
+        filterBtn = findViewById(R.id.filterBtn);
+        searchEditText = findViewById(R.id.searchView);
+        targetOverlay = findViewById(R.id.targetOverlay);
         touchBlock = findViewById(R.id.touchBlocker);
-        barcodeView = findViewById(R.id.barcodeScanner); // setup barcode
-        scanBtn = findViewById(R.id.scannerBtn); // setup barcode
-        manualCode = findViewById(R.id.sellingCode); // setup barcode
-        recyclerViewSelling = findViewById(R.id.recyclerViewSelling); // Setup RecyclerView for selling products
-        recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+        barcodeView = findViewById(R.id.barcodeScanner);
+        scanBtn = findViewById(R.id.scannerBtn);
+        manualCode = findViewById(R.id.sellingCode);
+        recyclerViewSelling = findViewById(R.id.recyclerViewSelling);
         backBtn = findViewById(R.id.back_btn);
+        cartButton = findViewById(R.id.pullout_btn);
 
-        // Search barcode
-        searchScanBtn.setOnClickListener(v -> {
-            scanBarcodeForProductSearch();
+        // 📦 Setup RecyclerView layout manager for the selling products list.
+        recyclerViewSelling.setLayoutManager(new LinearLayoutManager(this));
+
+        // ===============================
+        // 🔍 Search Input: Filter product list as user types in search field. (FEATURE)
+        // ===============================
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterProducts(s.toString()); //// 'filterProducts' contains a method (found at the bottom of the code).
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        // Filter A-Z Z-A
+
+        // ===============================
+        // 🔍 Search barcode button click: start barcode scanning for product search. (FEATURE)
+        // ===============================
+        searchScanBtn.setOnClickListener(v -> {
+            scanBarcodeForProductSearch(); //// 'scanBarcodeForProductSearch' contains a method (found at the bottom of the code).
+        });
+
+
+        // ===============================
+        // 🔽 Filter Button Setup: Show sorting options for the inventory list [A-Z / Z-A]. (FEATURE)
+        // ===============================
         filterBtn.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(SellProduct.this, filterBtn);
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
@@ -125,45 +170,32 @@ public class SellProduct extends BaseDrawerActivity {
                     Collections.sort(sortedList, Comparator.comparing(ProductModel::getName).reversed());
                 }
 
-                sellingAdapter.setProductList(sortedList);
+                sellingAdapter.setProductList(sortedList); //// 'setProductList' contains a method (found at 'SellingProductAdapter' in 'subcomponents' directory).
                 return true;
             });
             popupMenu.show();
         });
 
-        // Search button
+
+        // 🔁 Observe data from ViewModel : Keeps product data up to date and refreshes UI.
         productViewModel.getItems().observe(this, itemList -> {
-            fullProductList = new ArrayList<>(itemList); // Save full list for filtering
-            sellingAdapter.setProductList(itemList); // Set initial full list
+            fullProductList = new ArrayList<>(itemList); // keep original list for filtering.
+            sellingAdapter.setProductList(itemList);     // updates the sellingAdapter with new or updated list of products.
         });
 
-        // Search listener
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterProducts(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        // Setup adapter and handle Add to Cart logic
+        // ===============================
+        // ➕🛒 Add to Cart Logic: Initialize sellingAdapter with Add to Cart Button logic ['+' button]. (FEATURE)
+        // ===============================
         sellingAdapter = new SellingProductAdapter(product -> {
-
-            // Reduce product quantity by 1 when buttons are clicked
             int currentStock = product.getQuantity();
+
             // Checks if stock is zero.
             if (currentStock <= 0) {
                 Toast.makeText(SellProduct.this, "Out of stock!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Proceeds to add to cart
+
+            // Add product to cart with quantity 1.
             CartModel cartItem = new CartModel(
                     product.getId(),
                     product.getName(),
@@ -172,51 +204,57 @@ public class SellProduct extends BaseDrawerActivity {
                     product.getSale_Price(),
                     product // pass the reference
             );
-            cartViewModel.addToCart(cartItem);
+            cartViewModel.addToCart(cartItem); //// 'addToCart' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
             Toast.makeText(SellProduct.this, "Item added!", Toast.LENGTH_SHORT).show();
-            // Reduce product stock
+
+            // Reduce product stock after add to cart.
             product.setQuantity(currentStock - 1);
-            // Optional: Notify UI of changes if needed
+
+            // Optional: Notify UI of changes if needed.
             sellingAdapter.notifyDataSetChanged();
         });
-
         recyclerViewSelling.setAdapter(sellingAdapter);
 
-        // Observe product data from SellingViewModel
+
+        // 🔁 Observe data from ViewModel : Keeps product data up to date and refreshes UI.
         sellingViewModel.getItems().observe(this, productModels -> {
             sellingAdapter.setProductList(productModels);
         });
 
-        ImageButton cartButton = findViewById(R.id.pullout_btn);
+        // ===============================
+        // ✅🛒 Confirm button and Cart bottom sheet: confirm button logic and show cart bottom sheet dialog. (FEATURE)
+        // ===============================
         cartButton.setOnClickListener(v -> {
+            // Initialize and set up bottom sheet view.
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SellProduct.this);
-            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null, false);
-
+            bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_cart, null, false);
             bottomSheetDialog.setContentView(bottomSheetView);
 
-            ImageButton confirmBtn = bottomSheetView.findViewById(R.id.confirm_button);
-            TextView totalPriceView = bottomSheetView.findViewById(R.id.total_price_text);
-            double total = cartViewModel.getCartTotal();
+            // Display total price and bind confirm button.
+            confirmBtn = bottomSheetView.findViewById(R.id.confirm_button);
+            totalPriceView = bottomSheetView.findViewById(R.id.total_price_text);
+            total = cartViewModel.getCartTotal(); //// 'getCartTotal' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
             totalPriceView.setText(String.format("₱%.2f", total));
 
+            // On confirm: update stocks adn clear cart.
             confirmBtn.setOnClickListener(view -> {
+                //// 'confirmCart' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
                 cartViewModel.confirmCart(() -> {
-                    Toast.makeText(this, "Stock updated and cart cleared", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Stock updated and Cart cleared", Toast.LENGTH_SHORT).show();
                     bottomSheetDialog.dismiss();
                 });
             });
 
-            // Pause barcode scanner when bottom sheet is shown
+            // Pause barcode scanner when bottom sheet [cart] is shown.
             bottomSheetDialog.setOnShowListener(dialog -> {
                 barcodeView.pause();
 
-                // Method 1: Force full height using display metrics
+                // Force full height using display metrics.
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int screenHeight = 2100;
+                screenHeight = 2100;
 
-                FrameLayout bottomSheet = bottomSheetDialog
-                        .findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
                     ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
@@ -228,14 +266,17 @@ public class SellProduct extends BaseDrawerActivity {
                 }
             });
 
-            // Resume scanner only if it was active before when bottom sheet is dismissed
+            // Resume scanner when bottom sheet [cart] is dismissed. (If it was active)
             bottomSheetDialog.setOnDismissListener(dialog -> {
                 if (isScannerActive)
                     barcodeView.resume();
             });
 
-            RecyclerView recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
+            // Display cart items in RecyclerView inside bottom sheet [cart].
+            recyclerViewTop = bottomSheetView.findViewById(R.id.recyclerViewCart);
             recyclerViewTop.setLayoutManager(new LinearLayoutManager(SellProduct.this));
+
+            //// 'getCartItems' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
             cartViewModel.getCartItems().observe(SellProduct.this, cartItems -> {
                 CartAdapter adapter1 = new CartAdapter(cartItems, () -> sellingAdapter.notifyDataSetChanged());
                 recyclerViewTop.setAdapter(adapter1);
@@ -244,10 +285,11 @@ public class SellProduct extends BaseDrawerActivity {
             bottomSheetDialog.show();
         });
 
-        // Start continuous barcode scanning with the provided callback
-        barcodeView.decodeContinuous(callback);
 
-        // Toggle scanner visibility and state when scan button is clicked
+        // ===============================
+        // 📷 Barcode Scanner Setup: Barcode scanner visibility and state. (FEATURE)
+        // ===============================
+        barcodeView.decodeContinuous(callback); //// 'callback' contains a method (found at the bottom of the code).
         scanBtn.setOnClickListener(v -> {
             if (isScannerActive) {
                 barcodeView.setVisibility(View.GONE);
@@ -263,29 +305,29 @@ public class SellProduct extends BaseDrawerActivity {
             isScannerActive = !isScannerActive; // Update scanner state flag
         });
 
-        // Initialize sounds and vibration
-        toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 200);
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        // Manual input of code
+        // ===============================
+        // 🖊️ Manual Barcode Entry: Handle manual code input via keyboard done/enter action [also includes the linking of new barcode]. (FEATURE)
+        // ===============================
         manualCode.setOnEditorActionListener((v, actionId, event) -> {
-            String enteredCode = manualCode.getText().toString().trim();
+            enteredCode = manualCode.getText().toString().trim();
 
             if (!enteredCode.isEmpty()) {
                 List<ProductModel> products = sellingViewModel.getItems().getValue();
                 if (products == null)
                     return true;
 
-                // Search for product by code
+                // Search for a product that contains the entered code in any of its barcodes.
                 ProductModel matched = null;
                 for (ProductModel p : products) {
-                    if (p.getBarcode().contains(enteredCode)) {
+                    if (p.getBarcode() != null && p.getBarcode().contains(enteredCode)) {
                         matched = p;
                         break;
                     }
                 }
 
                 if (matched != null) {
+                    // Check stock before adding to cart.
                     if (matched.getQuantity() <= 0) {
                         manualCode.setError("Out of stock");
                         return true;
@@ -301,20 +343,23 @@ public class SellProduct extends BaseDrawerActivity {
                             matched);
 
                     cartViewModel.addToCart(cartItem);
+                    Toast.makeText(SellProduct.this, "Item added!", Toast.LENGTH_SHORT).show();
+
+                    // Decrease stock and refresh UI.
                     matched.setQuantity(matched.getQuantity() - 1);
-                    manualCode.setText(""); // clear input
+                    manualCode.setText(""); // clear input field.
                     sellingAdapter.notifyDataSetChanged();
 
                 } else {
-                    // Barcode not found - prompt user to link it
+                    // Barcode not found, ask user if they want to link the barcode.
                     new AlertDialog.Builder(SellProduct.this)
-                            .setTitle("Unknown Barcode")
-                            .setMessage(
-                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setTitle("Product not found")
+                            .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Intent intent = new Intent(SellProduct.this, Inventory.class);
-                                intent.putExtra("scannedBarcode", enteredCode); // pass the barcode
+                                intent.putExtra("scannedBarcode", enteredCode); // pass entered code to Inventory.
                                 startActivity(intent);
+                                Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
                             })
                             .setNegativeButton("No", null)
                             .show();
@@ -323,6 +368,10 @@ public class SellProduct extends BaseDrawerActivity {
             return true;
         });
 
+
+        // ===============================
+        // 🔙 Back Button: Close Activity. (FEATURE)
+        // ===============================
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +380,12 @@ public class SellProduct extends BaseDrawerActivity {
         });
     }
 
-    // Filter products method
+
+    // ===============================
+    //             METHODS
+    // ===============================
+
+    // 🔎 'filterProducts' : Filters the product list based on user query from the search input. (METHODS)
     private void filterProducts(String query) {
         if (fullProductList == null)
             return;
@@ -343,67 +397,14 @@ public class SellProduct extends BaseDrawerActivity {
                 filtered.add(product);
             }
         }
-
         sellingAdapter.setProductList(filtered);
     }
 
-    // Handle scanned barcode
-    private void handleScannedBarcode(String scannedBarcode) {
-        ProductRepository repo = new ProductRepository();
-        repo.getProductByBarcode(scannedBarcode, new ProductRepository.ProductCallback() {
-            @Override
-            public void onProductFound(ProductModel product) {
-                int currentStock = product.getQuantity();
-                if (currentStock <= 0) {
-                    Toast.makeText(SellProduct.this, "Out of stock!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                // Add to cart
-                CartModel cartItem = new CartModel(
-                        product.getId(),
-                        product.getName(),
-                        product.getSize(),
-                        1,
-                        product.getSale_Price(),
-                        product);
-                cartViewModel.addToCart(cartItem);
-
-                product.setQuantity(currentStock - 1);
-                sellingAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onProductNotFound() {
-                toneGen.startTone(ToneGenerator.TONE_SUP_ERROR); // distinct tone for not found
-                runOnUiThread(() -> {
-                    new AlertDialog.Builder(SellProduct.this)
-                            .setTitle("Unknown Barcode")
-                            .setMessage(
-                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                Intent intent = new Intent(SellProduct.this, Inventory.class);
-                                intent.putExtra("scannedBarcode", scannedBarcode);
-                                startActivity(intent);
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
-                });
-
-            }
-
-            @Override
-            public void onError(String error) {
-                Toast.makeText(SellProduct.this, "Error: " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // Handle Barcode scans in real time.
+    // 📷 'callback' : This callback handles barcode scanning events. (METHODS)
     private final BarcodeCallback callback = new BarcodeCallback() {
         private long lastScanTime = 0;
-        private static final long SCAN_COOLDOWN_MS = 1000; // 1 second cooldown
+        private static final long SCAN_COOLDOWN_MS = 1000; // 1 second cooldown between scans.
 
         @Override
         public void barcodeResult(BarcodeResult result) {
@@ -416,7 +417,7 @@ public class SellProduct extends BaseDrawerActivity {
             }
             lastScanTime = currentTime;
 
-            // Lookup product from firebase
+            // Lookup product by barcode from ViewModel's current items (Firebase).
             ProductModel matched = null;
             for (ProductModel p : sellingViewModel.getItems().getValue()) {
                 if (p.getBarcode() != null && p.getBarcode().contains(scannedCode)) {
@@ -426,6 +427,7 @@ public class SellProduct extends BaseDrawerActivity {
             }
 
             if (matched != null) {
+                // Out of stock checker.
                 if (matched.getQuantity() <= 0) {
                     toneGen.startTone(ToneGenerator.TONE_PROP_NACK); // Out-of-stock sound
                     if (vibrator != null) {
@@ -436,14 +438,16 @@ public class SellProduct extends BaseDrawerActivity {
                         }
                     }
                     Toast.makeText(SellProduct.this, "Out of stock!", Toast.LENGTH_SHORT).show();
-                    return; // STOP execution
+                    return;                                         // STOP execution if no stock.
                 }
 
-                // Add to cart
+                // Add to cart with quantity 1.
                 CartModel cartItem = new CartModel(
                         matched.getId(), matched.getName(), matched.getSize(), 1,
                         matched.getSale_Price(), matched);
                 cartViewModel.addToCart(cartItem);
+
+                // Decrement product quantity in stock by 1.
                 matched.setQuantity(matched.getQuantity() - 1);
 
                 // Add sound and vibration feedback
@@ -458,19 +462,23 @@ public class SellProduct extends BaseDrawerActivity {
                     }
                 }
 
+                // Notify adapter to refresh UI.
                 sellingAdapter.notifyDataSetChanged();
 
             } else {
-                toneGen.startTone(ToneGenerator.TONE_SUP_ERROR); // distinct tone for not found
+                // distinct tone for not found
+                toneGen.startTone(ToneGenerator.TONE_SUP_ERROR);
+
                 // Stop the tone after a short delay (e.g., 500ms)
                 new android.os.Handler().postDelayed(() -> {
                     toneGen.stopTone();
                 }, 500);
+
+                // Show dialog to link new barcode to existing product.
                 runOnUiThread(() -> {
                     new AlertDialog.Builder(SellProduct.this)
-                            .setTitle("Unknown Barcode")
-                            .setMessage(
-                                    "This barcode is not associated with any product. \nWould you like to link it to an existing one?")
+                            .setTitle("Product not found")
+                            .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Intent intent = new Intent(SellProduct.this, Inventory.class);
                                 intent.putExtra("scannedBarcode", scannedCode); // pass the barcode
@@ -483,48 +491,10 @@ public class SellProduct extends BaseDrawerActivity {
         }
     };
 
-    // BALIKAN TO!!!!!!!!!!!!!!!!!!!!!!!!
-    private void showProductSelectionDialog(String newBarcode) {
-        List<ProductModel> products = sellingViewModel.getItems().getValue();
-        if (products == null || products.isEmpty())
-            return;
 
-        String[] productNames = new String[products.size()];
-        for (int i = 0; i < products.size(); i++) {
-            productNames[i] = products.get(i).getName() + " - " + products.get(i).getSize();
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle("Select Product to Associate")
-                .setItems(productNames, (dialog, which) -> {
-                    ProductModel selected = products.get(which);
-
-                    // If barcode already exists, show toast immediately
-                    if (selected.getBarcode() != null && selected.getBarcode().contains(newBarcode)) {
-                        Toast.makeText(this, "Barcode already exists for this product.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Confirmation Dialog
-                    new AlertDialog.Builder(this)
-                            .setTitle("Confirm Association")
-                            .setMessage("Are you sure you want to add this barcode to " + selected.getName() + "?")
-                            .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
-                                // Add barcode
-                                selected.getBarcode().add(newBarcode);
-                                sellingViewModel.updateProduct(selected);
-                                Toast.makeText(this, "Barcode linked to " + selected.getName(), Toast.LENGTH_SHORT)
-                                        .show();
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    // Scans code for product search method
+    // 📲 'scanBarcodeForProductSearch' : Scans barcode to filter products for search. (METHODS)
     private void scanBarcodeForProductSearch() {
+        // Make barcode scanner visible.
         barcodeView.setVisibility(View.VISIBLE);
         targetOverlay.setVisibility(View.VISIBLE);
         touchBlock.setVisibility(View.VISIBLE);
@@ -548,11 +518,12 @@ public class SellProduct extends BaseDrawerActivity {
                     }
 
                     if (matched != null) {
+                        // Show only the matched product in the adapter (filtered).
                         List<ProductModel> filteredList = new ArrayList<>();
                         filteredList.add(matched);
                         sellingAdapter.setProductList(filteredList);
 
-                        // Cleanup scanner
+                        // Cleanup scanner UI
                         barcodeView.pause();
                         barcodeView.setVisibility(View.GONE);
                         targetOverlay.setVisibility(View.GONE);
@@ -560,6 +531,7 @@ public class SellProduct extends BaseDrawerActivity {
                         isScannerActive = false;
 
                     } else {
+                        // Show toast if no product found.
                         Toast.makeText(SellProduct.this, "Product not found", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -567,6 +539,7 @@ public class SellProduct extends BaseDrawerActivity {
         });
     }
 
+    // Resume Scanner (METHODS)
     @Override
     protected void onResume() {
         super.onResume();
@@ -574,10 +547,10 @@ public class SellProduct extends BaseDrawerActivity {
             barcodeView.resume();
     }
 
+    // Pause Scanner (METHODS)
     @Override
     protected void onPause() {
         super.onPause();
         barcodeView.pause();
     }
-
 }

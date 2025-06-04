@@ -19,22 +19,28 @@ import java.util.Set;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ProductViewHolder> {
 
-    private Context context;
+    //State
     private List<ProductModel> productList;
-    private OnProductClickListener listener;
     private boolean deleteMode = false;
     private Set<String> selectedItems = new HashSet<>();
+    private Context context;
 
+    // Listener
+    private OnProductClickListener listener;
+
+    // 🧩 Interface for handling item clicks outside delete mode.
     public interface OnProductClickListener {
         void onProductClick(ProductModel product);
     }
 
+    // 📦 Constructor
     public InventoryAdapter(Context context, List<ProductModel> productList, OnProductClickListener listener) {
         this.context = context;
         this.productList = productList;
         this.listener = listener;
     }
 
+    // 🏗️ Create ViewHolder using your item layout.
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,17 +48,19 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
         return new ProductViewHolder(view);
     }
 
+    // ===============================
+    // 🎨 Bind and Checkbox of Delete Mode : Bind product data to UI elements and manage checkbox logic. (FUNCTIONALITY)
+    // ===============================
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         ProductModel product = productList.get(position);
 
+        // Display product details.
         holder.name.setText(product.getName());
         holder.quantity.setText("Quantity: " + product.getQuantity());
         holder.sale_price.setText(String.format("₱ %.2f", product.getSale_Price()));
 
-        // Step 1: Show or hide checkbox based on delete mode
-        // WHY: In delete mode, checkboxes allow users to select items for deletion.
-        //Outside delete mode, we hide checkboxes for a cleaner UI.
+        // Show/hide checkbox based on delete mode.
         if (deleteMode) {
             holder.checkboxItemDlt.setVisibility(View.VISIBLE);
         }
@@ -60,75 +68,66 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
             holder.checkboxItemDlt.setVisibility(View.INVISIBLE);
         }
 
-        // Step 2: Clear any previous checkbox listeners
-        // WHY: RecyclerView reuses view holders. If we don't clear the listener,
-        // it can be triggered incorrectly during recycling.
+        // Remove previous checkbox listener to prevent unwanted triggers.
         holder.checkboxItemDlt.setOnCheckedChangeListener(null);
 
-        // Step 3: Set checkbox state based on whether the item is selected
-        // WHY: Ensures that selected items remain checked when views are recycled.
+        // Update checkbox state (checked if product is selected).
         holder.checkboxItemDlt.setChecked(selectedItems.contains(product.getId()));
 
-        // Step 4: Handle checkbox state changes (check/uncheck)
-        // WHY: Adds or removes the product ID from the selectedItems set accordingly.
+        // Handle checkbox toggle action.
         holder.checkboxItemDlt.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String id = product.getId();
             if (id != null && !id.trim().isEmpty()) {
                 Log.d("InventoryAdapter", "Checkbox toggled for id=" + id + ", checked=" + isChecked);
                 if (isChecked) {
-                    selectedItems.add(id);
+                    selectedItems.add(id);      // add to selection.
                 } else {
-                    selectedItems.remove(id);
+                    selectedItems.remove(id);   // remove from selection.
                 }
             } else {
                 Log.e("InventoryAdapter", "Invalid product ID when toggling checkbox");
             }
         });
 
-        // Step 5: Enable or disable item click behavior based on delete mode
-        // WHY: In delete mode, item clicks should be disabled to avoid triggering normal item actions.
+        // Enable/Disable normal click actions based on mode.
         if (!deleteMode) {
             holder.itemView.setOnClickListener(v -> listener.onProductClick(product));
         }
         else {
-            holder.itemView.setOnClickListener(null);
+            holder.itemView.setOnClickListener(null); // disable clicks.
         }
     }
 
+    // 🔢 Get number of items.
     @Override
     public int getItemCount() {
         return productList.size();
     }
 
-    // 1: Method to toggle delete mode on or off
-    // WHY: Activates delete mode (showing checkboxes and enabling multi-select),
-    // and deactivates it (clearing selections and hiding checkboxes).
+    // 🔄 Toggle delete mode (with automatic checkbox display and selection clearing).
     public void setDeleteMode(boolean deleteMode) {
         this.deleteMode = deleteMode;
 
-        // Step 1: If exiting delete mode, clear any selected items
-        // WHY: We don't want stale selections left over when the user isn't deleting anymore.
+        // Clear selections when exiting delete mode.
         if (!deleteMode) {
             selectedItems.clear();
         }
 
-        // Step 3: Refresh the entire RecyclerView UI
-        // WHY: To show or hide checkboxes depending on the mode.
+        // Refresh UI to reflect mode change.
         notifyDataSetChanged();
     }
 
-    // 2: Getter method to check if we're currently in delete mode
-    // WHY: Used externally (e.g., in activity) to determine the current mode state.
+    // 📍 Check current mode state.
     public boolean getDeleteMode() {
         return deleteMode;
     }
 
-    // 3: Getter method for selected item IDs
-    // WHY: Allows other classes (like ViewModel or Activity) to access selected items for deletion.
+    // 📤 Get list of selected product IDs for deletion.
     public Set<String> getSelectedItems() {
         return selectedItems;
     }
 
+    // 🧱 ViewHolder : holds reference to layout views.
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView name, quantity, sale_price;
         CheckBox checkboxItemDlt;
@@ -138,11 +137,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Prod
             name = itemView.findViewById(R.id.productName);
             quantity = itemView.findViewById(R.id.productQuantity);
             sale_price = itemView.findViewById(R.id.productSalePrice);
-            checkboxItemDlt = itemView.findViewById(R.id.itemCheckBox); // Initialize
+            checkboxItemDlt = itemView.findViewById(R.id.itemCheckBox);
         }
     }
 
-    // COMMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // 🔁 Called externally to update list data.
     public void updateData(List<ProductModel> newData) {
         this.productList = newData;
         notifyDataSetChanged();

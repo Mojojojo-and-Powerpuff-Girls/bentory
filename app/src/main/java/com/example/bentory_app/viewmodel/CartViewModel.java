@@ -11,21 +11,24 @@ import java.util.List;
 
 public class CartViewModel extends ViewModel {
 
+    // Repository
     private final SellingWindowRepository repository = SellingWindowRepository.getInstance();
+
+    // LiveData
     private final MutableLiveData<List<CartModel>> cartItems = new MutableLiveData<>(repository.getCartItems());
 
-    // Get Cart Items
+    // 📤 Expose cart items to UI components as LiveData (read-only).
     public LiveData<List<CartModel>> getCartItems() {
         return cartItems;
     }
 
-    // Add product to cart
+    // ➕ Add a new product to cart.
     public void addToCart(CartModel newItem) {
-        repository.addToCart(newItem); // Add to cart repository
-        cartItems.setValue(repository.getCartItems()); // Update liveData
+        repository.addToCart(newItem);                  // Add to cart repository
+        cartItems.setValue(repository.getCartItems());  // Update liveData
     }
 
-    // Confirm cart and deduct stock in Firebase
+    // ✅ Confirm the cart and deduct stock from Firebase.
     public void confirmCart(Runnable onComplete) {
         repository.confirmCartAndDeductStock(() -> {
             cartItems.setValue(repository.getCartItems()); // Only update after stock changes
@@ -34,7 +37,7 @@ public class CartViewModel extends ViewModel {
 
     }
 
-    // Calculates the total cost of all cart items.
+    // 💰 Calculate total cost of the items in the cart.
     public double getCartTotal() {
         return SellingWindowRepository.calculateTotal(repository.getCartItems());
     }
