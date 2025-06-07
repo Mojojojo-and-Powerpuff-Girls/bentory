@@ -374,7 +374,16 @@ public class SellProduct extends BaseDrawerActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if (barcodeView.getVisibility() == View.VISIBLE) {
+                    // Hide scanner and show form
+                    barcodeView.setVisibility(View.GONE);
+                    targetOverlay.setVisibility(View.GONE);
+                    touchBlock.setVisibility(View.GONE);
+                    barcodeView.pause(); // stop scanning
+                } else {
+                    // Normal back behavior — e.g., finish activity
+                    finish();
+                }
             }
         });
     }

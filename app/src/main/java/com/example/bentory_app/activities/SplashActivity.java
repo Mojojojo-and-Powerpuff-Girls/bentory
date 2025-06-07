@@ -33,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
             // Apply fade in/out transition between SplashAct and LoginAct.
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
-        }, 3000); // delay in milliseconds (e.g, 3000m = 3 seconds)
+        }, 2000); // delay in milliseconds (e.g, 2000m = 2 seconds)
     }
 }
 

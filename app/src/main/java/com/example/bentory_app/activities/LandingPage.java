@@ -1,6 +1,8 @@
 package com.example.bentory_app.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -43,6 +47,9 @@ public class LandingPage extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
+
+        // ⬛ Camera Permission
+        checkCameraPermission();
 
         // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.my_toolbar), (v, insets) -> {
@@ -80,6 +87,19 @@ public class LandingPage extends BaseDrawerActivity {
     // ===============================
     //             METHODS
     // ===============================
+
+    // 📷 'checkCameraPermission' : Method to check if the app has permission to use the camera. (METHODS)
+    private static final int CAMERA_REQUEST_CODE = 101; // Unique request code for camera permission.
+    private void checkCameraPermission() {
+        // Check if the camera permission has NOT been granted.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Request the camera permission from the user at runtime.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+        }
+    }
+
 
     // 🧩 'setButtonClickListener' : animates a button on click, then opens the target activity.
     private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {

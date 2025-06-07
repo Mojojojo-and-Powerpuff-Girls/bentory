@@ -15,7 +15,6 @@
         android:padding="10dp"
         android:contentDescription="view list of top selling"/>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,6 +49,5 @@
         android:contentDescription="Confirm Button"
         android:background="@drawable/confirm_btn"
         />
-
 
 </LinearLayout>
