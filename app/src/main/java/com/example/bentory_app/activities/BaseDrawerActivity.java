@@ -37,6 +37,9 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
 
         if (drawerLayout != null) {
+            // Disable gesture (touch swipe)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
             // Setup drawer greeting
             FirebaseUser currentUser = mAuth.getCurrentUser();
             textViewGreeting = findViewById(R.id.textViewGreeting);

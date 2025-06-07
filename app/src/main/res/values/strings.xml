@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Bentory_app</string>
     <string name="burger_icon">Burger Button</string>
+    <string name="zxing_msg_default_status">Scan a barcode</string>
 </resources>

@@ -54,8 +54,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
 
         // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
         setupToolbar(R.id.my_toolbar, "Statistics", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).

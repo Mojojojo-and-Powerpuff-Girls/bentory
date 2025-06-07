@@ -29,6 +29,7 @@
             android:background="@drawable/login_container"
             android:padding="32dp">
 
+            <!-- puwede ibalik, since di ko pa nakikita as of now purpose nung back button. -->
             <ImageButton
                 android:id="@+id/backButtonLogin"
                 android:layout_width="40dp"
@@ -39,6 +40,7 @@
                 android:contentDescription="Back"
                 android:scaleType="fitCenter"
                 android:padding="8dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:text="Login"
                 android:fontFamily="@font/pixelify_sans"
+                android:textStyle="bold"
                 android:textSize="36sp"
                 android:textColor="#4E342E"
                 android:layout_marginTop="24dp"
@@ -61,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:text="Username"
                 android:fontFamily="@font/pixelify_sans"
+                android:textStyle="bold"
                 android:textColor="#4E342E"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
@@ -77,6 +81,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_textbox"
                 android:hint=""
+                android:textCursorDrawable="@drawable/cursor_black"
                 android:fontFamily="@font/pixelify_sans"
                 android:textColor="#4E342E"
                 android:paddingStart="16dp"
@@ -92,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:text="Password"
                 android:fontFamily="@font/pixelify_sans"
+                android:textStyle="bold"
                 android:textColor="#4E342E"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp"
@@ -108,6 +114,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_textbox"
                 android:hint=""
+                android:textCursorDrawable="@drawable/cursor_black"
                 android:fontFamily="@font/pixelify_sans"
                 android:textColor="#4E342E"
                 android:paddingStart="16dp"
@@ -144,6 +151,7 @@
                 android:text="Don't have an account? &lt;b>&lt;u>click here&lt;/u>&lt;/b>"
                 android:textAlignment="center"
                 android:fontFamily="@font/pixelify_sans"
+                android:textStyle="bold"
                 android:textColor="#4E342E"
                 android:textSize="16sp"
                 android:linksClickable="true"

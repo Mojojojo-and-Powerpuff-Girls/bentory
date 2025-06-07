@@ -1,7 +1,12 @@
 package com.example.bentory_app.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -40,9 +45,8 @@ public class LandingPage extends BaseDrawerActivity {
         setContentView(R.layout.activity_landing_page);
 
         // ⬛ UI Setup
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.my_toolbar), (v, insets) -> {
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
         setupToolbar(R.id.my_toolbar, "Landing Page", true);//// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
@@ -84,6 +88,7 @@ public class LandingPage extends BaseDrawerActivity {
                     .withEndAction(() -> {
                         v.animate().scaleX(1f).scaleY(1f).setDuration(100);
                         startActivity(new Intent(LandingPage.this, targetActivity));
+                        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
                     });
         });
     }

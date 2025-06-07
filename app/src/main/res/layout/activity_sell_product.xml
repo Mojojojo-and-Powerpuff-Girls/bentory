@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/upper_nav"
-        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintHeight_percent="0.18"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,6 +26,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingTop="28dp"
         android:background="@android:color/transparent"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -44,17 +45,31 @@
             android:paddingTop="15dp"
             android:paddingBottom="10dp">
 
+<!--            <ImageButton-->
+<!--                android:id="@+id/burgerbttn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:contentDescription="burgerbutton"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                app:srcCompat="@drawable/burger_icon"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent" />-->
+
             <ImageButton
-                android:id="@+id/burgerbttn"
+                android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="68dp"
+                android:paddingTop="5dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="burgerbutton"
+                android:contentDescription="backButton"
+                android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/burger_icon"
+                android:src="@drawable/back_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
                 android:id="@+id/imageButton"
@@ -78,7 +93,7 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:fontFamily="@font/pixelify_sans"
-                app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                app:layout_constraintStart_toEndOf="@id/back_btn"
                 app:layout_constraintEnd_toStartOf="@id/imageButton"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -96,19 +111,10 @@
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="145dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-
-        <ImageButton
-            android:id="@+id/back_btn"
-            android:layout_width="64dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/back_btn" />
 
         <FrameLayout
             android:layout_width="0dp"
@@ -117,9 +123,11 @@
 
             <EditText
                 android:id="@+id/searchView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:hint="Search here..."
                 android:paddingStart="50dp"
                 android:textColorHint="#888888"
@@ -151,26 +159,44 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/addToCartContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/scannerLayout"
+        app:layout_constraintStart_toStartOf="@id/guidelineBottom"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Fixed-size background image -->
+        <ImageView
+            android:id="@+id/addToCartBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_to_cart_container"
+            android:contentDescription="Background for add to cart container" />
+
+        <!-- RecyclerView overlayed on top of image -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSelling"
+            android:layout_width="match_parent"
+            android:layout_height="353dp"
+            android:padding="12dp"
+            android:layout_marginTop="105dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:contentDescription="View list of available products" />
+    </FrameLayout>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintGuide_begin="630dp"
         android:orientation="horizontal" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSelling"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:contentDescription="view list of available products"
-        app:layout_constraintTop_toBottomOf="@id/scannerLayout"
-        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Scan barcode button -->
     <LinearLayout
@@ -181,7 +207,7 @@
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="210dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -254,7 +280,7 @@
             android:visibility="gone"
             android:background="@drawable/target_size"
             app:layout_constraintWidth_percent="1"
-            app:layout_constraintHeight_percent="0.60"
+            app:layout_constraintHeight_percent="0.55"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

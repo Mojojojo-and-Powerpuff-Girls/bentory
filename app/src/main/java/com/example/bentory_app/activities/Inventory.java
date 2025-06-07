@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -66,6 +67,9 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
     private boolean isScannerActive = false;
     private boolean isDeleteModeActive;
     private String scannedBarcode;
+    private int sizeInDp;
+    private int sizeInPx;
+    private float scale;
     private List<ProductModel> fullProductList; // store full list for filtering
 
     // ViewModel
@@ -82,8 +86,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
 
         // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
         setupToolbar(R.id.my_toolbar, "Inventory", true); //// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
@@ -201,7 +204,19 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
             // Activate delete mode: allow item selection for deletion.
             if (isDeleteModeActive) {
                 adapter.setDeleteMode(true); //// 'setDeleteMode' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
-                dltButton.setImageResource(R.drawable.delete_items);
+                dltButton.setImageResource(R.drawable.delete_icon);
+
+                // Shrink the delete icon.
+                sizeInDp = 50;
+                scale = getResources().getDisplayMetrics().density;
+                sizeInPx = (int) (sizeInDp * scale + 0.5f);
+
+                ViewGroup.LayoutParams params = dltButton.getLayoutParams();
+                dltButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                params.width = sizeInPx;
+                params.height = sizeInPx;
+                dltButton.setLayoutParams(params);
+
             } else {
                 // Deactivate delete mode.
                 Set<String> selectedItems = adapter.getSelectedItems(); //// 'getSelectedItems' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
@@ -213,16 +228,16 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                             .setPositiveButton("Delete", (dialog, which) -> {
                                 productViewModel.deleteSelectedProducts(selectedItems); //// 'deleteSelectedProducts' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
                                 adapter.setDeleteMode(false);
-                                dltButton.setImageResource(R.drawable.select_items);
+                                resetDeleteButtonToSelectItems(); //// 'resetDeleteButtonToSelectItems' contains a method (found at the bottom of the code).
                             })
                             .setNegativeButton("Cancel", (dialog, which) -> {
                                 adapter.setDeleteMode(false);
-                                dltButton.setImageResource(R.drawable.select_items);
+                                resetDeleteButtonToSelectItems();
                             }).show();
                 } else {
                     // No items selected, just exit delete mode.
                     adapter.setDeleteMode(false);
-                    dltButton.setImageResource(R.drawable.select_items);
+                    resetDeleteButtonToSelectItems();
                 }
             }
         });
@@ -231,21 +246,20 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         // ===============================
         // 🔙 Back Button: Close Activity. (FEATURE)
         // ===============================
-        backBtn.setOnClickListener(v -> {
-            finish();
-
-            // if (isScannerActive) {
-            // // Hide scanner if it's active
-            // searchBarcode.setVisibility(View.GONE);
-            // searchTargetOverlay.setVisibility(View.GONE);
-            // touchBlock.setVisibility(View.GONE);
-            // backBtn.setVisibility(View.GONE); // hide back button again
-            // searchBarcode.pause();
-            // isScannerActive = false;
-            // } else {
-            // // Otherwise, act like a normal back press
-            // finish();
-            // }
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (searchBarcode.getVisibility() == View.VISIBLE) {
+                    // Hide scanner and show form
+                    searchBarcode.setVisibility(View.GONE);
+                    searchTargetOverlay.setVisibility(View.GONE);
+                    touchBlock.setVisibility(View.GONE);
+                    searchBarcode.pause(); // stop scanning
+                } else {
+                    // Normal back behavior — e.g., finish activity
+                    finish();
+                }
+            }
         });
     }
 
@@ -253,6 +267,18 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
     // ===============================
     //             METHODS
     // ===============================
+
+    // 🗑️ 'resetDeleteButtonToSelectItems' : reset delete button to select items without changing the size. (METHODS)
+    private void resetDeleteButtonToSelectItems() {
+        dltButton.setImageResource(R.drawable.select_items);
+        dltButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Reset scaleType
+
+        // Reset layout size.
+        ViewGroup.LayoutParams params = dltButton.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        dltButton.setLayoutParams(params);
+    }
 
     // 🔎 'filterProducts' : Filters the product list based on user query from the search input. (METHODS)
     private void filterProducts(String query) {
@@ -351,6 +377,44 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         detailsLabel.setText(combinedDetailsLabel);
         barcode_list.setText(barcodeListText);
 
+        // Add a textWatcher to limit barcode input to a maximum of 5 lines.
+        barcode_list.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not used, but required to implement interface.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Not used, but required to implement interface.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Prevent the watcher from triggering edits recursively.
+                barcode_list.removeTextChangedListener(this);
+
+                // Split input into lines (barcodes are entered one per line).
+                String[] lines = s.toString().split("\n");
+
+                // If the number of lines exceeds 5, trim it to only keep the first 5.
+                if (lines.length > 5) {
+                    StringBuilder trimmed = new StringBuilder();
+
+                    // Append only the first 5 lines back into the EditText.
+                    for (int i=0; i < 5; i++) {
+                        trimmed.append(lines[i]);
+                        if (i < 4) trimmed.append("\n"); // Add newline after each line except the last one.
+                    }
+                    // Set the trimmed text and move the cursor to the end.
+                    barcode_list.setText(trimmed.toString());
+                    barcode_list.setSelection(barcode_list.getText().length()); // Move cursor to end.
+                }
+                // Reattach the listener after modification is complete.
+                barcode_list.addTextChangedListener(this);
+            }
+        });
+
         // Toggle edit mode on edit button click.
         editButton.setOnClickListener(v -> {
             boolean isEditing = !category.isEnabled(); // If fields are disabled, entering edit mode.
@@ -414,9 +478,22 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 productViewModel.updateProduct(product);                // Update in firebase.
                 Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
                 editButton.setImageResource(R.drawable.square_pen);     // the pen edit button.
+
             } else {
-                editButton.setImageResource(R.drawable.red_square_pen); // switch to save icon.
-                category.requestFocus();                                // Optional: focus on first field.
+                // Resize the check icon.
+                sizeInDp = 30;
+                scale = getResources().getDisplayMetrics().density;
+                sizeInPx = (int) (sizeInDp * scale + 0.5f);
+
+                // Reset layout size.
+                ViewGroup.LayoutParams params = editButton.getLayoutParams();
+                editButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                params.width = sizeInPx;
+                params.height = sizeInPx;
+                editButton.setLayoutParams(params);
+
+                editButton.setImageResource(R.drawable.check_square_broken); // switch to save icon.
+                category.requestFocus();                                     // Optional: focus on first field.
             }
 
             // Enable/disable all editable fields based on mode.

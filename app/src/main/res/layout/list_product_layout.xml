@@ -22,10 +22,12 @@
 
         <CheckBox
             android:id="@+id/itemCheckBox"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            android:checked="true"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginLeft="18dp"
+            android:button="@null"
+            android:background="@drawable/custom_checkbox_selector"
             android:visibility="visible" />
     </FrameLayout>
 
