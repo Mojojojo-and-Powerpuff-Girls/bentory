@@ -1,6 +1,7 @@
 package com.example.bentory_app.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -9,8 +10,11 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -64,13 +68,15 @@ public class SellProduct extends BaseDrawerActivity {
     // UI Components
     private RecyclerView recyclerViewSelling, recyclerViewTop;
     private ImageButton scanBtn, filterBtn, searchScanBtn, backBtn, cartButton, confirmBtn;
+    private Button btnYes, btnNo;
     private EditText manualCode, searchEditText;
     private DecoratedBarcodeView barcodeView;
-    private View targetOverlay, touchBlock, bottomSheetView;
+    private View targetOverlay, touchBlock, bottomSheetView, dialogView;
     private ToneGenerator toneGen;
     private Vibrator vibrator;
     private TextView totalPriceView;
     private FrameLayout bottomSheet;
+    private AlertDialog alertDialog;
 
     // State
     private boolean isScannerActive = false;
@@ -155,7 +161,8 @@ public class SellProduct extends BaseDrawerActivity {
         // 🔽 Filter Button Setup: Show sorting options for the inventory list [A-Z / Z-A]. (FEATURE)
         // ===============================
         filterBtn.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(SellProduct.this, filterBtn);
+            Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenuStyle);
+            PopupMenu popupMenu = new PopupMenu(wrapper, filterBtn);
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
 
             popupMenu.setOnMenuItemClickListener(item -> {
@@ -351,17 +358,26 @@ public class SellProduct extends BaseDrawerActivity {
 
                 } else {
                     // Barcode not found, ask user if they want to link the barcode.
-                    new AlertDialog.Builder(SellProduct.this)
-                            .setTitle("Product not found")
-                            .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                Intent intent = new Intent(SellProduct.this, Inventory.class);
-                                intent.putExtra("scannedBarcode", enteredCode); // pass entered code to Inventory.
-                                startActivity(intent);
-                                Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
+                    dialogView = LayoutInflater.from(SellProduct.this).inflate(R.layout.custom_alert_dialog, null);
+                    alertDialog = new AlertDialog.Builder(SellProduct.this)
+                            .setView(dialogView)
+                            .create();
+
+                    // Handle buttons inside the custom view.
+                    btnYes = dialogView.findViewById(R.id.button_yes);
+                    btnNo = dialogView.findViewById(R.id.button_no);
+
+                    btnYes.setOnClickListener(v1 -> {
+                        Intent intent = new Intent(SellProduct.this, Inventory.class);
+                        intent.putExtra("scannedBarcode", enteredCode); // pass entered code to Inventory.
+                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                    });
+
+                    btnNo.setOnClickListener(v2 -> {
+                        alertDialog.dismiss();
+                    });
+                    alertDialog.show();
                 }
             }
             return true;
@@ -484,16 +500,27 @@ public class SellProduct extends BaseDrawerActivity {
 
                 // Show dialog to link new barcode to existing product.
                 runOnUiThread(() -> {
-                    new AlertDialog.Builder(SellProduct.this)
-                            .setTitle("Product not found")
-                            .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                Intent intent = new Intent(SellProduct.this, Inventory.class);
-                                intent.putExtra("scannedBarcode", scannedCode); // pass the barcode
-                                startActivity(intent);
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
+                    // Barcode not found, ask user if they want to link the barcode.
+                    dialogView = LayoutInflater.from(SellProduct.this).inflate(R.layout.custom_alert_dialog, null);
+                    alertDialog = new AlertDialog.Builder(SellProduct.this)
+                            .setView(dialogView)
+                            .create();
+
+                    // Handle buttons inside the custom view.
+                    btnYes = dialogView.findViewById(R.id.button_yes);
+                    btnNo = dialogView.findViewById(R.id.button_no);
+
+                    btnYes.setOnClickListener(v3 -> {
+                        Intent intent = new Intent(SellProduct.this, Inventory.class);
+                        intent.putExtra("scannedBarcode", scannedCode); // pass entered code to Inventory.
+                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                    });
+
+                    btnNo.setOnClickListener(v4 -> {
+                        alertDialog.dismiss();
+                    });
+                    alertDialog.show();
                 });
             }
         }
@@ -510,7 +537,7 @@ public class SellProduct extends BaseDrawerActivity {
 
         barcodeView.resume();
 
-        barcodeView.decodeSingle(new BarcodeCallback() {
+        barcodeView.decodeContinuous(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
                 String searchScannedCode = result.getText();
@@ -539,8 +566,31 @@ public class SellProduct extends BaseDrawerActivity {
                         isScannerActive = false;
 
                     } else {
-                        // Show toast if no product found.
-                        Toast.makeText(SellProduct.this, "Product not found", Toast.LENGTH_SHORT).show();
+                        barcodeView.pause();
+                        isScannerActive = false;
+
+                        // Barcode not found, ask user if they want to link the barcode.
+                        dialogView = LayoutInflater.from(SellProduct.this).inflate(R.layout.custom_alert_dialog, null);
+                        alertDialog = new AlertDialog.Builder(SellProduct.this)
+                                .setView(dialogView)
+                                .create();
+
+                        // Handle buttons inside the custom view.
+                        btnYes = dialogView.findViewById(R.id.button_yes);
+                        btnNo = dialogView.findViewById(R.id.button_no);
+
+                        btnYes.setOnClickListener(v3 -> {
+                            Intent intent = new Intent(SellProduct.this, Inventory.class);
+                            intent.putExtra("scannedBarcode", searchScannedCode); // pass entered code to Inventory.
+                            startActivity(intent);
+                            Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                        });
+
+                        btnNo.setOnClickListener(v4 -> {
+                            barcodeView.resume();
+                            alertDialog.dismiss();
+                        });
+                        alertDialog.show();
                     }
                 }
             }

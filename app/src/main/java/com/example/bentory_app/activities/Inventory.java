@@ -1,13 +1,17 @@
 package com.example.bentory_app.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -59,9 +63,11 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
     // UI Components
     private RecyclerView recyclerView;
     private ImageButton dltButton, filterBtn, searchScanBtn, backBtn;
+    private Button btnYes, btnNo;
     private EditText searchEditText;
     private DecoratedBarcodeView searchBarcode;
-    private View searchTargetOverlay, touchBlock;
+    private View searchTargetOverlay, touchBlock, dialogView;
+    private AlertDialog alertDialog;
 
     // State
     private boolean isScannerActive = false;
@@ -136,7 +142,9 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
         // 🔽 Filter Button Setup: Show sorting options for the inventory list [A-Z / Z-A]. (FEATURE)
         // ===============================
         filterBtn.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(Inventory.this, filterBtn);
+            Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenuStyle);
+            PopupMenu popupMenu = new PopupMenu(wrapper, filterBtn);
+
             //// 'menu_filter' is manually created (found at 'menu' in 'res' directory).
             popupMenu.getMenuInflater().inflate(R.menu.menu_filter, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
@@ -221,23 +229,35 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 // Deactivate delete mode.
                 Set<String> selectedItems = adapter.getSelectedItems(); //// 'getSelectedItems' contains a method (found at 'InventoryAdapter' in 'subcomponents' directory).
                 if (!selectedItems.isEmpty()) {
+
                     // Confirm deletion if items selected.
-                    new AlertDialog.Builder(this)
-                            .setTitle("Delete Items")
-                            .setMessage("Are you sure you want to delete the selected items?")
-                            .setPositiveButton("Delete", (dialog, which) -> {
-                                productViewModel.deleteSelectedProducts(selectedItems); //// 'deleteSelectedProducts' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
-                                adapter.setDeleteMode(false);
-                                resetDeleteButtonToSelectItems(); //// 'resetDeleteButtonToSelectItems' contains a method (found at the bottom of the code).
-                            })
-                            .setNegativeButton("Cancel", (dialog, which) -> {
-                                adapter.setDeleteMode(false);
-                                resetDeleteButtonToSelectItems();
-                            }).show();
+                    dialogView = LayoutInflater.from(Inventory.this).inflate(R.layout.custom_delete_dialog, null);
+                    alertDialog = new AlertDialog.Builder(Inventory.this)
+                            .setView(dialogView)
+                            .create();
+
+                    // Find the custom buttons
+                    btnYes = dialogView.findViewById(R.id.button_yes);
+                    btnNo = dialogView.findViewById(R.id.button_no);
+
+                    // Yes: go to linking flow
+                    btnYes.setOnClickListener(v1 -> {
+                        productViewModel.deleteSelectedProducts(selectedItems); //// 'deleteSelectedProducts' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
+                        adapter.setDeleteMode(false);
+                        resetDeleteButtonToSelectItems(); //// 'resetDeleteButtonToSelectItems' contains a method (found at the bottom of the code).
+                    });
+
+                    // No: resume scanning
+                    btnNo.setOnClickListener(v2 -> {
+                        adapter.setDeleteMode(false);
+                        resetDeleteButtonToSelectItems();
+                        alertDialog.dismiss();
+                    });
+
+                    alertDialog.show();
                 } else {
                     // No items selected, just exit delete mode.
-                    adapter.setDeleteMode(false);
-                    resetDeleteButtonToSelectItems();
+
                 }
             }
         });
@@ -310,22 +330,39 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
 
         // Check if the product already has 5 barcodes (limit)
         if (product.getBarcode().size() >= 5) {
-            Toast.makeText(this, "This product already has 5 barcodes. Cannot add more.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Cannot add more, already has 5 barcodes.", Toast.LENGTH_LONG).show();
             return;
         }
 
         // Prompt user for confirmation to link the barcode.
-        new android.app.AlertDialog.Builder(this)
-                .setTitle("Link Barcode")
-                .setMessage("Add barcode " + scannedBarcode + " to product " + product.getName() + "?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    product.getBarcode().add(scannedBarcode);
-                    productViewModel.updateProduct(product); // Update product in Firebase.
-                    Toast.makeText(this, "Barcode linked to " + product.getName(), Toast.LENGTH_SHORT).show();
-                    finish(); // Return to previous activity (SellProduct).
-                })
-                .setNegativeButton("No", null)
-                .show();
+        dialogView = LayoutInflater.from(Inventory.this).inflate(R.layout.custom_link_dialog, null);
+        alertDialog = new AlertDialog.Builder(Inventory.this)
+                .setView(dialogView)
+                .create();
+
+        // Find the custom buttons
+        btnYes = dialogView.findViewById(R.id.button_yes);
+        btnNo = dialogView.findViewById(R.id.button_no);
+
+        TextView dialogTitle = dialogView.findViewById(R.id.custom_title);
+        TextView dialogMessage = dialogView.findViewById(R.id.custom_message);
+        dialogMessage.setText("Add barcode " + scannedBarcode + " to product " + product.getName() + "?");
+
+        // Yes: go to linking flow
+        btnYes.setOnClickListener(v -> {
+            product.getBarcode().add(scannedBarcode);
+            productViewModel.updateProduct(product);
+            Toast.makeText(this, "Barcode linked to " + product.getName(), Toast.LENGTH_SHORT).show();
+            alertDialog.dismiss();
+            finish();
+        });
+
+        // No: resume scanning
+        btnNo.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+        alertDialog.show();
     }
 
 
@@ -568,27 +605,39 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                     public void onProductNotFound() {
                         Log.d("BarcodeScan", "Product not found");
 
-                        // Offer to link the unrecognized barcode to an existing product.
-                        new AlertDialog.Builder(Inventory.this)
-                                .setTitle("Product not found")
-                                .setMessage("This barcode is not linked to any product. \nWould you like to link it to an existing one?")
-                                .setPositiveButton("Yes", (dialog, which) -> {
+                        // Inflate the custom alert dialog view
+                        dialogView = LayoutInflater.from(Inventory.this).inflate(R.layout.custom_alert_dialog, null);
+                        alertDialog = new AlertDialog.Builder(Inventory.this)
+                                .setView(dialogView)
+                                .create();
 
-                                    // Show inventory list for user to choose a product to link the scanned barcode.
-                                    productViewModel.getItems().observe(Inventory.this, itemList -> {
-                                        adapter.updateData(itemList);               // Display full product list.
-                                        recyclerView.setVisibility(View.VISIBLE);   // Make sure list is available.
-                                        searchBarcode.setVisibility(View.GONE);
-                                        searchTargetOverlay.setVisibility(View.GONE);
-                                        touchBlock.setVisibility(View.GONE);
-                                        isScannerActive = false;
-                                        Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
-                                    });
-                                })
-                                .setNegativeButton("No", (dialog, which) -> {
-                                    searchBarcode.resume();                         // Resume scanner if user declines to link the barcode.
-                                })
-                                .show();
+                        // Find the custom buttons
+                        btnYes = dialogView.findViewById(R.id.button_yes);
+                        btnNo = dialogView.findViewById(R.id.button_no);
+
+                        // Yes: go to linking flow
+                        btnYes.setOnClickListener(v -> {
+                            productViewModel.getItems().observe(Inventory.this, itemList -> {
+                                adapter.updateData(itemList);
+                                recyclerView.setVisibility(View.VISIBLE);
+                                searchBarcode.setVisibility(View.GONE);
+                                searchTargetOverlay.setVisibility(View.GONE);
+                                touchBlock.setVisibility(View.GONE);
+                                isScannerActive = false;
+
+                                Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                            });
+
+                            alertDialog.dismiss(); // Dismiss after action
+                        });
+
+                        // No: resume scanning
+                        btnNo.setOnClickListener(v -> {
+                            alertDialog.dismiss();
+                            searchBarcode.resume();
+                        });
+
+                        alertDialog.show();
                     }
 
                     @Override

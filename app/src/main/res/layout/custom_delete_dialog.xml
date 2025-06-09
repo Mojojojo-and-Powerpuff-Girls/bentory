@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_confirm">
+
+    <TextView
+        android:id="@+id/custom_title"
+        android:text="Delete Items"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="#3A291B"
+        android:fontFamily="@font/inter_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/custom_message"
+        android:text="Are you sure you want to delete the selected items?"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/inter_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/button_no"
+            android:text="No"
+            android:textStyle="bold"
+            android:backgroundTint="#371F23"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/button_yes"
+            android:text="Yes"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="#371F23"
+            android:fontFamily="@font/inter_medium"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
