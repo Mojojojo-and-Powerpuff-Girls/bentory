@@ -52,16 +52,18 @@
                 android:paddingBottom="10dp">
 
                 <ImageButton
-                    android:id="@+id/burgerbttn"
+                    android:id="@+id/back_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="68dp"
+                    android:paddingTop="5dp"
                     android:background="@android:color/transparent"
-                    android:contentDescription="burgerbutton"
+                    android:contentDescription="backButton"
+                    android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/burger_icon"
+                    android:src="@drawable/back_btn"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <ImageButton
                     android:id="@+id/imageButton"
@@ -79,38 +81,26 @@
                     android:id="@+id/textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/pixelify_sans"
+                    android:gravity="center"
                     android:text="Statistics"
                     android:textColor="#FFFFFF"
                     android:textSize="26sp"
                     android:textStyle="bold"
-                    android:gravity="center"
-                    android:fontFamily="@font/pixelify_sans"
-                    app:layout_constraintStart_toEndOf="@id/burgerbttn"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/imageButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toEndOf="@+id/back_btn"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
 
-        <!-- Back button -->
-        <ImageButton
-            android:id="@+id/back_btn"
-            android:layout_width="64dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="116dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/back_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.089"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="60dp"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -118,31 +108,29 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewTopStatistics"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="310dp"
                 android:layout_marginTop="80dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="5dp"
                 android:contentDescription="view list of stats" />
 
             <!-- Top Selling Section (with background image) -->
             <FrameLayout
                 android:id="@+id/statistics_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
-                android:padding="5dp">
+                android:layout_width="wrap_content"
+                android:layout_height="400dp"
+                android:layout_marginBottom="16dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="555dp"
                     android:background="@drawable/topsellingsection"
-                    android:scaleType="fitXY"/>
+                    android:scaleType="fitXY" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewBottomStatistics"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:layout_marginTop="100dp"
-                    android:padding="1.5dp"
+                    android:layout_height="280dp"
+                    android:layout_marginTop="130dp"
                     android:contentDescription="view list of top selling" />
 
             </FrameLayout>
