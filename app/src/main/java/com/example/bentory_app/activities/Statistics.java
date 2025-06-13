@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 // import androidx.appcompat.app.ActionBar; // Handled by BaseActivity
 
 import com.example.bentory_app.R;
+import com.example.bentory_app.model.ProductModel;
 import com.example.bentory_app.model.StatsModel;
 import com.example.bentory_app.model.TopSellingModel;
 import com.example.bentory_app.subcomponents.MenuAdapter;
@@ -123,6 +124,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                 .child("top_selling")
                 .child("month6");
 
+
         topSellingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -132,25 +134,40 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                     String name = itemSnap.child("name").getValue(String.class);
                     String size = itemSnap.child("size").getValue(String.class);
                     int sold = itemSnap.child("sold").getValue(Integer.class) != null ? itemSnap.child("sold").getValue(Integer.class) : 0;
-                    int stock = itemSnap.child("stock").getValue(Integer.class) != null ? itemSnap.child("stock").getValue(Integer.class) : 0;
 
-                    topSellingList.add(new TopSellingModel(name, size, String.valueOf(sold), String.valueOf(stock), "OK"));
+                    // Get current stock from products node using the product name
+                    DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference("products");
+                    productsRef.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot productSnapshot) {
+                            for (DataSnapshot productSnap : productSnapshot.getChildren()) {
+                                ProductModel product = productSnap.getValue(ProductModel.class);
+                                if (product != null) {
+                                    int currentStock = product.getQuantity(); // ✅ Gets the quantity field (11 in your example)
+
+                                    topSellingList.add(new TopSellingModel(name, size, String.valueOf(sold), String.valueOf(currentStock), "OK"));
+
+                                    // Sort and notify adapter
+                                    topSellingList.sort((item1, item2) -> {
+                                        int sold1 = Integer.parseInt(item1.getSold());
+                                        int sold2 = Integer.parseInt(item2.getSold());
+                                        return Integer.compare(sold2, sold1);
+                                    });
+                                    adapter2.notifyDataSetChanged();
+                                    break; // Found the product, no need to continue
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
                 }
-
-                // 🔽 Sort by sold quantity in descending order
-                topSellingList.sort((item1, item2) -> {
-                    int sold1 = Integer.parseInt(item1.getSold());
-                    int sold2 = Integer.parseInt(item2.getSold());
-                    return Integer.compare(sold2, sold1); // descending
-                });
-
-                adapter2.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
-
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
