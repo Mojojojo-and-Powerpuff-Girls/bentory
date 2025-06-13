@@ -397,9 +397,11 @@ public class SellProduct extends BaseDrawerActivity {
                     touchBlock.setVisibility(View.GONE);
                     barcodeView.pause(); // stop scanning
                 } else {
-                    // Normal back behavior — e.g., finish activity
-                    finish();
+                    Intent intent = new Intent(SellProduct.this, LandingPage.class);
+                    startActivity(intent);
+                    finish(); // optional, closes current activity
                 }
+
             }
         });
     }

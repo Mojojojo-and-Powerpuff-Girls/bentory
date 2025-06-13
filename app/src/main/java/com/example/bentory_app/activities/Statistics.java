@@ -135,7 +135,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                     String size = itemSnap.child("size").getValue(String.class);
                     int sold = itemSnap.child("sold").getValue(Integer.class) != null ? itemSnap.child("sold").getValue(Integer.class) : 0;
 
-                    // Get current stock from products node using the product name
+                    // Get current stock from products node
                     DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference("products");
                     productsRef.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -143,9 +143,17 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                             for (DataSnapshot productSnap : productSnapshot.getChildren()) {
                                 ProductModel product = productSnap.getValue(ProductModel.class);
                                 if (product != null) {
-                                    int currentStock = product.getQuantity(); // ✅ Gets the quantity field (11 in your example)
+                                    int currentStock = product.getQuantity();
 
-                                    topSellingList.add(new TopSellingModel(name, size, String.valueOf(sold), String.valueOf(currentStock), "OK"));
+                                    // ✅ Condition to set status based on stock level
+                                    String status;
+                                    if (currentStock <= 5) {
+                                        status = "LOW";
+                                    } else {
+                                        status = "OK";
+                                    }
+
+                                    topSellingList.add(new TopSellingModel(name, size, String.valueOf(sold), String.valueOf(currentStock), status));
 
                                     // Sort and notify adapter
                                     topSellingList.sort((item1, item2) -> {
@@ -154,7 +162,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
                                         return Integer.compare(sold2, sold1);
                                     });
                                     adapter2.notifyDataSetChanged();
-                                    break; // Found the product, no need to continue
+                                    break;
                                 }
                             }
                         }
@@ -168,7 +176,6 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
-
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override

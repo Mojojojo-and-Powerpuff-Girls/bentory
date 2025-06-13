@@ -49,6 +49,7 @@ public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.Vi
     }
 
     // 🧩 Bind data from the model to the ViewHolder's views.
+    @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         TopSellingModel product = productList.get(position);
         holder.name.setText(product.getName());
@@ -56,7 +57,13 @@ public class TopSellingAdapter extends RecyclerView.Adapter<TopSellingAdapter.Vi
         holder.sold.setText(product.getSold());
         holder.stock.setText(product.getStock());
         holder.status.setText(product.getStatus());
+
+        // ✅ Set text color based on stock status
+        if ("LOW".equalsIgnoreCase(product.getStatus())) {
+            holder.status.setTextColor(holder.status.getContext().getResources().getColor(android.R.color.holo_red_dark));
+        }
     }
+
 
     // 🔢 Return total number of products in the list.
     @Override
