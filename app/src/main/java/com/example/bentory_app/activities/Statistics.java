@@ -127,6 +127,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 topSellingList.clear();
+
                 for (DataSnapshot itemSnap : snapshot.getChildren()) {
                     String name = itemSnap.child("name").getValue(String.class);
                     String size = itemSnap.child("size").getValue(String.class);
@@ -135,12 +136,21 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
 
                     topSellingList.add(new TopSellingModel(name, size, String.valueOf(sold), String.valueOf(stock), "OK"));
                 }
+
+                // 🔽 Sort by sold quantity in descending order
+                topSellingList.sort((item1, item2) -> {
+                    int sold1 = Integer.parseInt(item1.getSold());
+                    int sold2 = Integer.parseInt(item2.getSold());
+                    return Integer.compare(sold2, sold1); // descending
+                });
+
                 adapter2.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
