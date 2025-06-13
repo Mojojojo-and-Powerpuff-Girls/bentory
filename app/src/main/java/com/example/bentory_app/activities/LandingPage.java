@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -23,6 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.StatsModel;
 import com.example.bentory_app.subcomponents.MenuAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,15 +78,54 @@ public class LandingPage extends BaseDrawerActivity {
         setButtonClickListener(statsBtn, Statistics.class);
 
         // SETUP RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        List<StatsModel> itemList = new ArrayList<>();
-        itemList.add(new StatsModel("Total Expenses", "Month of April", "PHP 10,456.00"));
-        itemList.add(new StatsModel("Net Profit", "Month of April", "PHP 45,000.90"));
-        itemList.add(new StatsModel("Projected Sales", "Month of May", "PHP 70,000.00"));
+        RecyclerView recyclerViewTop = findViewById(R.id.recyclerView);
+        List<StatsModel> statsList = new ArrayList<>();
+        MenuAdapter adapter1 = new MenuAdapter(statsList);
+        recyclerViewTop.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTop.setAdapter(adapter1);
 
-        MenuAdapter adapter = new MenuAdapter(itemList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("selling_stats");
+        DatabaseReference monthRef = statsRef.child("monthly_stats").child("month6");
+        DatabaseReference weekRef = statsRef.child("weekly_sale").child("week24");
+
+        monthRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                double totalSales = snapshot.child("total_sales").getValue(Double.class) != null ? snapshot.child("total_sales").getValue(Double.class) : 0.0;
+                double profit = snapshot.child("monthly_profit").getValue(Double.class) != null ? snapshot.child("monthly_profit").getValue(Double.class) : 0.0;
+                int productsSold = snapshot.child("products_sold").getValue(Integer.class) != null ? snapshot.child("products_sold").getValue(Integer.class) : 0;
+
+                statsList.add(new StatsModel("Total Sales", "Month of June", "PHP " + totalSales));
+                statsList.add(new StatsModel("Monthly Profit", "Month of June", "PHP " + profit));
+                statsList.add(new StatsModel("Products Sold", "Month of June", String.valueOf(productsSold)));
+
+                adapter1.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        weekRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                double weeklySale = snapshot.child("total_sale").getValue(Double.class) != null ? snapshot.child("total_sale").getValue(Double.class) : 0.0;
+                statsList.add(0, new StatsModel("Weekly Sales", "Week 24", "PHP " + weeklySale));
+                adapter1.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+
+
+
+        recyclerViewTop.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTop.setAdapter(adapter1);
+
+
+
     }
 
 

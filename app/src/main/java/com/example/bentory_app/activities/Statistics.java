@@ -74,7 +74,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
 
         DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("selling_stats");
         DatabaseReference monthRef = statsRef.child("monthly_stats").child("month6");
-        DatabaseReference weekRef = statsRef.child("weekly_sale").child("week23");
+        DatabaseReference weekRef = statsRef.child("weekly_sale").child("week24");
 
         monthRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -98,7 +98,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double weeklySale = snapshot.child("total_sale").getValue(Double.class) != null ? snapshot.child("total_sale").getValue(Double.class) : 0.0;
-                statsList.add(0, new StatsModel("Weekly Sales", "Week 23", "PHP " + weeklySale));
+                statsList.add(0, new StatsModel("Weekly Sales", "Week 24", "PHP " + weeklySale));
                 adapter1.notifyDataSetChanged();
             }
 
