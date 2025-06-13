@@ -185,7 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="353dp"
             android:padding="12dp"
-            android:layout_marginTop="105dp"
+            android:layout_marginTop="120dp"
             android:clipToPadding="false"
             android:scrollbars="vertical"
             android:contentDescription="View list of available products" />

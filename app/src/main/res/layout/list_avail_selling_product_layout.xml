@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/selling_container"
@@ -9,57 +10,65 @@
     android:layout_marginBottom="0dp">
 
     <!-- Product Name -->
-    <TextView
-        android:id="@+id/sellingProductName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Coke"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:fontFamily="@font/pixelify_sans"
-        android:layout_marginTop="6dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="160dp"
-        android:singleLine="true"
-        app:layout_constraintWidth_percent="0.30"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sellingProductAdd" />
 
     <!-- Size -->
+
+    <!-- Price -->
+    <TextView
+        android:id="@+id/sellingProductName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="160dp"
+        android:fontFamily="@font/pixelify_sans"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="Coke"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/sellingProductAdd"
+        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.30" />
+
+
     <TextView
         android:id="@+id/sellingProductSize"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Mismo"
-        android:textSize="12sp"
-        android:textColor="@color/black"
+        android:layout_marginStart="6dp"
         android:fontFamily="@font/pixelify_sans"
         android:gravity="left"
-        android:layout_marginStart="6dp"
-        app:layout_constraintTop_toBottomOf="@id/sellingProductName"
+        android:text="Mismo"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/sellingProductAdd"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sellingProductAdd" />
+        app:layout_constraintTop_toBottomOf="@id/sellingProductName" />
 
-    <!-- Price -->
+    <!-- Stock -->
+
     <TextView
         android:id="@+id/sellingProductPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="₱48.00"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        android:fontFamily="@font/pixelify_sans"
-        android:textAlignment="center"
-        android:layout_marginTop="-34dp"
         android:layout_marginStart="225dp"
-        app:layout_constraintWidth_percent="0.25"
-        app:layout_constraintTop_toBottomOf="parent"
+        android:layout_marginTop="-34dp"
+        android:fontFamily="@font/pixelify_sans"
+        android:text="₱48.00"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintStart_toStartOf="@id/sellingProductSize"
-        app:layout_constraintEnd_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
 
-    <!-- Stock -->
     <TextView
         android:id="@+id/sellingProductStock"
         android:layout_width="0dp"
@@ -71,7 +80,7 @@
         android:textAlignment="center"
         android:layout_marginTop="10dp"
         android:layout_marginStart="255dp"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintWidth_percent="0.2"
         app:layout_constraintTop_toTopOf="@id/sellingProductName"
         app:layout_constraintStart_toEndOf="@id/sellingProductPrice"
@@ -82,17 +91,18 @@
         android:id="@+id/sellingProductAdd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="Add"
-        android:scaleType="fitCenter"
         android:layout_marginStart="300dp"
         android:layout_marginEnd="50dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Add"
         android:padding="2dp"
-        app:layout_constraintWidth_percent="0.15"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.15"
-        app:srcCompat="@drawable/selling_add"
-        app:layout_constraintTop_toTopOf="@id/sellingProductName"
+        app:layout_constraintHorizontal_bias="0.071"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/sellingProductName"
+        app:layout_constraintWidth_percent="0.15"
+        app:srcCompat="@drawable/selling_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
