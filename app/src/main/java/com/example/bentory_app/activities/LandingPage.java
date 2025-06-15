@@ -86,7 +86,7 @@ public class LandingPage extends BaseDrawerActivity {
 
         DatabaseReference statsRef = FirebaseDatabase.getInstance().getReference("selling_stats");
         DatabaseReference monthRef = statsRef.child("monthly_stats").child("month6");
-        DatabaseReference weekRef = statsRef.child("weekly_sale").child("week24");
+        DatabaseReference weekRef = statsRef.child("weekly_sale").child("week25");
 
         monthRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -110,7 +110,7 @@ public class LandingPage extends BaseDrawerActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double weeklySale = snapshot.child("total_sale").getValue(Double.class) != null ? snapshot.child("total_sale").getValue(Double.class) : 0.0;
-                statsList.add(0, new StatsModel("Weekly Sales", "Week 24", "PHP " + weeklySale));
+                statsList.add(0, new StatsModel("Weekly Sales", "Week 25", "PHP " + weeklySale));
                 adapter1.notifyDataSetChanged();
             }
 
