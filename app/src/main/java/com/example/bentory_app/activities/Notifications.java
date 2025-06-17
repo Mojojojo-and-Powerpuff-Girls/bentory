@@ -9,11 +9,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.NotificationModel;
 import com.example.bentory_app.repository.NotificationRepository;
 import com.example.bentory_app.subcomponents.NotificationAdapter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 // ===============================
@@ -29,6 +31,7 @@ public class Notifications extends BaseDrawerActivity {
     private NotificationAdapter adapter;
     private NotificationRepository notificationRepository;
     private LinearLayout emptyState;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private List<NotificationModel> notifications = new ArrayList<>();
 
     @Override
@@ -51,6 +54,7 @@ public class Notifications extends BaseDrawerActivity {
         // Initialize components
         recyclerView = findViewById(R.id.notifications_recycler_view);
         emptyState = findViewById(R.id.empty_state);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         notificationRepository = new NotificationRepository();
 
         // Setup RecyclerView
@@ -58,7 +62,23 @@ public class Notifications extends BaseDrawerActivity {
         adapter = new NotificationAdapter(notifications);
         recyclerView.setAdapter(adapter);
 
+        // Setup SwipeRefreshLayout
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setProgressViewOffset(true, 0, 200);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshNotifications();
+        });
+
         // Load notifications
+        loadNotifications();
+    }
+
+    private void refreshNotifications() {
+        // Show refresh animation
+        swipeRefreshLayout.setRefreshing(true);
+
+        // Check for low stock products and refresh notifications
+        notificationRepository.checkLowStockProducts();
         loadNotifications();
     }
 
@@ -66,23 +86,50 @@ public class Notifications extends BaseDrawerActivity {
         notificationRepository.getNotifications(new NotificationRepository.OnNotificationsLoadedListener() {
             @Override
             public void onNotificationsLoaded(List<NotificationModel> loadedNotifications) {
-                notifications.clear();
-                notifications.addAll(loadedNotifications);
-                adapter.updateNotifications(notifications);
+                runOnUiThread(() -> {
+                    // Filter for LOW_STOCK and today only
+                    List<NotificationModel> filtered = new ArrayList<>();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+                    long startOfDay = calendar.getTimeInMillis();
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+                    calendar.set(Calendar.MILLISECOND, 999);
+                    long endOfDay = calendar.getTimeInMillis();
+                    for (NotificationModel n : loadedNotifications) {
+                        if ("LOW_STOCK".equals(n.getType()) && n.getTimestamp() >= startOfDay
+                                && n.getTimestamp() <= endOfDay) {
+                            filtered.add(n);
+                        }
+                    }
+                    notifications.clear();
+                    notifications.addAll(filtered);
+                    adapter.updateNotifications(notifications);
 
-                // Show/hide empty state
-                if (notifications.isEmpty()) {
-                    emptyState.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                } else {
-                    emptyState.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
+                    // Show/hide empty state
+                    if (notifications.isEmpty()) {
+                        emptyState.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyState.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
+                    // Stop refresh animation
+                    swipeRefreshLayout.setRefreshing(false);
+                });
             }
 
             @Override
             public void onError(String error) {
-                // Handle error
+                runOnUiThread(() -> {
+                    // Handle error
+                    swipeRefreshLayout.setRefreshing(false);
+                });
             }
         });
     }

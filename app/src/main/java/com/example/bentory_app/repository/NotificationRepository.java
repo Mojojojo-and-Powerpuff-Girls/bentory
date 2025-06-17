@@ -8,12 +8,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Calendar;
 
 public class NotificationRepository {
     private final DatabaseReference notificationsRef;
@@ -42,21 +44,63 @@ public class NotificationRepository {
 
     // Create a low stock notification
     private void createLowStockNotification(ProductModel product) {
-        String notificationId = notificationsRef.push().getKey();
-        if (notificationId == null)
-            return;
+        // Get start and end of today
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startOfDay = calendar.getTimeInMillis();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        long endOfDay = calendar.getTimeInMillis();
 
-        String title = "Low Stock Alert";
-        String message = product.getName() + " is running low. Only " + product.getQuantity() + " items left in stock.";
+        // Query for existing LOW_STOCK notification for this product today
+        notificationsRef.orderByChild("productId").equalTo(product.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean alreadyExists = false;
+                        for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                            Map<String, Object> data = (Map<String, Object>) notificationSnapshot.getValue();
+                            if (data != null) {
+                                String type = (String) data.get("type");
+                                Object timestampObj = data.get("timestamp");
+                                Long timestamp = null;
+                                if (timestampObj instanceof Long) {
+                                    timestamp = (Long) timestampObj;
+                                }
+                                if ("LOW_STOCK".equals(type) && timestamp != null && timestamp >= startOfDay
+                                        && timestamp <= endOfDay) {
+                                    alreadyExists = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!alreadyExists) {
+                            String notificationId = notificationsRef.push().getKey();
+                            if (notificationId == null)
+                                return;
+                            String title = "Low Stock Alert";
+                            String message = product.getName() + " is running low. Only " + product.getQuantity()
+                                    + " items left in stock.";
+                            NotificationModel notification = new NotificationModel(
+                                    notificationId,
+                                    title,
+                                    message,
+                                    "LOW_STOCK",
+                                    product.getId());
+                            notificationsRef.child(notificationId).setValue(notification);
+                        }
+                    }
 
-        NotificationModel notification = new NotificationModel(
-                notificationId,
-                title,
-                message,
-                "LOW_STOCK",
-                product.getId());
-
-        notificationsRef.child(notificationId).setValue(notification);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle error if needed
+                    }
+                });
     }
 
     // Get all notifications
