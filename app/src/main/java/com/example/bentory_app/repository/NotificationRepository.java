@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public class NotificationRepository {
     private final DatabaseReference notificationsRef;
@@ -57,50 +58,20 @@ public class NotificationRepository {
         calendar.set(Calendar.MILLISECOND, 999);
         long endOfDay = calendar.getTimeInMillis();
 
-        // Query for existing LOW_STOCK notification for this product today
-        notificationsRef.orderByChild("productId").equalTo(product.getId())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean alreadyExists = false;
-                        for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
-                            Map<String, Object> data = (Map<String, Object>) notificationSnapshot.getValue();
-                            if (data != null) {
-                                String type = (String) data.get("type");
-                                Object timestampObj = data.get("timestamp");
-                                Long timestamp = null;
-                                if (timestampObj instanceof Long) {
-                                    timestamp = (Long) timestampObj;
-                                }
-                                if ("LOW_STOCK".equals(type) && timestamp != null && timestamp >= startOfDay
-                                        && timestamp <= endOfDay) {
-                                    alreadyExists = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!alreadyExists) {
-                            String notificationId = notificationsRef.push().getKey();
-                            if (notificationId == null)
-                                return;
-                            String title = "Low Stock Alert";
-                            String message = product.getName() + " is running low. Only " + product.getQuantity()
-                                    + " items left in stock.";
-                            NotificationModel notification = new NotificationModel(
-                                    notificationId,
-                                    title,
-                                    message,
-                                    "LOW_STOCK",
-                                    product.getId());
-                            notificationsRef.child(notificationId).setValue(notification);
-                        }
-                    }
+        // Deterministic notification key: LOW_STOCK_{productId}_{yyyyMMdd}
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String todayStr = sdf.format(new java.util.Date());
+        String notificationId = "LOW_STOCK_" + product.getId() + "_" + todayStr;
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle error if needed
-                    }
-                });
+        String title = "Low Stock Alert";
+        String message = product.getName() + " is running low. Only " + product.getQuantity() + " items left in stock.";
+        NotificationModel notification = new NotificationModel(
+                notificationId,
+                title,
+                message,
+                "LOW_STOCK",
+                product.getId());
+        notificationsRef.child(notificationId).setValue(notification);
     }
 
     // Get all notifications
