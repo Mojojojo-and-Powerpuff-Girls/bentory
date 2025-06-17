@@ -26,9 +26,9 @@ public class SplashActivity extends AppCompatActivity {
 
         // Delay the splash screen for 3 seconds before navigating to the login screen.
         new Handler().postDelayed(() -> {
-            // Create an intent to move form SplashAct to LoginAct.
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivity(intent);
+            // Always go to LoginActivity first.
+            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
             // Apply fade in/out transition between SplashAct and LoginAct.
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);

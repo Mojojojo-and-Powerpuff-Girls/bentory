@@ -1,11 +1,14 @@
 package com.example.bentory_app.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -263,7 +266,6 @@ public class AddProduct extends BaseDrawerActivity {
         }
     }
 
-
     // 💾 'isFieldEmpty' : Input validation. (METHODS)
     private boolean isFieldEmpty(EditText field, String errorMessage) {
         // Trimmed text from the field and checks if the field is empty.
@@ -273,4 +275,5 @@ public class AddProduct extends BaseDrawerActivity {
         }
         return false;                     // Return false if field is not empty (i.e validation passed).
     }
+
 }
