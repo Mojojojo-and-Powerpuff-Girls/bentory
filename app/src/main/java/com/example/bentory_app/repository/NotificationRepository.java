@@ -20,7 +20,7 @@ import java.util.Calendar;
 public class NotificationRepository {
     private final DatabaseReference notificationsRef;
     private final ProductRepository productRepository;
-    private static final int LOW_STOCK_THRESHOLD = 10; // Products with quantity below this are considered low stock
+    public static final int LOW_STOCK_THRESHOLD = 10; // Products with quantity below this are considered low stock
 
     public NotificationRepository() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -164,6 +164,48 @@ public class NotificationRepository {
                 listener.onError(error.getMessage());
             }
         });
+    }
+
+    // Remove today's LOW_STOCK notification for a product
+    public void removeTodayLowStockNotification(String productId) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startOfDay = calendar.getTimeInMillis();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        long endOfDay = calendar.getTimeInMillis();
+
+        notificationsRef.orderByChild("productId").equalTo(productId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                            Map<String, Object> data = (Map<String, Object>) notificationSnapshot.getValue();
+                            if (data != null) {
+                                String type = (String) data.get("type");
+                                Object timestampObj = data.get("timestamp");
+                                Long timestamp = null;
+                                if (timestampObj instanceof Long) {
+                                    timestamp = (Long) timestampObj;
+                                }
+                                if ("LOW_STOCK".equals(type) && timestamp != null && timestamp >= startOfDay
+                                        && timestamp <= endOfDay) {
+                                    notificationSnapshot.getRef().removeValue();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle error if needed
+                    }
+                });
     }
 
     // Interface for notification loading callback

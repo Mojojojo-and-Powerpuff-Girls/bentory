@@ -39,9 +39,9 @@ public class ProductRepository {
         this.listener = listener;
     }
 
-
     // ===============================
-    // 📦 All Products : Fetch all products as LiveData so UI can observe real-time updates. (METHODS)
+    // 📦 All Products : Fetch all products as LiveData so UI can observe real-time
+    // updates. (METHODS)
     // ===============================
     public LiveData<List<ProductModel>> getData() {
         MutableLiveData<List<ProductModel>> mutableData = new MutableLiveData<>();
@@ -49,22 +49,23 @@ public class ProductRepository {
         // Use custom listener if injected, else create a default listener.
         ValueEventListener valueEventListener = listener != null ? listener : new ValueEventListener() {
             final List<ProductModel> listData = new ArrayList<>();
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     listData.clear();
 
                     // Loop through all product nodes under 'products'.
-                    for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         ProductModel productModel = dataSnapshot.getValue(ProductModel.class);
-                        if (productModel != null){
+                        if (productModel != null) {
 
                             // Set product ID from the Firebase key (e.g. item1, item2).
                             productModel.setId(dataSnapshot.getKey());
                             listData.add(productModel);
                         }
                     }
-                    mutableData.setValue(listData);         // notify observers with the updated product list.
+                    mutableData.setValue(listData); // notify observers with the updated product list.
                 }
             }
 
@@ -77,11 +78,11 @@ public class ProductRepository {
         return mutableData;
     }
 
-
     // ===============================
-    // ➕🪪🕑 Add products with ID and Timestamp : Add a new product to Firebase with an auto-generated sequential ID and timestamp. (METHODS)
+    // ➕🪪🕑 Add products with ID and Timestamp : Add a new product to Firebase with
+    // an auto-generated sequential ID and timestamp. (METHODS)
     // ===============================
-    public void addProduct (ProductModel product) {
+    public void addProduct(ProductModel product) {
         // Read current data to determine the next product ID.
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -105,11 +106,12 @@ public class ProductRepository {
                 // Generate new key with incremented number (e.g. item4).
                 String itemKey = "item" + (maxId + 1);
 
-                // Format and assign the current timestamp to product. Desired format: ("May 8, 2025 | 5:44 PM").
+                // Format and assign the current timestamp to product. Desired format: ("May 8,
+                // 2025 | 5:44 PM").
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy | h:mm a", Locale.getDefault());
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-                String formattedDate = sdf.format(new Date());  // get the current date and time.
-                product.setDate_Added(formattedDate);           // set formatted date.
+                String formattedDate = sdf.format(new Date()); // get the current date and time.
+                product.setDate_Added(formattedDate); // set formatted date.
 
                 // Save new product under generated key.
                 database.child(itemKey).setValue(product);
@@ -123,11 +125,11 @@ public class ProductRepository {
 
     }
 
-
     // ===============================
-    // 🗑️ Delete Logic : Deletes multiple products by ID and re-numbers the remaining ones sequentially. (METHODS)
+    // 🗑️ Delete Logic : Deletes multiple products by ID and re-numbers the
+    // remaining ones sequentially. (METHODS)
     // ===============================
-    public void deleteProductsByIds (Set<String> idsToDelete) {
+    public void deleteProductsByIds(Set<String> idsToDelete) {
         // Delete each selected item by its ID (key).
         for (String id : idsToDelete) {
             if (id != null && !id.trim().isEmpty()) {
@@ -174,9 +176,9 @@ public class ProductRepository {
         });
     }
 
-
     // ===============================
-    // 🔍 Match barcode : Finds product by scanning through all products and matching any barcode in a list of barcodes. (METHODS)
+    // 🔍 Match barcode : Finds product by scanning through all products and
+    // matching any barcode in a list of barcodes. (METHODS)
     // ===============================
     public void getProductByMatchingBarcode(String barcode, ProductCallback callback) {
         Log.d("ProductRepo", "getProductByMatchingBarcode called with: " + barcode);
@@ -185,7 +187,9 @@ public class ProductRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("ProductRepo", "Data snapshot received");
-                ProductModel match = findMatchingProduct(snapshot, barcode); //// 'findMatchingProduct' contains a helper method (found at the bottom of the code).
+                ProductModel match = findMatchingProduct(snapshot, barcode); //// 'findMatchingProduct' contains a
+                                                                             //// helper method (found at the bottom of
+                                                                             //// the code).
                 if (match != null) {
                     Log.d("ProductRepo", "Product match found: " + match.getName());
                     callback.onProductFound(match);
@@ -203,9 +207,9 @@ public class ProductRepository {
         });
     }
 
-
     // ===============================
-    // ➕ Link New Barcode : Adds a new barcode to an existing product if it doesn't exist yet and Maximum of 5 barcode only. (METHODS)
+    // ➕ Link New Barcode : Adds a new barcode to an existing product if it doesn't
+    // exist yet and Maximum of 5 barcode only. (METHODS)
     // ===============================
     public void addBarcodeToProduct(String productId, String newBarcode, BarcodeUpdateCallback callback) {
         database.child(productId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -214,7 +218,8 @@ public class ProductRepository {
                 ProductModel product = snapshot.getValue(ProductModel.class);
                 if (product != null) {
                     List<String> barcode = product.getBarcode();
-                    if (barcode == null) barcode = new ArrayList<>();
+                    if (barcode == null)
+                        barcode = new ArrayList<>();
 
                     // Prevent duplicate barcodes.
                     if (barcode.contains(newBarcode)) {
@@ -248,18 +253,24 @@ public class ProductRepository {
         });
     }
 
-
     // ===============================
-    // 📝 Update Product : Updates the entire product record in Firebase using product ID as key. (METHODS)
+    // 📝 Update Product : Updates the entire product record in Firebase using
+    // product ID as key. (METHODS)
     // ===============================
     public void updateProduct(ProductModel updatedProduct) {
-        if (updatedProduct == null || updatedProduct.getId() == null) return;
+        if (updatedProduct == null || updatedProduct.getId() == null)
+            return;
         database.child(updatedProduct.getId()).setValue(updatedProduct);
+        // Remove today's LOW_STOCK notification if restocked above threshold
+        if (updatedProduct.getQuantity() > NotificationRepository.LOW_STOCK_THRESHOLD) {
+            NotificationRepository notificationRepository = new NotificationRepository();
+            notificationRepository.removeTodayLowStockNotification(updatedProduct.getId());
+        }
     }
 
-
     // ===============================
-    // 🔍 Helper Method : Search all products for one with a barcode list containing the scanned barcode. (METHODS)
+    // 🔍 Helper Method : Search all products for one with a barcode list containing
+    // the scanned barcode. (METHODS)
     // ===============================
     private ProductModel findMatchingProduct(DataSnapshot snapshot, String barcode) {
         // DEBUGGER
@@ -284,21 +295,46 @@ public class ProductRepository {
         return null;
     }
 
+    // ===============================
+    // Fetch a product by its ID
+    // ===============================
+    public void getProductById(String productId, ProductCallback callback) {
+        database.child(productId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ProductModel product = snapshot.getValue(ProductModel.class);
+                if (product != null) {
+                    product.setId(snapshot.getKey());
+                    callback.onProductFound(product);
+                } else {
+                    callback.onProductNotFound();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
+    }
 
     // ===============================
-    //            INTERFACES
+    // INTERFACES
     // ===============================
 
     // 📦 Callback for product lookup by barcode. (INTERFACES)
     public interface ProductCallback {
         void onProductFound(ProductModel product);
+
         void onProductNotFound();
+
         void onError(String error);
     }
 
     // ➕ Callback for adding a barcode to an existing product. (INTERFACES)
     public interface BarcodeUpdateCallback {
         void onSuccess();
+
         void onFailure(String error);
     }
 
