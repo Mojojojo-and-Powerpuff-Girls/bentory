@@ -59,6 +59,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
             setupDrawerImageButton(R.id.buttonSellingWindow, SellProduct.class);
             setupDrawerImageButton(R.id.buttonStatistics, Statistics.class);
             setupDrawerImageButton(R.id.buttonScanProduct, SellProduct.class);
+            setupUserManualButton(R.id.buttonUserManual);
 
             // Set up logout button in drawer
             buttonLogout = findViewById(R.id.buttonLogout);
@@ -87,6 +88,25 @@ public abstract class BaseDrawerActivity extends BaseActivity {
                     drawerLayout.closeDrawers(); // Close drawer when button is clicked
                 }
                 startActivity(new Intent(this, activityClass));
+            });
+        }
+    }
+
+    // 🧭 A button that manually launches the onboarding/user manual screen. (METHODS)
+    private void setupUserManualButton(int buttonId) {
+
+        // Find the button by ID.
+        ImageButton button = findViewById(buttonId);
+
+        // Make sure the button exists in the layout.
+        if (button != null) {
+
+            // Set a click listener on the button
+            button.setOnClickListener(v -> {
+                Intent intent = new Intent(this, Onboarding.class);
+                // Add a flag to indicate it's a manual launch (not first-time)
+                intent.putExtra("manualLaunch", true);
+                startActivity(intent);
             });
         }
     }

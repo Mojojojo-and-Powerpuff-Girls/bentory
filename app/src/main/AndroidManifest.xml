@@ -37,6 +37,9 @@
             android:name=".activities.Notifications"
             android:exported="false" />
         <activity
+            android:name=".activities.Onboarding"
+            android:exported="false" />
+        <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>

@@ -183,10 +183,10 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="6dp">
 
             <ImageView
                 android:id="@+id/burgerNameplate"
@@ -269,6 +269,20 @@
             android:src="@drawable/burger_statistics_button" />
 
         <ImageButton
+            android:id="@+id/buttonUserManual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="User Manual"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/user_manual" />
+
+        <ImageButton
             android:id="@+id/buttonScanProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -284,7 +298,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="20dp" />
 
         <ImageButton
             android:id="@+id/buttonLogout"

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.StatsModel;
+import com.example.bentory_app.repository.OnboardingPreferences;
 import com.example.bentory_app.subcomponents.MenuAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +54,13 @@ public class LandingPage extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
+
+        // 🚨 If onboarding has NOT been completed yet (first-time user), launch the onboarding activity instead of showing the landing page.
+        if (!OnboardingPreferences.isCompleted(this)) {
+            startActivity(new Intent(this, Onboarding.class));
+            finish(); // Don't show landing yet.
+            return;
+        }
 
         // ⬛ Camera Permission
         checkCameraPermission();
