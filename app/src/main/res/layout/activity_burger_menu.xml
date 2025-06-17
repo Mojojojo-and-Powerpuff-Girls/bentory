@@ -76,17 +76,6 @@
         android:scaleType="fitCenter"
         android:src="@drawable/user_manual" />
 
-    <ImageButton
-        android:id="@+id/buttonScanProduct"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="Scan Product"
-        android:scaleType="fitCenter"
-        android:src="@drawable/burger_scan_button" />
-
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
