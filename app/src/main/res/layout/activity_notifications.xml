@@ -21,12 +21,14 @@
         <ImageView
             android:id="@+id/header_background"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="0dp"
             android:scaleType="fitXY"
             android:src="@drawable/upper_nav"
+            app:layout_constraintHeight_percent="0.18"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/my_toolbar" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/my_toolbar"
@@ -48,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
-                android:paddingTop="15dp"
+                android:paddingTop="17dp"
                 android:paddingBottom="10dp">
 
                 <ImageButton
@@ -178,15 +180,16 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@drawable/menu_background"
+        android:background="@drawable/burger_container"
         android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginTop="45dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
 
             <ImageView
                 android:id="@+id/burgerNameplate"
@@ -203,6 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/pixelify_sans"
+                android:textStyle="bold"
                 android:padding="16dp"
                 android:text="Hi, User"
                 android:textAlignment="center"
@@ -216,7 +220,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Add Product"
@@ -229,7 +234,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Inventory"
@@ -242,7 +248,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Selling Window"
@@ -255,7 +262,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Statistics"
@@ -268,7 +276,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="Main Menu"
@@ -281,7 +290,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="User Manual"
@@ -289,19 +299,17 @@
             android:scaleType="fitCenter"
             android:src="@drawable/user_manual" />
 
-
-
         <Space
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="30dp" />
 
         <ImageButton
             android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="100dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
