@@ -152,9 +152,9 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                     return false;
                 List<ProductModel> sortedList = new ArrayList<>(fullProductList);
                 if (item.getItemId() == R.id.menu_az) {
-                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName));
+                    Collections.sort(sortedList, Comparator.comparing(p -> p.getName().toLowerCase()));
                 } else if (item.getItemId() == R.id.menu_za) {
-                    Collections.sort(sortedList, Comparator.comparing(ProductModel::getName).reversed());
+                    Collections.sort(sortedList, Comparator.comparing((ProductModel p) -> p.getName().toLowerCase()).reversed());
                 }
                 adapter.updateData(sortedList);
                 return true;
