@@ -58,6 +58,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
             setupDrawerImageButton(R.id.buttonInventory, Inventory.class);
             setupDrawerImageButton(R.id.buttonSellingWindow, SellProduct.class);
             setupDrawerImageButton(R.id.buttonStatistics, Statistics.class);
+            setupDrawerImageButton(R.id.buttonMainMenu, LandingPage.class);
             setupUserManualButton(R.id.buttonUserManual);
 
             // Set up logout button in drawer

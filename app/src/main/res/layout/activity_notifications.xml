@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -263,17 +264,32 @@
             android:src="@drawable/burger_statistics_button" />
 
         <ImageButton
-            android:id="@+id/buttonScanProduct"
+            android:id="@+id/buttonMainMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
             android:layout_marginHorizontal="16dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:contentDescription="Scan Product"
+            android:contentDescription="Main Menu"
             android:padding="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/burger_scan_button" />
+            android:src="@drawable/burger_main_menu_button" />
+
+        <ImageButton
+            android:id="@+id/buttonUserManual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="User Manual"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/user_manual" />
+
+
 
         <Space
             android:layout_width="match_parent"

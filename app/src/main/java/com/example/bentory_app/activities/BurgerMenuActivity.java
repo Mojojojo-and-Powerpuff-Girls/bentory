@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.example.bentory_app.activities.LandingPage;
 
 // ===============================
 // BurgerMenu Activity
@@ -54,6 +55,7 @@ public class BurgerMenuActivity extends BaseActivity {
         setupImageButton(R.id.buttonInventory, Inventory.class);
         setupImageButton(R.id.buttonSellingWindow, SellProduct.class);
         setupImageButton(R.id.buttonStatistics, Statistics.class);
+        setupImageButton(R.id.buttonMainMenu, LandingPage.class);
 
         // Logout button handler.
         buttonLogout = findViewById(R.id.buttonLogout);

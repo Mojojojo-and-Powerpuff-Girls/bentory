@@ -29,6 +29,7 @@
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Add Product"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/burger_add_product_button" />
 
@@ -40,6 +41,7 @@
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Inventory"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/burger_inventory_button" />
 
@@ -51,6 +53,7 @@
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Selling Window"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/burger_selling_window_button" />
 
@@ -62,6 +65,7 @@
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Statistics"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/burger_statistics_button" />
 
@@ -76,10 +80,24 @@
         android:scaleType="fitCenter"
         android:src="@drawable/user_manual" />
 
+        <ImageButton
+        android:id="@+id/buttonMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="2dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="Main Menu"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/burger_main_menu_button" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    
 
     <ImageButton
         android:id="@+id/buttonLogout"
@@ -89,6 +107,7 @@
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Logout"
+        android:padding="2dp"
         android:paddingBottom="30dp"
         android:scaleType="fitCenter"
         android:src="@drawable/logout_icon" />
