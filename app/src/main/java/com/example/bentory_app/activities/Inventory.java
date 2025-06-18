@@ -515,21 +515,38 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                 productViewModel.updateProduct(product);                // Update in firebase.
                 Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
                 editButton.setImageResource(R.drawable.square_pen);     // the pen edit button.
-
-            } else {
-                // Resize the check icon.
-                sizeInDp = 30;
-                scale = getResources().getDisplayMetrics().density;
-                sizeInPx = (int) (sizeInDp * scale + 0.5f);
-
-                // Reset layout size.
-                ViewGroup.LayoutParams params = editButton.getLayoutParams();
                 editButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                // Resize to smaller (default) size
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) editButton.getLayoutParams();
+                params.topMargin = 0;
+
+                int sizeInDp = 30;
+                float scale = getResources().getDisplayMetrics().density;
+                int sizeInPx = (int) (sizeInDp * scale + 0.5f);
+
                 params.width = sizeInPx;
                 params.height = sizeInPx;
                 editButton.setLayoutParams(params);
 
-                editButton.setImageResource(R.drawable.check_square_broken); // switch to save icon.
+
+            } else {
+                editButton.setImageResource(R.drawable.add_item_save_button); // switch to save icon.
+                editButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                // Resize the check icon.
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) editButton.getLayoutParams();
+                params.topMargin = -30;
+
+                sizeInDp = 65;
+                scale = getResources().getDisplayMetrics().density;
+                sizeInPx = (int) (sizeInDp * scale + 0.5f);
+
+                // Reset layout size.
+                params.width = sizeInPx;
+                params.height = sizeInPx;
+                editButton.setLayoutParams(params);
+
                 category.requestFocus();                                     // Optional: focus on first field.
             }
 

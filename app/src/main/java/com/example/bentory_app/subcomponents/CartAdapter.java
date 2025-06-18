@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.CartModel;
 import com.example.bentory_app.model.ProductModel;
+import com.example.bentory_app.viewmodel.CartViewModel;
 
 import java.util.List;
 
@@ -25,10 +26,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     // Listener
     private OnStockChangedListener stockChangedListener;
 
+    // ViewModel
+    private CartViewModel cartViewModel;
+
     // 📦 Constructor to initialize cart list and stock listener.
-    public CartAdapter(List<CartModel> cartItems, OnStockChangedListener listener) {
+    public CartAdapter(List<CartModel> cartItems, OnStockChangedListener listener, CartViewModel cartViewModel) {
         this.cartItems = cartItems;
         this.stockChangedListener = listener;
+        this.cartViewModel = cartViewModel;
     }
 
     // 🧱 ViewHolder class : defines the UI elements inside each row.
@@ -82,6 +87,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 item.getLinkedProduct().setQuantity(item.getLinkedProduct().getQuantity() - 1);
                 stockChangedListener.onStockChanged();
                 notifyItemChanged(position);
+                cartViewModel.forceUpdate();
             } else {
                 Toast.makeText(v.getContext(), "Out of stock!", Toast.LENGTH_SHORT).show();
             }
@@ -97,6 +103,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 item.getLinkedProduct().setQuantity(item.getLinkedProduct().getQuantity() + 1);
                 stockChangedListener.onStockChanged();
                 notifyItemChanged(position);
+                cartViewModel.forceUpdate();
             }
         });
 
@@ -116,6 +123,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
             // Notify parent that stock has changed (so selling list updates too).
             stockChangedListener.onStockChanged();
+            cartViewModel.forceUpdate();
         });
 
         // Manual typing of quantity (on focus lost).
@@ -130,6 +138,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
                 holder.quantity.clearFocus(); // Optionally: manually clear focus to trigger onFocusChangeListener
                 updateQuantity(holder.quantity, item, position);
+                cartViewModel.forceUpdate();
+
                 return true;
             }
             return false;

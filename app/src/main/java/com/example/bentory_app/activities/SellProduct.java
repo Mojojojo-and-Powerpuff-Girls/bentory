@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -211,7 +212,6 @@ public class SellProduct extends BaseDrawerActivity {
                     product // pass the reference
             );
             cartViewModel.addToCart(cartItem); //// 'addToCart' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
-            Toast.makeText(SellProduct.this, "Item added!", Toast.LENGTH_SHORT).show();
 
             // Reduce product stock after add to cart.
             product.setQuantity(currentStock - 1);
@@ -241,6 +241,11 @@ public class SellProduct extends BaseDrawerActivity {
             totalPriceView = bottomSheetView.findViewById(R.id.total_price_text);
             total = cartViewModel.getCartTotal(); //// 'getCartTotal' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
             totalPriceView.setText(String.format("₱%.2f", total));
+
+            // Observe total price and auto-update in real-time
+            cartViewModel.getTotalPrice().observe(SellProduct.this, updatedTotal -> {
+                totalPriceView.setText(String.format("₱%.2f", updatedTotal));
+            });
 
             // On confirm: update stocks adn clear cart.
             confirmBtn.setOnClickListener(view -> {
@@ -284,7 +289,7 @@ public class SellProduct extends BaseDrawerActivity {
 
             //// 'getCartItems' contains a method (found at 'CartViewModel' in 'viewmodel' directory).
             cartViewModel.getCartItems().observe(SellProduct.this, cartItems -> {
-                CartAdapter adapter1 = new CartAdapter(cartItems, () -> sellingAdapter.notifyDataSetChanged());
+                CartAdapter adapter1 = new CartAdapter(cartItems, () -> sellingAdapter.notifyDataSetChanged(), cartViewModel);
                 recyclerViewTop.setAdapter(adapter1);
             });
 
@@ -302,6 +307,9 @@ public class SellProduct extends BaseDrawerActivity {
                 targetOverlay.setVisibility(View.GONE);
                 touchBlock.setVisibility(View.GONE);
                 barcodeView.pause();
+
+                // Restore the default scanner
+                barcodeView.decodeContinuous(callback);
             } else {
                 barcodeView.setVisibility(View.VISIBLE);
                 targetOverlay.setVisibility(View.VISIBLE);
@@ -349,7 +357,6 @@ public class SellProduct extends BaseDrawerActivity {
                             matched);
 
                     cartViewModel.addToCart(cartItem);
-                    Toast.makeText(SellProduct.this, "Item added!", Toast.LENGTH_SHORT).show();
 
                     // Decrease stock and refresh UI.
                     matched.setQuantity(matched.getQuantity() - 1);
@@ -396,6 +403,9 @@ public class SellProduct extends BaseDrawerActivity {
                     targetOverlay.setVisibility(View.GONE);
                     touchBlock.setVisibility(View.GONE);
                     barcodeView.pause(); // stop scanning
+
+                    // Restore main scanner
+                    barcodeView.decodeContinuous(callback);
                 } else {
                     Intent intent = new Intent(SellProduct.this, LandingPage.class);
                     startActivity(intent);
@@ -445,7 +455,7 @@ public class SellProduct extends BaseDrawerActivity {
 
             // Lookup product by barcode from ViewModel's current items (Firebase).
             ProductModel matched = null;
-            for (ProductModel p : sellingViewModel.getItems().getValue()) {
+            for (ProductModel p : fullProductList) {
                 if (p.getBarcode() != null && p.getBarcode().contains(scannedCode)) {
                     matched = p;
                     break;
@@ -475,6 +485,9 @@ public class SellProduct extends BaseDrawerActivity {
 
                 // Decrement product quantity in stock by 1.
                 matched.setQuantity(matched.getQuantity() - 1);
+
+                // ✅ Add this to notify the UI of the stock change.
+                sellingViewModel.refreshItems();
 
                 // Add sound and vibration feedback
                 toneGen.startTone(ToneGenerator.TONE_PROP_BEEP);
@@ -542,12 +555,15 @@ public class SellProduct extends BaseDrawerActivity {
         barcodeView.decodeContinuous(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
+                Log.d("SCAN_SEARCH_RESULT", "Scanned: " + result.getText());
                 String searchScannedCode = result.getText();
-                List<ProductModel> products = sellingViewModel.getItems().getValue();
+                List<ProductModel> products = fullProductList;
 
                 if (products != null) {
+                    Log.d("SCAN_CHECK", "Products list size: " + products.size());
                     ProductModel matched = null;
                     for (ProductModel p : products) {
+                        Log.d("SCAN_COMPARE", "Searching: " + searchScannedCode + " vs " + p.getBarcode());
                         if (p.getBarcode() != null && p.getBarcode().contains(searchScannedCode)) {
                             matched = p;
                             break;
@@ -559,6 +575,7 @@ public class SellProduct extends BaseDrawerActivity {
                         List<ProductModel> filteredList = new ArrayList<>();
                         filteredList.add(matched);
                         sellingAdapter.setProductList(filteredList);
+                        sellingAdapter.notifyDataSetChanged();
 
                         // Cleanup scanner UI
                         barcodeView.pause();
@@ -567,6 +584,8 @@ public class SellProduct extends BaseDrawerActivity {
                         touchBlock.setVisibility(View.GONE);
                         isScannerActive = false;
 
+                        // Restore the default scanner
+                        barcodeView.decodeContinuous(callback);
                     } else {
                         barcodeView.pause();
                         isScannerActive = false;
@@ -591,9 +610,14 @@ public class SellProduct extends BaseDrawerActivity {
                         btnNo.setOnClickListener(v4 -> {
                             barcodeView.resume();
                             alertDialog.dismiss();
+
+                            // Restore the default scanner
+                            barcodeView.decodeContinuous(callback);
                         });
                         alertDialog.show();
                     }
+                } else {
+                    Log.d("SCAN_CHECK", "Products list is NULL");
                 }
             }
         });

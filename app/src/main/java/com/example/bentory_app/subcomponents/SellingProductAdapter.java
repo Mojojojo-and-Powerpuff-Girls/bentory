@@ -30,7 +30,11 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
 
     // 🔁 Used to update the product list displayed in the RecyclerView.
     public void setProductList(List<ProductModel> productList) {
-        this.productList = productList;
+        if (productList == null) {
+            this.productList = new ArrayList<>(); // Fallback to empty list
+        } else {
+            this.productList = productList;
+        }
         notifyDataSetChanged();
     }
 
@@ -91,6 +95,6 @@ public class SellingProductAdapter extends RecyclerView.Adapter<SellingProductAd
     // 🔢 Return total number of items to display.
     @Override
     public int getItemCount() {
-        return productList.size();
+        return productList != null ? productList.size() : 0;
     }
 }

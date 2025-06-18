@@ -22,16 +22,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingRight="10dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:enabled="false"
             android:fontFamily="@font/pixelify_sans"
+            android:hint="Name"
+            android:inputType="text"
+            android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:hint="Name"
-            android:enabled="false"
-            android:inputType="text"
-            android:background="@android:color/transparent"/>
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/editBtn"
