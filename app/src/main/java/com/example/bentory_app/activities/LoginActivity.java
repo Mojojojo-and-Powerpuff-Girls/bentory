@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private ImageButton buttonLogin;
     private TextView textViewSignUp;
-    private TextView textViewForgotPassword;
     private TextView textViewSignUpLink;
 
     private FirebaseAuth mAuth;
@@ -67,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
             editTextPassword = findViewById(R.id.editTextPassword);
             buttonLogin = findViewById(R.id.buttonLogin);
             textViewSignUp = findViewById(R.id.textViewSignUp);
-            textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
             textViewSignUpLink = findViewById(R.id.textViewSignUpLink);
             Log.d("LoginActivity", "Views found successfully");
 
@@ -144,9 +142,9 @@ public class LoginActivity extends AppCompatActivity {
                                             });
                                 }
                             } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(LoginActivity.this, "Login failed: " +
-                                        task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                // Show a message for incorrect credentials
+                                Toast.makeText(LoginActivity.this, "Incorrect username or password. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
                                 buttonLogin.setEnabled(true);
                             }
                         });
@@ -156,30 +154,6 @@ public class LoginActivity extends AppCompatActivity {
             textViewSignUp.setOnClickListener(view -> {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
-            });
-
-            // Forgot password logic.
-            textViewForgotPassword.setOnClickListener(view -> {
-                String username = editTextEmail.getText().toString().trim();
-                if (username.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Please enter your username first", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Create full email address for password reset
-                String email = username + EMAIL_DOMAIN;
-
-                mAuth.sendPasswordResetEmail(email)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this,
-                                        "Password reset email sent to " + email, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(LoginActivity.this,
-                                        "Failed to send reset email: " + task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
             });
         } catch (Exception e) {
             Log.e("LoginActivity", "Error in onCreate", e);
