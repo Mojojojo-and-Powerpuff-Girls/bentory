@@ -161,7 +161,7 @@ public class AddProduct extends BaseDrawerActivity {
             // Validate scanned code length: show error if it's less than 13 digits (EAN-13).
             if (scannedCode.length() < 13) {
                 scannedCode.setError("Code must be 13 digits.");
-                Toast.makeText(AddProduct.this, "Product code must 13 digits.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddProduct.this, "Product code must be 13 digits.", Toast.LENGTH_SHORT).show();
                 return;
             }
 

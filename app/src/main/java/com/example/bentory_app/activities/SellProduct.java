@@ -326,8 +326,15 @@ public class SellProduct extends BaseDrawerActivity {
         manualCode.setOnEditorActionListener((v, actionId, event) -> {
             enteredCode = manualCode.getText().toString().trim();
 
+            // Validate scanned code length: show error if it's less than 13 digits (EAN-13).
+            if (enteredCode.length() < 13) {
+                manualCode.setError("Code must be 13 digits.");
+                Toast.makeText(SellProduct.this, "Product code must be 13 digits.", Toast.LENGTH_SHORT).show();
+                return true; // Use 'true' to indicate you've handled the event
+            }
+
             if (!enteredCode.isEmpty()) {
-                List<ProductModel> products = sellingViewModel.getItems().getValue();
+                List<ProductModel> products = fullProductList;
                 if (products == null)
                     return true;
 
@@ -336,6 +343,7 @@ public class SellProduct extends BaseDrawerActivity {
                 for (ProductModel p : products) {
                     if (p.getBarcode() != null && p.getBarcode().contains(enteredCode)) {
                         matched = p;
+                        Toast.makeText(this, "Product add to cart", Toast.LENGTH_SHORT).show();
                         break;
                     }
                 }
@@ -379,6 +387,7 @@ public class SellProduct extends BaseDrawerActivity {
                         intent.putExtra("scannedBarcode", enteredCode); // pass entered code to Inventory.
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                        alertDialog.dismiss();
                     });
 
                     btnNo.setOnClickListener(v2 -> {
@@ -530,6 +539,7 @@ public class SellProduct extends BaseDrawerActivity {
                         intent.putExtra("scannedBarcode", scannedCode); // pass entered code to Inventory.
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                        alertDialog.dismiss();
                     });
 
                     btnNo.setOnClickListener(v4 -> {
@@ -605,6 +615,7 @@ public class SellProduct extends BaseDrawerActivity {
                             intent.putExtra("scannedBarcode", searchScannedCode); // pass entered code to Inventory.
                             startActivity(intent);
                             Toast.makeText(getApplicationContext(), "Select a product to link the barcode.", Toast.LENGTH_LONG).show();
+                            alertDialog.dismiss();
                         });
 
                         btnNo.setOnClickListener(v4 -> {

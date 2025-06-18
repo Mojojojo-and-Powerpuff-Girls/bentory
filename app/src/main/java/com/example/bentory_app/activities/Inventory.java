@@ -245,6 +245,7 @@ public class Inventory extends BaseDrawerActivity { // Changed from BaseActivity
                         productViewModel.deleteSelectedProducts(selectedItems); //// 'deleteSelectedProducts' contains a method (found at 'ProductViewModel' in 'viewmodel' directory).
                         adapter.setDeleteMode(false);
                         resetDeleteButtonToSelectItems(); //// 'resetDeleteButtonToSelectItems' contains a method (found at the bottom of the code).
+                        alertDialog.dismiss();
                     });
 
                     // No: resume scanning
