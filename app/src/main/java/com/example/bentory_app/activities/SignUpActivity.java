@@ -1,5 +1,6 @@
 package com.example.bentory_app.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 // ===============================
 // SignUp Activity
@@ -84,9 +87,31 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign up success
                             FirebaseUser user = mAuth.getCurrentUser();
+                            // Set first_time_login flag
+                            getSharedPreferences("bentory_prefs", MODE_PRIVATE)
+                                    .edit()
+                                    .putBoolean("first_time_login", true)
+                                    .apply();
                             Toast.makeText(SignUpActivity.this, "Account created successfully!\nEmail: " + email,
                                     Toast.LENGTH_LONG).show();
-                            finish(); // Return to login screen
+                            mAuth.signOut(); // Sign out after sign up
+                            if (user != null) {
+                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                                        .child(user.getUid());
+                                userRef.child("onboardingCompleted").setValue(false)
+                                        .addOnCompleteListener(task2 -> {
+                                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                            intent.addFlags(
+                                                    Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        });
+                            } else {
+                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
                         } else {
                             // If sign up fails, display a message to the user.
                             String errorMessage = task.getException() != null ? task.getException().getMessage()
@@ -99,9 +124,8 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-
     // ===============================
-    //             METHODS
+    // METHODS
     // ===============================
 
     // ✅ Validate username and password input fields. (METHODS)

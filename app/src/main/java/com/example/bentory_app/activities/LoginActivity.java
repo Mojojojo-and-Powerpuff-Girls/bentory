@@ -1,6 +1,7 @@
 package com.example.bentory_app.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.bentory_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 // ===============================
 // Login Activity
@@ -100,12 +102,47 @@ public class LoginActivity extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
                             if (task.isSuccessful()) {
-                                // Sign in success
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, LandingPage.class);
-                                startActivity(intent);
-                                finish(); // Finish LoginActivity so user can't go back to it with back button
+                                if (user != null) {
+                                    com.google.firebase.database.DatabaseReference userRef = FirebaseDatabase
+                                            .getInstance().getReference("users").child(user.getUid());
+                                    userRef.child("onboardingCompleted").addListenerForSingleValueEvent(
+                                            new com.google.firebase.database.ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(
+                                                        @androidx.annotation.NonNull com.google.firebase.database.DataSnapshot snapshot) {
+                                                    Boolean completed = snapshot.getValue(Boolean.class);
+                                                    android.util.Log.d("LoginActivity",
+                                                            "onboardingCompleted value: " + completed);
+                                                    if (completed == null || !completed) {
+                                                        // Go to onboarding
+                                                        Intent intent = new Intent(LoginActivity.this,
+                                                                Onboarding.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    } else {
+                                                        // Go to landing page
+                                                        Toast.makeText(LoginActivity.this, "Login Successful",
+                                                                Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(LoginActivity.this,
+                                                                LandingPage.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(
+                                                        @androidx.annotation.NonNull com.google.firebase.database.DatabaseError error) {
+                                                    // Handle error, maybe go to landing page as fallback
+                                                    android.util.Log.e("LoginActivity",
+                                                            "onboardingCompleted check failed: " + error.getMessage());
+                                                    Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(LoginActivity.this, "Login failed: " +
@@ -154,12 +191,40 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intent = new Intent(LoginActivity.this, LandingPage.class);
-            startActivity(intent);
-            finish();
+            com.google.firebase.database.DatabaseReference userRef = FirebaseDatabase.getInstance()
+                    .getReference("users").child(currentUser.getUid());
+            userRef.child("onboardingCompleted")
+                    .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                        @Override
+                        public void onDataChange(
+                                @androidx.annotation.NonNull com.google.firebase.database.DataSnapshot snapshot) {
+                            Boolean completed = snapshot.getValue(Boolean.class);
+                            android.util.Log.d("LoginActivity", "onboardingCompleted value (onStart): " + completed);
+                            if (completed == null || !completed) {
+                                // Go to onboarding
+                                Intent intent = new Intent(LoginActivity.this, Onboarding.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                // Go to landing page
+                                Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(
+                                @androidx.annotation.NonNull com.google.firebase.database.DatabaseError error) {
+                            android.util.Log.e("LoginActivity",
+                                    "onboardingCompleted check failed (onStart): " + error.getMessage());
+                            Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
         }
     }
 }

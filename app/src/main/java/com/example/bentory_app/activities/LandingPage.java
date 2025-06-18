@@ -22,9 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bentory_app.R;
-import com.example.bentory_app.model.StatsModel;
-import com.example.bentory_app.repository.OnboardingPreferences;
 import com.example.bentory_app.subcomponents.MenuAdapter;
+import com.example.bentory_app.model.StatsModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,13 +54,6 @@ public class LandingPage extends BaseDrawerActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
 
-        // 🚨 If onboarding has NOT been completed yet (first-time user), launch the onboarding activity instead of showing the landing page.
-        if (!OnboardingPreferences.isCompleted(this)) {
-            startActivity(new Intent(this, Onboarding.class));
-            finish(); // Don't show landing yet.
-            return;
-        }
-
         // ⬛ Camera Permission
         checkCameraPermission();
 
@@ -70,8 +62,10 @@ public class LandingPage extends BaseDrawerActivity {
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
-        setupToolbar(R.id.my_toolbar, "Landing Page", true);//// 'setupToolbar' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
-        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in 'activities' directory).
+        setupToolbar(R.id.my_toolbar, "Landing Page", true);//// 'setupToolbar' contains a method (found at
+                                                            //// 'BaseDrawerActivity' in 'activities' directory).
+        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in
+                       //// 'activities' directory).
 
         // ⬛ Bind Views
         addProductBtn = findViewById(R.id.addProductBtn);
@@ -99,9 +93,15 @@ public class LandingPage extends BaseDrawerActivity {
         monthRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                double totalSales = snapshot.child("total_sales").getValue(Double.class) != null ? snapshot.child("total_sales").getValue(Double.class) : 0.0;
-                double profit = snapshot.child("monthly_profit").getValue(Double.class) != null ? snapshot.child("monthly_profit").getValue(Double.class) : 0.0;
-                int productsSold = snapshot.child("products_sold").getValue(Integer.class) != null ? snapshot.child("products_sold").getValue(Integer.class) : 0;
+                double totalSales = snapshot.child("total_sales").getValue(Double.class) != null
+                        ? snapshot.child("total_sales").getValue(Double.class)
+                        : 0.0;
+                double profit = snapshot.child("monthly_profit").getValue(Double.class) != null
+                        ? snapshot.child("monthly_profit").getValue(Double.class)
+                        : 0.0;
+                int productsSold = snapshot.child("products_sold").getValue(Integer.class) != null
+                        ? snapshot.child("products_sold").getValue(Integer.class)
+                        : 0;
 
                 statsList.add(new StatsModel("Total Sales", "Month of June", "PHP " + totalSales));
                 statsList.add(new StatsModel("Monthly Profit", "Month of June", "PHP " + profit));
@@ -111,50 +111,48 @@ public class LandingPage extends BaseDrawerActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
 
         weekRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                double weeklySale = snapshot.child("total_sale").getValue(Double.class) != null ? snapshot.child("total_sale").getValue(Double.class) : 0.0;
+                double weeklySale = snapshot.child("total_sale").getValue(Double.class) != null
+                        ? snapshot.child("total_sale").getValue(Double.class)
+                        : 0.0;
                 statsList.add(0, new StatsModel("Weekly Sales", "Week 25", "PHP " + weeklySale));
                 adapter1.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
-
-
-
 
         recyclerViewTop.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTop.setAdapter(adapter1);
-
-
-
     }
 
-
     // ===============================
-    //             METHODS
+    // METHODS
     // ===============================
 
-    // 📷 'checkCameraPermission' : Method to check if the app has permission to use the camera. (METHODS)
+    // 📷 'checkCameraPermission' : Method to check if the app has permission to use
+    // the camera. (METHODS)
     private static final int CAMERA_REQUEST_CODE = 101; // Unique request code for camera permission.
+
     private void checkCameraPermission() {
         // Check if the camera permission has NOT been granted.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
             // Request the camera permission from the user at runtime.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, CAMERA_REQUEST_CODE);
         }
     }
 
-
-    // 🧩 'setButtonClickListener' : animates a button on click, then opens the target activity.
+    // 🧩 'setButtonClickListener' : animates a button on click, then opens the
+    // target activity.
     private void setButtonClickListener(ImageButton button, Class<?> targetActivity) {
         button.setOnClickListener(v -> {
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)

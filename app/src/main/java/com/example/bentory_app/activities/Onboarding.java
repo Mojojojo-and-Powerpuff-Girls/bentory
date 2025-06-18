@@ -16,9 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.bentory_app.R;
 import com.example.bentory_app.model.OnboardingPage;
-import com.example.bentory_app.repository.OnboardingPreferences;
 import com.example.bentory_app.subcomponents.OnboardingAdapter;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,22 +58,17 @@ public class Onboarding extends AppCompatActivity {
 
         // If not manually launched and onboarding already completed, skip it.
         isManualLaunch = getIntent().getBooleanExtra("manualLaunch", false);
-        if (!isManualLaunch && OnboardingPreferences.isCompleted(this)) {
-            goToMain();
-            return;
-        }
 
         // Onboarding pages with image resources.
         pages = Arrays.asList(
                 new OnboardingPage(R.drawable.img1),
                 new OnboardingPage(R.drawable.img2),
-                new OnboardingPage(R.drawable.img3)
-        );
+                new OnboardingPage(R.drawable.img3));
         viewPager.setAdapter(new OnboardingAdapter(pages));
 
-
         // ===============================
-        // 📄 Page Change: Handle page change events [indicator, button states]. (FEATURE)
+        // 📄 Page Change: Handle page change events [indicator, button states].
+        // (FEATURE)
         // ===============================
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -100,14 +93,13 @@ public class Onboarding extends AppCompatActivity {
 
                 } else {
                     btnNext.setImageResource(R.drawable.btn_next);
-                    params.width = dpToPx(42);  // original "Next" size
+                    params.width = dpToPx(42); // original "Next" size
                     params.height = dpToPx(42);
                     params.bottomMargin = dpToPx(55); // default margin
                     params.rightMargin = dpToPx(0);
                 }
             }
         });
-
 
         // ===============================
         // ➡️ Next Button: Handle next button click. (FEATURE)
@@ -118,14 +110,12 @@ public class Onboarding extends AppCompatActivity {
                 viewPager.setCurrentItem(pos + 1);
             } else {
                 if (!isManualLaunch) {
-                    OnboardingPreferences.setCompleted(this);
                     goToMain();
                 } else {
                     finish(); // just close if launched manually.
                 }
             }
         });
-
 
         // ===============================
         // ⬅️ Back Button: Handle back button click. (FEATURE)
@@ -139,13 +129,20 @@ public class Onboarding extends AppCompatActivity {
 
     }
 
-
     // ===============================
-    //             METHODS
+    // METHODS
     // ===============================
 
     // 🚀 'goToMain' : Go to main screen after onboarding. (METHODS)
     private void goToMain() {
+        // Mark onboarding as completed in Firebase Database
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance()
+                .getCurrentUser();
+        if (user != null) {
+            com.google.firebase.database.DatabaseReference userRef = com.google.firebase.database.FirebaseDatabase
+                    .getInstance().getReference("users").child(user.getUid());
+            userRef.child("onboardingCompleted").setValue(true);
+        }
         startActivity(new Intent(this, LandingPage.class));
         finish();
     }
