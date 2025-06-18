@@ -147,7 +147,7 @@ public class Statistics extends BaseDrawerActivity { // Extends BaseDrawerActivi
 
                                     // ✅ Condition to set status based on stock level
                                     String status;
-                                    if (currentStock <= 5) {
+                                    if (currentStock <= 10) {
                                         status = "LOW";
                                     } else {
                                         status = "OK";
