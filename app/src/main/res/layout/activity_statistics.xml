@@ -108,7 +108,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewTopStatistics"
                 android:layout_width="match_parent"
-                android:layout_height="310dp"
+                android:layout_height="270dp"
                 android:layout_marginTop="80dp"
                 android:layout_marginBottom="5dp"
                 android:contentDescription="view list of stats" />

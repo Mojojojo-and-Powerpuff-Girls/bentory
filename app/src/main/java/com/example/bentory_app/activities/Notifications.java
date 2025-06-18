@@ -1,7 +1,9 @@
 package com.example.bentory_app.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
@@ -44,8 +46,7 @@ public class Notifications extends BaseDrawerActivity {
 
         // ⬛ UI Setup
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
         setupToolbar(R.id.my_toolbar, "Notifications", true); //// 'setupToolbar' contains a method (found at
