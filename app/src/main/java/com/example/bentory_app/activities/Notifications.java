@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -49,10 +50,14 @@ public class Notifications extends BaseDrawerActivity {
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
             return insets;
         });
-        setupToolbar(R.id.my_toolbar, "Notifications", true); //// 'setupToolbar' contains a method (found at
-                                                              //// 'BaseDrawerActivity' in 'activities' directory).
-        setupDrawer(); //// 'setupDrawer' contains a method (found at 'BaseDrawerActivity' in
-                       //// 'activities' directory).
+        setupToolbar(R.id.my_toolbar, "Notifications", false);
+        ImageButton backBtn = findViewById(R.id.burgerbttn);
+        if (backBtn != null) {
+            backBtn.setVisibility(View.VISIBLE);
+            backBtn.setOnClickListener(v -> finish());
+        }
+        // setupDrawer(); // Remove or comment out this line since we don't want the
+        // drawer in notifications
 
         // Initialize components
         recyclerView = findViewById(R.id.notifications_recycler_view);

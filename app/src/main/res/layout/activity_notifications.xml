@@ -57,9 +57,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:contentDescription="burgerbutton"
+                    android:contentDescription="backbutton"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/burger_icon"
+                    app:srcCompat="@drawable/back_arrow_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
@@ -302,6 +302,7 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="30dp" />
+
 
         <ImageButton
             android:id="@+id/buttonLogout"
