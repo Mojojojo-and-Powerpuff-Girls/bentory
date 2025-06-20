@@ -56,6 +56,7 @@ public class BurgerMenuActivity extends BaseActivity {
         setupImageButton(R.id.buttonSellingWindow, SellProduct.class);
         setupImageButton(R.id.buttonStatistics, Statistics.class);
         setupImageButton(R.id.buttonMainMenu, LandingPage.class);
+        setupImageButton(R.id.buttonAboutUs, AboutUsActivity.class);
 
         // Logout button handler.
         buttonLogout = findViewById(R.id.buttonLogout);

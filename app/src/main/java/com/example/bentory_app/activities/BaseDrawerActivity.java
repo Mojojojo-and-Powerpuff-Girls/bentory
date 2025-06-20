@@ -60,6 +60,7 @@ public abstract class BaseDrawerActivity extends BaseActivity {
             setupDrawerImageButton(R.id.buttonStatistics, Statistics.class);
             setupDrawerImageButton(R.id.buttonMainMenu, LandingPage.class);
             setupUserManualButton(R.id.buttonUserManual);
+            setupDrawerImageButton(R.id.buttonAboutUs, AboutUsActivity.class);
 
             // Set up logout button in drawer
             buttonLogout = findViewById(R.id.buttonLogout);
@@ -92,7 +93,8 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         }
     }
 
-    // 🧭 A button that manually launches the onboarding/user manual screen. (METHODS)
+    // 🧭 A button that manually launches the onboarding/user manual screen.
+    // (METHODS)
     private void setupUserManualButton(int buttonId) {
 
         // Find the button by ID.
